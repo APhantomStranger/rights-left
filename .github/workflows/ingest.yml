@@ -36,7 +36,7 @@ jobs:
 
       # OPTIONAL â€” auto-update the website too. Requires an xlsx-driven
       # build_site.py (ask Claude for it) that reads the workbook and writes
-      # rights-left.html. Uncomment once that script is in scripts/.
+      # rights-left.html. (changed to index.html) Uncomment once that script is in scripts/.
       # - name: Rebuild website
       #   run: python scripts/build_site.py --xlsx "data/Trump_Second_Term_Weekly_Tracker.xlsx"
 
@@ -44,6 +44,6 @@ jobs:
         run: |
           git config user.name  "rights-left-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add data/ candidates/ rights-left.html 2>/dev/null || git add data/ candidates/
+          git add data/ candidates/ index.html 2>/dev/null || git add data/ candidates/
           git commit -m "Ingest approved entries ($(date -u +%Y-%m-%d))" || echo "nothing to commit"
           git push
