@@ -1,0 +1,60 @@
+name: Gather weekly entries
+
+on:
+  schedule:
+    # Every Sunday at 13:00 UTC (~8–9am US Eastern). Cron is ALWAYS UTC.
+    - cron: '0 13 * * 0'
+  workflow_dispatch: {}      # also lets you run it manually from the Actions tab
+
+permissions:
+  contents: write            # to commit the candidates CSV
+  issues: write              # to open the review issue
+
+jobs:
+  gather:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Collect candidate articles
+        id: collect
+        env:
+          # Optional: set this secret + add "--draft" below to have the model
+          # pre-fill category/event/impact. Remove both to keep it free/no-AI.
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python scripts/gather.py            # add  --draft  to enable AI pre-fill
+
+      - name: Commit candidates for review
+        run: |
+          git config user.name  "rights-left-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add candidates/
+          git commit -m "Gather candidates ${{ steps.collect.outputs.week }}" || echo "nothing to commit"
+          git push
+
+      - name: Open review issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue create \
+            --title "Review candidates — week of ${{ steps.collect.outputs.week }}" \
+            --body "$(cat <<'BODY'
+          **${{ steps.collect.outputs.count }} candidate items** were collected for the week of **${{ steps.collect.outputs.week }}**.
+
+          **To approve:**
+          1. Open the file: `${{ steps.collect.outputs.csv }}`
+          2. Click the pencil (Edit) icon on GitHub.
+          3. For each item you want to keep, fill in **category**, **event**, and **impact**, then set **include** to `y`. Delete or leave blank the rows you don't want.
+          4. Commit your edits to `main`.
+          5. Go to the **Actions** tab → **Ingest approved entries** → **Run workflow**. Leave the file box blank to use this week's file.
+
+          The ingest step appends your approved rows into `data/Trump_Second_Term_Weekly_Tracker.xlsx` in the exact existing format and updates the totals automatically.
+          BODY
+          )"
