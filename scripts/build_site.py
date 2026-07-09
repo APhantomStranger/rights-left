@@ -103,8 +103,8 @@ def build_site_json(groups, cats):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--xlsx", required=True, help="Path to the master workbook")
-    ap.add_argument("--out", default="rights-left.html",
-                    help="Output HTML path (default: rights-left.html in repo root)")
+    ap.add_argument("--out", default="index.html",
+                    help="Output HTML path (default: index.html in repo root)")
     args = ap.parse_args()
 
     if not os.path.exists(TEMPLATE_PATH):
