@@ -36,12 +36,40 @@ FEEDS = {
 
 # ---- Relevance filter: keep items whose title/summary mentions any of these --
 KEYWORDS = [
-    "trump", "white house", "executive order", "administration", "ice ",
-    "deport", "immigration", "supreme court", "scotus", "doj", "justice dept",
-    "justice department", "tariff", "national guard", "hegseth", "noem",
-    "homeland security", "birthright", "medicaid", "snap", "cdc", "fcc",
+    # --- Core administration & politics ---
+    "trump", "white house", "executive order", "administration",
     "pardon", "vance", "rfk", "kennedy", "bondi", "patel", "epstein",
-    "shutdown", "voting", "election", "federal", "insurrection", "border",
+    "hegseth", "noem", "shutdown", "voting", "election", "federal",
+    "insurrection", "national guard",
+
+    # --- Immigration, ICE & DHS ---
+    "ice ", "i.c.e.", "immigration", "deport", "deportation",
+    "customs enforcement", "immigration enforcement",
+    "ice agent", "ice raid", "ice arrest", "ice detention",
+    "homeland security", "dhs", "border", "border patrol",
+    "asylum", "refugee", "migrant", "visa", "birthright",
+    "tps", "temporary protected status", "sanctuary",
+
+    # --- Courts & law ---
+    "supreme court", "scotus", "doj", "justice dept",
+    "justice department",
+
+    # --- Economy ---
+    "tariff", "medicaid", "snap",
+
+    # --- Science & public health ---
+    "cdc", "nih", "fda", "vaccine", "public health",
+    "climate", "environmental protection", "epa",
+    "science", "scientific", "research funding",
+    "anti-science", "rfk health",
+
+    # --- Education ---
+    "education department", "dept of education", "title ix",
+    "student loan", "school", "university", "college",
+    "academic freedom", "book ban", "curriculum",
+
+    # --- Press & communications ---
+    "fcc", "press freedom", "journalist",
 ]
 
 # ---- The 17 categories the workbook uses (for the AI drafter / your reference)
@@ -57,7 +85,7 @@ CATEGORIES = [
 COLUMNS = ["include", "week_of", "dates", "category", "event", "impact",
            "outlet", "srcdesc", "url", "srcdate"]
 
-MAX_CANDIDATES = 40
+MAX_CANDIDATES = 60
 
 
 def target_week(today=None):
