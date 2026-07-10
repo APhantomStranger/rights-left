@@ -1,14 +1,8 @@
-Rights Left
-
 The Rights That Have Left of Us Project
-
-
 
 "The accumulation of all powers, legislative, executive, and judiciary, in the same hands, whether of one, a few, or many, and whether hereditary, self-appointed, or elective, may justly be pronounced the very definition of tyranny."
 
 — James Madison, Federalist No. 47, 1788
-
-
 
 
 What this is
