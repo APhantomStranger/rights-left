@@ -1,111 +1,114 @@
-# Rights Left — automated weekly pipeline (Gather → Approve → Ingest)
+Rights Left
 
-This repo keeps the tracker workbook up to date every week with a human in the loop.
+The Rights That Have Left of Us Project
 
-- **Gather** (automatic, Sundays): collects the past week's political news from RSS
-  feeds into a review file — `candidates/<monday>.csv`.
-- **Approve** (you, ~5–10 min): edit that CSV — fill in category/event/impact and
-  mark the rows to keep with `include = y`.
-- **Ingest** (one click): appends your approved rows into
-  `data/Trump_Second_Term_Weekly_Tracker.xlsx` in the exact existing format
-  (fonts, banding, hyperlinks, File-No. sequence, and Summary totals all match).
 
-Nothing is published without your approval, and the ingest step never invents
-content — it only formats and files what you approved.
 
-```
-rights-left/
-├─ data/Trump_Second_Term_Weekly_Tracker.xlsx   ← the master workbook
-├─ scripts/gather.py                             ← collects candidates
-├─ scripts/ingest.py                             ← appends approved rows
-├─ candidates/                                   ← weekly review CSVs land here
-│  └─ processed/                                 ← ingested CSVs are moved here
-├─ requirements.txt
-└─ .github/workflows/
-   ├─ gather.yml     (schedule: Sundays 13:00 UTC + manual)
-   └─ ingest.yml     (manual "Run workflow" button)
-```
+"The accumulation of all powers, legislative, executive, and judiciary, in the same hands, whether of one, a few, or many, and whether hereditary, self-appointed, or elective, may justly be pronounced the very definition of tyranny."
 
----
+— James Madison, Federalist No. 47, 1788
 
-## One-time setup
 
-1. **Create the repository.**
-   - On GitHub: **New repository** → name it `rights-left` → **Private** is fine → Create.
-   - Upload these files preserving the folder structure. Easiest path:
-     install [Git](https://git-scm.com/downloads), then in a terminal:
-     ```bash
-     git clone https://github.com/<you>/rights-left.git
-     # copy the files from this bundle into the cloned folder, then:
-     cd rights-left
-     git add .
-     git commit -m "Initial pipeline"
-     git push
-     ```
-     (Or use the GitHub website's **Add file → Upload files**, but you must create
-     the `scripts/`, `candidates/`, `data/`, and `.github/workflows/` folders by
-     typing the path when uploading, e.g. `scripts/gather.py`.)
 
-2. **Allow Actions to write to the repo.**
-   - **Settings → Actions → General → Workflow permissions** →
-     select **Read and write permissions** → **Save**.
 
-3. **(Optional) Turn on AI pre-drafting.** Skip this to keep the pipeline free and
-   fully manual; the collector still works, you just write category/event/impact
-   yourself during approval.
-   - Get an API key at console.anthropic.com (this is a **paid** product, billed
-     per use — pennies per week at this volume).
-   - **Settings → Secrets and variables → Actions → New repository secret**
-     → Name: `ANTHROPIC_API_KEY` → paste the key → **Add secret**.
-   - In `.github/workflows/gather.yml`, change the collect step to:
-     `run: python scripts/gather.py --draft`
+What this is
 
-That's it. The Sunday schedule is now live.
+Rights Left is a week-by-week, source-linked record of what the second Trump administration has done to the rights, institutions, and democratic norms that Americans have spent generations building.
 
----
+It is not commentary. It is not opinion. It is a dated ledger — every entry tied to reporting from established news organizations, court rulings, or government data — so that no one can say they didn't know, and no one can say it didn't happen.
 
-## The weekly routine
+Because the first thing authoritarianism needs is for people to lose track. When the executive orders come daily, when the firings happen at midnight, when the cruelty is the point and the chaos is the strategy, the most dangerous thing that can happen is that we stop counting. That we start treating each violation as isolated. That we forget what last month looked like because this month is worse.
 
-1. **Sunday** — the **Gather** workflow runs on its own. It commits
-   `candidates/<monday>.csv` and opens a GitHub **Issue** titled
-   "Review candidates — week of …". (Watch the **Actions** tab or your email.)
+This project exists so we don't forget.
 
-2. **Approve** — open the CSV (link is in the issue). Click the **pencil/Edit**
-   icon and, for each item worth keeping:
-   - set **category** to one of the 17 the workbook uses (listed at the top of
-     `gather.py`),
-   - write a short **event** (what the administration did) and **impact**
-     (why critics/courts/data call it harmful),
-   - set **include** to `y`.
-   Delete or leave blank the rows you don't want. **Commit** to `main`.
-   *(With `--draft` on, category/event/impact arrive pre-filled — you just check
-   them and set `include`.)*
 
-3. **Ingest** — go to **Actions → Ingest approved entries → Run workflow**
-   (leave the file box blank to use the newest CSV) → **Run**. In under a minute
-   the workbook in `data/` is updated and committed, and the processed CSV is
-   moved to `candidates/processed/`. Download the updated `.xlsx` from the repo.
+Why this matters
 
-To test before Sunday, run **Gather** manually the same way (it has a
-**Run workflow** button too).
+Since January 20, 2025, we have watched an administration:
 
----
 
-## Good to know (honest caveats)
+Pardon the people who attacked the Capitol to keep him in power, then call the insurrection a hoax from the same building they stormed.
+Strip citizenship rights from newborns by executive order — in open defiance of the 14th Amendment — and fight it through every court in the country for 18 months before losing 6-3 at the Supreme Court.
+Fire inspectors general, federal scientists, military leaders, judges, and prosecutors for the crime of doing their jobs honestly.
+Weaponize ICE into a domestic military force that has shot and killed unarmed civilians, detained a five-year-old child, and defied nearly 100 court orders — while the administration blocked Congress from inspecting its own facilities.
+Launch wars without congressional authorization — against Venezuela, against Iran — because one man decided to, and dared the system to stop him.
+Gut Medicaid, SNAP, public education, climate protections, and scientific research to fund tax cuts for the wealthy and the largest immigration enforcement apparatus in American history.
+Attack the free press with FCC license threats, billion-dollar lawsuits, and open threats of imprisonment for journalists who report unfavorable stories.
+Declare himself king — not as a joke, not as a metaphor — and float a third term, the suspension of habeas corpus, and federal control of elections, while stacking the courts and purging anyone who says no.
 
-- **Cron is UTC.** `0 13 * * 0` = Sundays 13:00 UTC. Adjust the number for your
-  timezone. Scheduled runs can be delayed a few minutes under GitHub load.
-- **60-day idle rule.** GitHub disables scheduled workflows in a repo with no
-  activity for 60 days. Since ingest commits every week, normal use keeps it
-  alive; if you ever pause, re-enable it in the Actions tab.
-- **Feeds change.** Outlets occasionally move or retire RSS URLs. A feed that
-  errors is skipped, not fatal. Edit the `FEEDS` dict in `gather.py` to add or
-  swap sources. Reuters dropped public RSS, so it isn't included by default.
-- **The collector is a net, not a judge.** It over-collects on keywords so you
-  don't miss things; pruning is the whole point of the approve step. It only sees
-  what the feeds carry — a story no feed surfaces won't appear.
-- **Duplicates are handled.** Ingest skips any row whose source URL is already in
-  the workbook, so re-running or overlapping weeks won't double-file.
-- **Want the website updated too?** Ask Claude for an xlsx-driven `build_site.py`
-  and uncomment the "Rebuild website" step in `ingest.yml`; each ingest will then
-  regenerate `rights-left.html` from the workbook.
+
+This is not normal. It was never normal. And the fact that it has become familiar does not make it acceptable.
+
+
+How it works
+
+Every week, an automated pipeline collects the past seven days of political news from major outlets — CNN, Politico, NPR, NBC, The Guardian, CBS, ABC, PBS — and filters for actions taken by the Trump administration.
+
+A human reviews every item. No entry makes it into the record without a person reading it, verifying it, categorizing it, and writing the impact line. The machine collects; the human judges. Nothing is fabricated, nothing is invented, nothing is published unreviewed.
+
+Every entry is sourced. Click through to the original reporting and read it yourself. The point of this project is not to tell you what to think — it's to make sure the raw record is preserved, organized, and accessible so you can think clearly.
+
+The record is searchable and filterable across 17 categories — from Democracy & Rule of Law to Immigration, from LGBTQ+ Rights to Executive Power, from Press Freedom to Economy & Tariffs. Browse by week or search for a topic. Every entry carries a sequential file number, a date, and a direct link to the source.
+
+
+The categories we track
+
+CategoryWhat it coversDemocracy & Rule of LawAttacks on courts, pardons for political violence, election interference, defiance of court ordersExecutive PowerPower grabs, military deployments against civilians, independent agency takeovers, Schedule FImmigrationICE operations, deportations, travel bans, detention, DHS enforcement actions, visa restrictionsCivil Rights & MinoritiesDEI rollbacks, racial targeting, historical censorship, discriminatory enforcementEconomy & TariffsTariff wars, shutdowns, GDP impacts, consumer cost increasesCourts & SCOTUSSupreme Court rulings, judicial purges, court-packing signalsPress FreedomJournalist threats, FCC retaliation, media lawsuits, broadcaster coercionForeign Policy & AidUnauthorized wars, USAID destruction, alliance abandonment, UN votesLGBTQ+ RightsTrans athlete bans, federal recognition rollbacks, education exclusionsPublic HealthVaccine policy changes, CDC/NIH purges, anti-science directivesHealthcareMedicaid cuts, SNAP restrictions, ACA sabotageEducationDept. of Education dismantling, university coercion, Title IX rollbacksEnvironment & ScienceParis withdrawal, EPA gutting, research funding cuts, climate denialFederal WorkforceMass firings, loyalty tests, civil service destructionCivil LibertiesSurveillance, protest criminalization, First Amendment violationsWomen's Rights / LGBTQ+Global gag rule expansions, reproductive rights restrictions
+
+
+Who this is for
+
+For citizens who want a single place to see what happened this week without scrolling through five news apps and forgetting what happened three weeks ago.
+
+For journalists and researchers who need a dated, categorized, source-linked timeline they can reference and verify.
+
+For organizers who need to show people — clearly, factually, without exaggeration — what is at stake in the next election.
+
+For the historical record. Because someday, someone will ask what happened during these years. This is one answer. It's incomplete — no single project can capture everything — but it's honest, it's dated, and it's sourced.
+
+
+What this is not
+
+This is not neutral, and it does not pretend to be. It compiles critical, documented reporting on an administration that critics — including federal judges, career military officers, economists, scientists, and members of both parties — have described as the most serious threat to American democratic governance since the Civil War.
+
+The administration and its supporters dispute many of these characterizations. That's their right, and the sources are linked so you can evaluate the evidence yourself.
+
+What this project will never do is fabricate an entry, publish an unsourced claim, or let an algorithm decide what's true. A human reviews every line. The standard is: Did it happen? Is it sourced? Did a court, a government agency, or a credible news organization document it? If yes, it goes in the record. If no, it doesn't.
+
+
+How to read the record
+
+Visit the site and you'll land on the current week's entries. Each card shows:
+
+
+A file number — sequential, matching the master spreadsheet, so entries can be referenced precisely
+A category tag — what area of rights or governance is affected
+The event — a plain description of what the administration did
+The impact — why courts, experts, or affected communities say it's harmful
+A source link — click through to the original reporting
+
+
+Use the archive sidebar to browse any prior week. Use the category filter to isolate a single thread — every Immigration entry, or every Executive Power entry. Use search to find specific topics, names, or keywords.
+
+
+A note on what we owe each other
+
+Democracy is not a spectator sport and it is not a permanent condition. It is a set of agreements between people — that power will be shared, that laws will apply equally, that the government serves the governed and not the other way around — and those agreements only hold for as long as enough people insist on them.
+
+The record shows what happens when that insistence falters. When courts are defied and nothing happens. When inspectors general are fired and nobody reinstates them. When the president calls himself a king and half the country shrugs.
+
+But the record also shows what pushback looks like. Judges who ruled against unlawful orders. Prosecutors who resigned rather than carry out political vendettas. Scientists who spoke up when their agencies were silenced. Millions of people in the streets on a single day, in every state, saying no.
+
+The point of keeping this record is not despair. It's clarity. You can't fix what you can't see, and you can't organize against what you can't name. This project names it, dates it, and sources it — week by week, entry by entry — so that the next time someone says "it's not that bad" or "that didn't really happen" or "both sides are the same," you have the receipts.
+
+Use them.
+
+
+Support the project
+
+Rights Left is independent, unfunded, and maintained by hand. If the record is useful to you, you can support it through the ♥ Support button on the site. Every contribution helps keep it going.
+
+
+Technical details
+
+For maintainers and contributors: see SETUP.md for the full technical documentation — pipeline architecture, repository structure, how the automated weekly collection works, and step-by-step instructions for running the system.
