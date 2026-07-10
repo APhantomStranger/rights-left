@@ -140,6 +140,66 @@
   .fmeta{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;
     text-transform:uppercase;color:var(--paper-faint);margin-top:24px;display:flex;flex-wrap:wrap;gap:6px 20px}
 
+  /* nav links + support button */
+  .mark{cursor:pointer}
+  .nav-links{display:flex;gap:2px}
+  .nav-links button{background:none;border:none;cursor:pointer;font-family:"IBM Plex Mono",monospace;
+    font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--paper-faint);
+    padding:6px 11px;border-radius:3px}
+  .nav-links button:hover{color:var(--paper)}
+  .nav-links button.active{color:var(--paper);background:var(--panel2)}
+  .support-btn{background:var(--blue);color:#fff;border:none;border-radius:4px;padding:8px 15px;
+    font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:12px;text-transform:uppercase;
+    letter-spacing:.08em;cursor:pointer}
+  .support-btn:hover{filter:brightness(1.12)}
+
+  /* about page */
+  .about-hero{position:relative;min-height:max(34vh,300px);display:flex;align-items:flex-end;
+    background-size:cover;background-position:center;background-color:var(--panel2);
+    border-bottom:1px solid var(--line)}
+  .about-hero-overlay{position:absolute;inset:0;background:linear-gradient(180deg,
+    rgba(10,10,11,.42) 0%,rgba(10,10,11,.55) 55%,rgba(10,10,11,.93) 100%)}
+  .about-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+  .about-placeholder span{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--paper-faint);border:1px dashed var(--line-strong);
+    border-radius:4px;padding:11px 18px;background:rgba(10,10,11,.4)}
+  .about-hero-inner{position:relative;padding:0 22px 40px;width:100%;max-width:1180px;margin:0 auto}
+  .about-title{font-family:"Archivo",sans-serif;font-weight:800;text-transform:uppercase;
+    color:var(--paper);line-height:.94;font-size:clamp(2rem,5.5vw,4rem);margin:12px 0 0;letter-spacing:-.01em}
+  .about-body{padding:46px 22px 20px;max-width:820px;margin:0 auto}
+  .about-body .lead{font-size:1.18rem;color:var(--paper);line-height:1.5;margin:0 0 28px;font-weight:500}
+  .about-body h2{font-family:"Archivo",sans-serif;font-weight:800;text-transform:uppercase;
+    color:var(--paper);font-size:1.5rem;letter-spacing:-.01em;margin:34px 0 12px}
+  .about-body p{color:var(--paper-dim);line-height:1.72;margin:0 0 16px}
+  .about-note{margin-top:30px;border-top:1px solid var(--line);padding-top:20px;
+    font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--paper-faint);letter-spacing:.04em}
+
+  /* donate modal */
+  .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.74);backdrop-filter:blur(3px);
+    display:flex;align-items:center;justify-content:center;z-index:100;padding:22px}
+  .modal{position:relative;background:var(--panel);border:1px solid var(--line-strong);border-radius:6px;
+    max-width:440px;width:100%;padding:32px 28px 26px}
+  .modal-close{position:absolute;top:10px;right:14px;background:none;border:none;color:var(--paper-faint);
+    font-size:26px;line-height:1;cursor:pointer;padding:4px}
+  .modal-close:hover{color:var(--paper)}
+  .modal h3{font-family:"Archivo",sans-serif;font-weight:800;text-transform:uppercase;color:var(--paper);
+    font-size:1.4rem;margin:6px 0 12px;letter-spacing:-.01em}
+  .modal p{color:var(--paper-dim);line-height:1.6;margin:0 0 14px;font-size:.95rem}
+  .pay-options{display:grid;gap:12px;margin:22px 0 6px}
+  .pay-btn{display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 18px;
+    border-radius:5px;font-family:"IBM Plex Sans",sans-serif;font-weight:600;font-size:1rem;
+    text-decoration:none;color:#fff}
+  .pay-btn:hover{text-decoration:none;filter:brightness(1.09)}
+  .pay-btn.paypal{background:#0070BA}
+  .pay-btn.venmo{background:#008CFF}
+  .pay-note{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--paper-faint);
+    text-align:center;border:1px dashed var(--line-strong);border-radius:4px;padding:16px}
+  .pay-fine{font-size:11.5px;color:var(--paper-faint);margin:16px 0 0;line-height:1.5}
+
+  @media(max-width:760px){
+    .top .wrap{flex-wrap:wrap;height:auto;padding-top:10px;padding-bottom:10px;gap:8px 12px}
+    .nav-links{order:3}
+  }
   @media(prefers-reduced-motion:reduce){
     .htitle .rl::after{animation:none;transform:scaleX(0)}
     .mark .cursor{animation:none}
@@ -151,6 +211,15 @@
 const DATA = __DATA__;
 const CATS = __CATS__;
 const SITE = __SITE__;
+
+/* =========================================================================
+   EDIT THESE THREE LINES to add your own image and donation links.
+   Leave a value as ""  to hide that feature. Put your links between the quotes.
+   ========================================================================= */
+const ABOUT_IMAGE = "https://imgur.com/a/JluHzh8";   // hosted image for the top of the About page, e.g. "https://i.imgur.com/abc123.jpg"
+const PAYPAL_URL  = "https://www.paypal.com/donate/?hosted_button_id=5KDHNKC6WELKY";   // your PayPal.me link, e.g. "https://paypal.me/YourName"
+const VENMO_URL   = "https://venmo.com/u/Chris-2600";   // your Venmo profile link, e.g. "https://venmo.com/u/YourUsername"
+/* ========================================================================= */
 
 const GLYPH_MAP = {
   "Democracy & Rule of Law":"scales","Executive Power":"building",
@@ -221,7 +290,21 @@ function App(){
   const [idx,setIdx]=React.useState(0);
   const [cat,setCat]=React.useState("All");
   const [q,setQ]=React.useState("");
+  const [view,setView]=React.useState("record");   // "record" | "about"
+  const [showSupport,setShowSupport]=React.useState(false);
   const readerRef=React.useRef(null);
+
+  // close the support modal on Escape
+  React.useEffect(()=>{
+    if(!showSupport) return;
+    const onKey=e=>{ if(e.key==="Escape") setShowSupport(false); };
+    window.addEventListener("keydown",onKey);
+    return ()=>window.removeEventListener("keydown",onKey);
+  },[showSupport]);
+
+  const hasPay = PAYPAL_URL || VENMO_URL;
+  function goRecord(){ setView("record"); }
+  function goAbout(){ setView("about"); window.scrollTo({top:0,behavior:"smooth"}); }
 
   const counts=DATA.map(w=>w.entries.filter(e=>match(e,cat,q)).length);
   const active=DATA[idx];
@@ -243,18 +326,27 @@ function App(){
 
   return (<React.Fragment>
     <header className="top"><div className="wrap">
-      <div className="mark">RIGHTS<span className="stamp">LEFT</span><span className="cursor"></span></div>
-      <div className="top-tag">The Rights That Have Left of Us Project</div>
+      <div className="mark" onClick={goRecord} role="button" tabIndex={0}
+        onKeyDown={e=>{if(e.key==="Enter"||e.key===" ")goRecord();}}>
+        RIGHTS<span className="stamp">LEFT</span><span className="cursor"></span></div>
+      <nav className="nav-links">
+        <button className={view==="record"?"active":""} onClick={goRecord}>The Record</button>
+        <button className={view==="about"?"active":""} onClick={goAbout}>About</button>
+      </nav>
       <div className="controls">
-        <select value={cat} onChange={e=>setCat(e.target.value)} aria-label="Filter by category">
-          <option value="All">All categories</option>
-          {CATS.map(c=><option key={c} value={c}>{c}</option>)}
-        </select>
-        <input type="search" placeholder="Search…" value={q}
-          onChange={e=>setQ(e.target.value)} aria-label="Search entries"/>
+        {view==="record" && <React.Fragment>
+          <select value={cat} onChange={e=>setCat(e.target.value)} aria-label="Filter by category">
+            <option value="All">All categories</option>
+            {CATS.map(c=><option key={c} value={c}>{c}</option>)}
+          </select>
+          <input type="search" placeholder="Search…" value={q}
+            onChange={e=>setQ(e.target.value)} aria-label="Search entries"/>
+        </React.Fragment>}
+        <button className="support-btn" onClick={()=>setShowSupport(true)}>♥ Support</button>
       </div>
     </div></header>
 
+    {view==="record" && <React.Fragment>
     <section className="hero"><div className="wrap">
       <div className="eyebrow">Latest dispatch · File No. {String(highestFileNo).padStart(3,"0")} · Week of {latest.week}</div>
       <h1 className="htitle">THE <span className="rights">RIGHTS</span><br/>WE HAVE <span className="left">LEFT</span></h1>
@@ -302,6 +394,32 @@ function App(){
         </div>
       </div>
     </div></section>
+    </React.Fragment>}
+
+    {view==="about" && <section className="about">
+      <div className="about-hero" style={ABOUT_IMAGE?{backgroundImage:'url("'+ABOUT_IMAGE+'")'}:{}}>
+        <div className="about-hero-overlay"></div>
+        {!ABOUT_IMAGE && <div className="about-placeholder">
+          <span>[ Image slot — add your hosted image URL ]</span>
+        </div>}
+        <div className="about-hero-inner">
+          <div className="eyebrow">The Rights That Have Left of Us Project</div>
+          <h1 className="about-title">About the <span className="rights">Rights</span> <span className="left">Left</span> Project</h1>
+        </div>
+      </div>
+      <div className="about-body">
+        {/* ==== EXAMPLE TEXT — replace everything below with your own story ==== */}
+        <p className="lead">Rights Left is an independent, source-linked record of actions taken by the second Trump administration and their documented effects on rights, institutions, and the rule of law.</p>
+        <h2>How we started</h2>
+        <p>[Example text] This project began as a single spreadsheet — a way to keep track of what was happening week by week without losing the thread. What started as personal note-keeping grew into something worth sharing.</p>
+        <p>[Example text] Replace this section with the story of why you started Rights Left: what you were seeing, what made you decide to document it, and what you hope people take away from having a clear, dated, sourced record they can return to.</p>
+        <h2>What we track</h2>
+        <p>[Example text] Every entry is tied to reporting from established outlets or to court and government records. The goal isn't commentary for its own sake — it's a durable, checkable timeline that anyone can verify for themselves.</p>
+        <div className="about-note">
+          This is a critical record by design; the administration and its supporters dispute many of these characterizations. Every entry links to its source — verify before relying on it.
+        </div>
+      </div>
+    </section>}
 
     <footer><div className="wrap">
       <div className="disc">
@@ -312,6 +430,24 @@ function App(){
         <span>{SITE.range}</span><span>Sources linked per entry</span>
       </div>
     </div></footer>
+
+    {showSupport && <div className="modal-backdrop" onClick={()=>setShowSupport(false)}>
+      <div className="modal" role="dialog" aria-modal="true" aria-label="Support the project"
+        onClick={e=>e.stopPropagation()}>
+        <button className="modal-close" aria-label="Close" onClick={()=>setShowSupport(false)}>×</button>
+        <div className="eyebrow">Support the project</div>
+        <h3>Help keep the record going</h3>
+        <p>Rights Left is independent and takes real time to research, verify, and maintain. If it's useful to you, a contribution of any size helps keep it going. Thank you.</p>
+        <div className="pay-options">
+          {PAYPAL_URL && <a className="pay-btn paypal" href={PAYPAL_URL}
+            target="_blank" rel="noopener noreferrer">Donate with PayPal</a>}
+          {VENMO_URL && <a className="pay-btn venmo" href={VENMO_URL}
+            target="_blank" rel="noopener noreferrer">Send with Venmo</a>}
+          {!hasPay && <div className="pay-note">Payment links coming soon — add your PayPal or Venmo link in the settings at the top of the file.</div>}
+        </div>
+        <p className="pay-fine">Contributions are personal gifts of support, not tax-deductible donations, and are not affiliated with any campaign or organization.</p>
+      </div>
+    </div>}
   </React.Fragment>);
 }
 
