@@ -18,10 +18,7 @@ This project exists so we don't forget.
 
 Why this matters
 
-Since January 20, 2025, we have watched an administration:
-
-
-Pardon the people who attacked the Capitol to keep him in power, then call the insurrection a hoax from the same building they stormed.
+We have seen them Pardon the people who attacked the Capitol to keep him in power, then call the insurrection a hoax from the same building they stormed.
 Strip citizenship rights from newborns by executive order — in open defiance of the 14th Amendment — and fight it through every court in the country for 18 months before losing 6-3 at the Supreme Court.
 Fire inspectors general, federal scientists, military leaders, judges, and prosecutors for the crime of doing their jobs honestly.
 Weaponize ICE into a domestic military force that has shot and killed unarmed civilians, detained a five-year-old child, and defied nearly 100 court orders — while the administration blocked Congress from inspecting its own facilities.
