@@ -1,0 +1,36 @@
+name: Rebuild website
+
+# Standalone site rebuild — no approved candidates required.
+# Use this whenever you edit scripts/site_template.html (text, links, images,
+# design tweaks) and want index.html to reflect the change immediately,
+# without waiting for or requiring a weekly ingest.
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: write            # to commit the regenerated index.html
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Rebuild index.html from the current workbook + template
+        run: python scripts/build_site.py --xlsx "data/Trump_Second_Term_Weekly_Tracker.xlsx"
+
+      - name: Commit updated site
+        run: |
+          git config user.name  "rights-left-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add index.html
+          git commit -m "Rebuild site ($(date -u +%Y-%m-%d))" || echo "nothing to commit"
+          git push
