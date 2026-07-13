@@ -10,6 +10,12 @@ the existing workbook, reproducing the exact formatting already in the file:
  - Summary: rebuilt with whole-column COUNTIFs so new weeks/categories are
    always counted (no manual range edits ever needed).
 
+The ONLY requirement to bring a row in is include=y. Every other field
+(week_of, dates, category, event, impact, outlet, srcdesc, url, srcdate) is
+optional — leave any of them blank and the cell is simply left empty in the
+workbook. Fill them in later directly in the spreadsheet whenever you're
+ready; nothing about the pipeline requires them to be complete at ingest time.
+
 Nothing is fabricated here — it only formats and files what you approved.
 Processed CSVs are moved to candidates/processed/ so they can't be ingested twice.
 """
@@ -45,22 +51,27 @@ def last_data_row(ws):
 
 
 def read_approved(path):
-    rows, skipped = [], 0
+    """Return every row marked include=y. No other field is required —
+    category/event/impact/outlet/etc. can be filled in later directly in the
+    workbook. A row with everything blank except include=y still gets a File
+    No. and a placeholder position in the timeline; you edit the cells after."""
+    rows, incomplete = [], 0
     with open(path, newline="", encoding="utf-8") as f:
         for r in csv.DictReader(f):
             if (r.get("include") or "").strip().lower() not in TRUTHY:
                 continue
-            missing = [k for k in ("week_of", "dates", "category", "event",
-                                   "impact", "outlet", "srcdesc")
-                       if not (r.get(k) or "").strip()]
-            if missing:
-                skipped += 1
-                print(f"  ! skipping approved row (missing {', '.join(missing)}): "
-                      f"{(r.get('srcdesc') or '')[:60]}")
-                continue
-            rows.append({k: (r.get(k) or "").strip() for k in r})
-    if skipped:
-        print(f"  {skipped} approved row(s) skipped for missing fields")
+            row = {k: (r.get(k) or "").strip() for k in r}
+            blanks = [k for k in ("week_of", "dates", "category", "event",
+                                  "impact", "outlet", "srcdesc")
+                      if not row.get(k)]
+            if blanks:
+                incomplete += 1
+                print(f"  · included with blank fields ({', '.join(blanks)}): "
+                      f"{(row.get('srcdesc') or row.get('event') or '(no title)')[:60]}")
+            rows.append(row)
+    if incomplete:
+        print(f"  {incomplete} row(s) ingested with some fields left blank — "
+              f"fill those in directly in the workbook whenever you're ready.")
     return rows
 
 
@@ -145,8 +156,9 @@ def main():
             prev_week = row["week_of"]
 
         tr += 1
-        vals = [row["week_of"], row["dates"], row["category"],
-                row["event"], row["impact"], max_ref]
+        vals = [row["week_of"] or None, row["dates"] or None,
+                row["category"] or None, row["event"] or None,
+                row["impact"] or None, max_ref]
         for c, v in enumerate(vals, start=1):
             cell = tl.cell(row=tr, column=c, value=v)
             cell.font = BODY
@@ -156,8 +168,8 @@ def main():
                 cell.fill = PatternFill("solid", start_color=LIGHT)
 
         sr += 1
-        svals = [max_ref, row["outlet"], row["srcdesc"], row["url"],
-                 row["srcdate"]]
+        svals = [max_ref, row["outlet"] or None, row["srcdesc"] or None,
+                 row["url"] or None, row["srcdate"] or None]
         for c, v in enumerate(svals, start=1):
             cell = src.cell(row=sr, column=c, value=v)
             cell.font = BODY
