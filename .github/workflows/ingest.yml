@@ -24,6 +24,16 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Enrich approved entries from their source articles
+        env:
+          # Needs this secret set (Settings → Secrets and variables → Actions).
+          # Without it, this step prints a notice and does nothing — the rest
+          # of the pipeline still works, you just fill fields in by hand.
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          python scripts/enrich.py \
+            ${{ inputs.file != '' && format('--csv {0}', inputs.file) || '' }}
+
       - name: Install LibreOffice (recalculates formula values)
         run: sudo apt-get update && sudo apt-get install -y libreoffice-calc
 
@@ -34,16 +44,13 @@ jobs:
             ${{ inputs.file != '' && format('--csv {0}', inputs.file) || '' }} \
             --recalc
 
-      # OPTIONAL â€” auto-update the website too. Requires an xlsx-driven
-      # build_site.py (ask Claude for it) that reads the workbook and writes
-      # rights-left.html. (changed to index.html) Uncomment once that script is in scripts/.
-      # - name: Rebuild website
-      #   run: python scripts/build_site.py --xlsx "data/Trump_Second_Term_Weekly_Tracker.xlsx"
+      - name: Rebuild website from updated workbook
+        run: python scripts/build_site.py --xlsx "data/Trump_Second_Term_Weekly_Tracker.xlsx"
 
       - name: Commit updated workbook
         run: |
           git config user.name  "rights-left-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add data/ candidates/ index.html 2>/dev/null || git add data/ candidates/
+          git add data/ candidates/ index.html
           git commit -m "Ingest approved entries ($(date -u +%Y-%m-%d))" || echo "nothing to commit"
           git push
