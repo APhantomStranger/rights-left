@@ -1,3 +1,5 @@
 feedparser>=6.0.11
 openpyxl>=3.1.5
-anthropic>=0.40.0   # optional — only needed if you run gather.py with --draft
+anthropic>=0.40.0   # optional — needed for gather.py --draft and for enrich.py
+requests>=2.31.0    # needed for enrich.py (fetches article pages)
+trafilatura>=1.8.0  # needed for enrich.py (extracts article text from HTML)
