@@ -64,17 +64,36 @@ def read_workbook(xlsx_path):
     return entries
 
 
+def _parse_week(week_label):
+    """Parse a 'Week Of' label like 'Jul 13, 2026' into a real date.
+
+    Falls back to datetime.min (sorts to the very end, i.e. oldest) for any
+    label that doesn't match, so a formatting slip in the workbook can't
+    crash the whole site build.
+    """
+    try:
+        return dt.datetime.strptime(week_label, "%b %d, %Y")
+    except ValueError:
+        return dt.datetime.min
+
+
 def group_by_week(entries):
-    """Group entries into week objects, newest first."""
-    groups = []
-    current = None
+    """Group entries into week objects, newest first.
+
+    Entries are merged by week label first — NOT by adjacency in the sheet —
+    so a week gets exactly one group even if rows for it were appended in
+    more than one ingest run (e.g. a few rows approved early, more approved
+    weeks later). The resulting groups are then sorted by the actual parsed
+    'Week Of' date, newest first, so ordering is always correct regardless
+    of what order rows happen to sit in on the Weekly Timeline sheet.
+    """
+    by_week = {}
     for e in entries:
         entry = {k: v for k, v in e.items() if k != "week"}
-        if current is None or current["week"] != e["week"]:
-            current = {"week": e["week"], "entries": []}
-            groups.append(current)
-        current["entries"].append(entry)
-    groups.reverse()  # newest first
+        by_week.setdefault(e["week"], []).append(entry)
+
+    groups = [{"week": w, "entries": es} for w, es in by_week.items()]
+    groups.sort(key=lambda g: _parse_week(g["week"]), reverse=True)
     return groups
 
 
