@@ -9,7 +9,7 @@ Usage:
     python scripts/build_site.py --xlsx data/Trump_Second_Term_Weekly_Tracker.xlsx
 """
 
-import argparse, json, os, datetime as dt
+import argparse, json, os, re, datetime as dt
 from openpyxl import load_workbook
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -77,22 +77,51 @@ def _parse_week(week_label):
         return dt.datetime.min
 
 
+_MONTH_NUM = {m: i + 1 for i, m in enumerate(
+    ["jan", "feb", "mar", "apr", "may", "jun",
+     "jul", "aug", "sep", "oct", "nov", "dec"])}
+
+
+def _entry_date_key(entry, index):
+    """Best-effort sort key for ordering entries within one week, newest first.
+
+    The 'Date(s)' column is free text — 'Aug 20', 'Jul 24-25', 'Feb 11+',
+    even vague values like 'Mid-Feb' — not a clean date, so this is
+    deliberately forgiving: it reads the first day number it can find (or
+    treats 'Mid-' as day 15), and anything it can't confidently read just
+    falls back to its original position instead of raising and breaking
+    the whole site build.
+    """
+    s = entry["date"].strip().lower()
+    m = re.match(r"(mid-)?([a-z]{3})[a-z]*\.?\s*(\d{1,2})?", s)
+    if m and m.group(2) in _MONTH_NUM:
+        month = _MONTH_NUM[m.group(2)]
+        day = int(m.group(3)) if m.group(3) else (15 if m.group(1) else 1)
+        return (1, month, day, -index)
+    return (0, 0, 0, -index)  # unparseable: sorts last, keeps original order
+
+
 def group_by_week(entries):
     """Group entries into week objects, newest first.
 
     Entries are merged by week label first — NOT by adjacency in the sheet —
     so a week gets exactly one group even if rows for it were appended in
     more than one ingest run (e.g. a few rows approved early, more approved
-    weeks later). The resulting groups are then sorted by the actual parsed
-    'Week Of' date, newest first, so ordering is always correct regardless
-    of what order rows happen to sit in on the Weekly Timeline sheet.
+    later). Groups are sorted by the actual parsed 'Week Of' date, newest
+    first; entries *within* each week are likewise sorted newest first by
+    their own 'Date(s)' value, so ordering is always correct regardless of
+    what order rows happen to sit in on the Weekly Timeline sheet.
     """
     by_week = {}
     for e in entries:
         entry = {k: v for k, v in e.items() if k != "week"}
         by_week.setdefault(e["week"], []).append(entry)
 
-    groups = [{"week": w, "entries": es} for w, es in by_week.items()]
+    groups = []
+    for w, es in by_week.items():
+        keyed = sorted(enumerate(es), key=lambda pair: _entry_date_key(pair[1], pair[0]), reverse=True)
+        groups.append({"week": w, "entries": [e for _, e in keyed]})
+
     groups.sort(key=lambda g: _parse_week(g["week"]), reverse=True)
     return groups
 
