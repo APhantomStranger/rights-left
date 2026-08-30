@@ -2,12 +2,12 @@ name: Gather weekly entries
 
 on:
   schedule:
-    # Every Sunday at 13:00 UTC (~8â€“9am US Eastern). Cron is ALWAYS UTC.
+    # Every Sunday at 13:00 UTC (~8–9am US Eastern). Cron is ALWAYS UTC.
     - cron: '0 13 * * 0'
   workflow_dispatch: {}      # also lets you run it manually from the Actions tab
 
 permissions:
-  contents: write            # to commit the candidates CSV
+  contents: write            # to commit the candidates file
   issues: write              # to open the review issue
 
 jobs:
@@ -44,16 +44,15 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh issue create \
-            --title "Review candidates â€” week of ${{ steps.collect.outputs.week }}" \
+            --title "Review candidates — week of ${{ steps.collect.outputs.week }}" \
             --body "$(cat <<'BODY'
-          **${{ steps.collect.outputs.count }} candidate items** were collected for the week of **${{ steps.collect.outputs.week }}**.
+          **${{ steps.collect.outputs.count }} candidate items** were collected for the week of **${{ steps.collect.outputs.week }}**, in a review spreadsheet.
 
           **To approve:**
-          1. Open the file: `${{ steps.collect.outputs.csv }}`
-          2. Click the pencil (Edit) icon on GitHub.
-          3. For each item you want to keep, fill in **category**, **event**, and **impact**, then set **include** to `y`. Delete or leave blank the rows you don't want.
-          4. Commit your edits to `main`.
-          5. Go to the **Actions** tab â†’ **Ingest approved entries** â†’ **Run workflow**. Leave the file box blank to use this week's file.
+          1. Open `${{ steps.collect.outputs.file }}` in this repo and click the ⬇ (download) icon near the top of the file to save it to your computer.
+          2. Open it in Excel. In the **Include?** column, pick `y` from the dropdown on every row you want to keep — the row highlights green so it's easy to see what you've approved. Category / Event / Impact are optional: leave them blank for the automatic enrichment step, or fill them in yourself if you'd rather. Save the file.
+          3. Back on GitHub, open the `candidates` folder → **Add file** → **Upload files** → select your saved file (keep the same filename) → this replaces the original. Commit directly to `main`.
+          4. Go to the **Actions** tab → **Ingest approved entries** → **Run workflow**. Leave the file box blank to use this week's file.
 
           The ingest step appends your approved rows into `data/Trump_Second_Term_Weekly_Tracker.xlsx` in the exact existing format and updates the totals automatically.
           BODY
