@@ -130,6 +130,16 @@ def write_candidates_xlsx(rows, path):
     ws = wb.active
     ws.title = "Candidates"
 
+    # Hidden helper sheet holding the 17 categories, purely as a source for
+    # the Category dropdown below. Excel's inline data-validation list has a
+    # ~255 character limit and the category names together run past that,
+    # so the dropdown has to point at a cell range instead — this sheet is
+    # that range. You'll never need to open it; it's hidden by default.
+    lists_ws = wb.create_sheet("Lists")
+    for i, cat in enumerate(CATEGORIES, start=1):
+        lists_ws.cell(row=i, column=1, value=cat)
+    lists_ws.sheet_state = "hidden"
+
     n = len(REVIEW_COLS)
     for c, (key, label, width) in enumerate(REVIEW_COLS, start=1):
         cell = ws.cell(row=1, column=c, value=label)
@@ -156,6 +166,12 @@ def write_candidates_xlsx(rows, path):
     dv = DataValidation(type="list", formula1='"y,n"', allow_blank=True)
     ws.add_data_validation(dv)
     dv.add(f"A2:A{last_row}")
+
+    cat_col = get_column_letter([k for k, _, _ in REVIEW_COLS].index("category") + 1)
+    dv_cat = DataValidation(
+        type="list", formula1=f"Lists!$A$1:$A${len(CATEGORIES)}", allow_blank=True)
+    ws.add_data_validation(dv_cat)
+    dv_cat.add(f"{cat_col}2:{cat_col}{last_row}")
 
     green = PatternFill("solid", start_color=LIGHT_GREEN)
     ws.conditional_formatting.add(
