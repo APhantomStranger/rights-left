@@ -267,18 +267,17 @@ function Card({e}){
   return (<article className="card">
     <div className="plate">
       <span className="glyph"><Glyph cat={e.cat}/></span>
-      <span className="pcat">{e.cat || "Uncategorized"}</span>
+      <span className="pcat">{e.cat}</span>
       <span className="pmeta">File No. {String(e.n).padStart(3,"0")}<br/>{e.date}</span>
     </div>
     {e.image ? <img src={e.image} alt=""/> : null}
     <div className="cbody">
-      <h3 className="headline">{e.event || "Headline pending"}</h3>
-      <p className="summary">{e.impact || "Summary pending — see source below."}</p>
+      <h3 className="headline">{e.srcdesc}</h3>
       <div className="source">
         <span className="lbl">SOURCE</span>
         <span className="out">{e.outlet}</span>
         {e.url
-          ? <a href={e.url} target="_blank" rel="noopener noreferrer">{e.srcdesc} \u2197</a>
+          ? <a href={e.url} target="_blank" rel="noopener noreferrer">{e.srcdesc}</a>
           : <span className="nolink">{e.srcdesc} — search headline to source</span>}
         <span>· {e.srcdate}</span>
       </div>
@@ -362,7 +361,7 @@ function App(){
           {latest.entries.slice(0,3).map(e=>(
             <li key={e.n}>
               <span className="fn">{String(e.n).padStart(3,"0")}</span>
-              <button onClick={()=>{setCat("All");setQ("");pick(0);}}>{e.event || "Headline pending"}</button>
+              <button onClick={()=>{setCat("All");setQ("");pick(0);}}>{e.srcdesc}</button>
             </li>))}
         </ul>
       </div>
