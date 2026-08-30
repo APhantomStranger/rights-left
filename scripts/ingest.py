@@ -2,8 +2,9 @@
 """
 ingest.py — Stage 2 of the Rights Left pipeline (INGEST).
 
-Reads an approved candidates CSV and appends the rows you marked include=y into
-the existing workbook, reproducing the exact formatting already in the file:
+Reads an approved candidates file (.xlsx, the current format, or a legacy
+.csv) and appends the rows you marked include=y into the existing workbook,
+reproducing the exact formatting already in the file:
  - Weekly Timeline: same Arial 10, wrap, hairline borders, per-week row banding,
    and continuing the File/Ref number sequence.
  - Sources: matching row with a clickable hyperlink.
@@ -17,7 +18,8 @@ workbook. Fill them in later directly in the spreadsheet whenever you're
 ready; nothing about the pipeline requires them to be complete at ingest time.
 
 Nothing is fabricated here — it only formats and files what you approved.
-Processed CSVs are moved to candidates/processed/ so they can't be ingested twice.
+Processed files are moved to candidates/processed/ so they can't be ingested
+twice.
 """
 
 import csv, os, sys, glob, shutil, argparse
@@ -32,6 +34,41 @@ HDR = Font(name="Arial", size=10, bold=True, color="FFFFFF")
 WRAP = Alignment(wrap_text=True, vertical="top")
 THIN = Border(bottom=Side(style="thin", color="BFBFBF"))
 TRUTHY = {"y", "yes", "true", "1", "x"}
+
+# gather.py's xlsx uses friendly column headers (see REVIEW_COLS in gather.py)
+# instead of the raw field names — map them back. Keep in sync if those
+# headers ever change.
+HEADER_TO_FIELD = {
+    "include?": "include", "headline / description": "srcdesc",
+    "date": "srcdate", "link": "url",
+    "category (optional)": "category", "event (optional)": "event",
+    "impact (optional)": "impact", "week of": "week_of", "date(s)": "dates",
+}
+
+
+def _cell_str(ws, row, col):
+    v = ws.cell(row=row, column=col).value
+    return "" if v in (None, "") else str(v).strip()
+
+
+def _read_xlsx_rows(path):
+    """Read a candidates .xlsx into the same list-of-dicts shape
+    csv.DictReader would produce, matching columns by header text (not
+    position) so column order in the sheet doesn't matter."""
+    wb = load_workbook(path, data_only=True)
+    ws = wb.active
+    headers = {}
+    for col in range(1, ws.max_column + 1):
+        v = ws.cell(row=1, column=col).value
+        if v:
+            key = str(v).strip().lower()
+            headers[HEADER_TO_FIELD.get(key, key)] = col
+    rows = []
+    for r in range(2, ws.max_row + 1):
+        row = {name: _cell_str(ws, r, col) for name, col in headers.items()}
+        if any(row.values()):
+            rows.append(row)
+    return rows
 
 
 def is_light(cell):
@@ -51,24 +88,30 @@ def last_data_row(ws):
 
 
 def read_approved(path):
-    """Return every row marked include=y. No other field is required —
-    category/event/impact/outlet/etc. can be filled in later directly in the
-    workbook. A row with everything blank except include=y still gets a File
-    No. and a placeholder position in the timeline; you edit the cells after."""
+    """Return every row marked include=y, from either a .xlsx or .csv
+    candidates file. No other field is required — category/event/impact/
+    outlet/etc. can be filled in later directly in the workbook. A row with
+    everything blank except include=y still gets a File No. and a placeholder
+    position in the timeline; you edit the cells after."""
+    if path.lower().endswith(".xlsx"):
+        raw_rows = _read_xlsx_rows(path)
+    else:
+        with open(path, newline="", encoding="utf-8") as f:
+            raw_rows = list(csv.DictReader(f))
+
     rows, incomplete = [], 0
-    with open(path, newline="", encoding="utf-8") as f:
-        for r in csv.DictReader(f):
-            if (r.get("include") or "").strip().lower() not in TRUTHY:
-                continue
-            row = {k: (r.get(k) or "").strip() for k in r}
-            blanks = [k for k in ("week_of", "dates", "category", "event",
-                                  "impact", "outlet", "srcdesc")
-                      if not row.get(k)]
-            if blanks:
-                incomplete += 1
-                print(f"  · included with blank fields ({', '.join(blanks)}): "
-                      f"{(row.get('srcdesc') or row.get('event') or '(no title)')[:60]}")
-            rows.append(row)
+    for r in raw_rows:
+        if (r.get("include") or "").strip().lower() not in TRUTHY:
+            continue
+        row = {k: (r.get(k) or "").strip() for k in r}
+        blanks = [k for k in ("week_of", "dates", "category", "event",
+                              "impact", "outlet", "srcdesc")
+                  if not row.get(k)]
+        if blanks:
+            incomplete += 1
+            print(f"  · included with blank fields ({', '.join(blanks)}): "
+                  f"{(row.get('srcdesc') or row.get('event') or '(no title)')[:60]}")
+        rows.append(row)
     if incomplete:
         print(f"  {incomplete} row(s) ingested with some fields left blank — "
               f"fill those in directly in the workbook whenever you're ready.")
@@ -102,25 +145,26 @@ def rebuild_summary(wb, ws_time_name, timeline_last):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--xlsx", required=True)
-    ap.add_argument("--csv", help="approved CSV (default: newest in candidates/)")
+    ap.add_argument("--file", help="approved candidates file, .xlsx or .csv (default: newest in candidates/)")
     ap.add_argument("--candir", default="candidates")
     ap.add_argument("--recalc", action="store_true",
                     help="round-trip through LibreOffice to bake formula values")
     args = ap.parse_args()
 
-    csv_path = args.csv
-    if not csv_path:
-        pool = sorted(glob.glob(os.path.join(args.candir, "*.csv")))
+    cand_path = args.file
+    if not cand_path:
+        pool = sorted(glob.glob(os.path.join(args.candir, "*.xlsx")) +
+                      glob.glob(os.path.join(args.candir, "*.csv")))
         if not pool:
-            sys.exit("No candidates CSV found to ingest.")
-        csv_path = pool[-1]
-    print(f"Ingesting: {csv_path}")
+            sys.exit("No candidates file (.xlsx or .csv) found to ingest.")
+        cand_path = pool[-1]
+    print(f"Ingesting: {cand_path}")
 
-    approved = read_approved(csv_path)
+    approved = read_approved(cand_path)
     if not approved:
         print("No rows marked include=y — nothing to ingest.")
         # still archive the file so it isn't reprocessed
-        _archive(csv_path, args.candir)
+        _archive(cand_path, args.candir)
         return
 
     wb = load_workbook(args.xlsx)
@@ -193,16 +237,16 @@ def main():
 
     if args.recalc:
         _recalc(args.xlsx)
-    _archive(csv_path, args.candir)
+    _archive(cand_path, args.candir)
 
 
-def _archive(csv_path, candir):
+def _archive(cand_path, candir):
     done = os.path.join(candir, "processed")
     os.makedirs(done, exist_ok=True)
-    dest = os.path.join(done, os.path.basename(csv_path))
+    dest = os.path.join(done, os.path.basename(cand_path))
     try:
-        shutil.move(csv_path, dest)
-        print(f"Moved {csv_path} -> {dest}")
+        shutil.move(cand_path, dest)
+        print(f"Moved {cand_path} -> {dest}")
     except Exception as ex:
         print(f"  (could not archive CSV: {ex})")
 

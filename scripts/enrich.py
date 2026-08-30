@@ -2,15 +2,15 @@
 """
 enrich.py — optional Stage 1.5 of the Rights Left pipeline (ENRICH).
 
-Runs after you mark rows include=y in the candidates CSV, but BEFORE
-ingest.py appends them into the workbook. For every approved row that's
+Runs after you mark rows include=y in the candidates workbook, but BEFORE
+ingest.py appends them into the tracker. For every approved row that's
 still missing category / event / impact, this script:
 
   1. Fetches the actual article at that row's URL
   2. Extracts the article's main text (skipping nav bars, ads, boilerplate)
   3. Asks Claude to pick one of the 17 categories and write a short
      event + impact line, grounded in what the article actually says
-  4. Saves the result back into the same CSV, in place
+  4. Saves the result back into the same file, in place
 
 Rows that already have category/event/impact filled in are left completely
 untouched — your own wording always wins over the model's. Rows whose
@@ -18,16 +18,21 @@ article can't be fetched (paywall, bot-blocking, dead link, no URL) are
 left blank with a warning printed to the log; you fill those in by hand
 afterward, exactly as ingest.py already allows.
 
+Works on either a .xlsx candidates workbook (the current format — writing
+back only touches the category/event/impact cells, so your Include? dropdown
+and formatting are untouched) or a legacy .csv, detected from the extension.
+
 Requires the ANTHROPIC_API_KEY secret. Without it, this script prints a
 notice and exits cleanly — the rest of the pipeline still works, you just
 fill fields in by hand.
 
 Usage:
-    python scripts/enrich.py --csv candidates/2026-07-13.csv
-    python scripts/enrich.py                 # uses newest CSV in candidates/
+    python scripts/enrich.py --file candidates/2026-08-31.xlsx
+    python scripts/enrich.py                 # uses newest file in candidates/
 """
 
 import argparse, csv, json, os, re, sys, glob, time
+from openpyxl import load_workbook
 
 try:
     import requests
@@ -50,6 +55,16 @@ CATEGORIES = [
 
 FIELDS = ("category", "event", "impact")
 TRUTHY = {"y", "yes", "true", "1", "x"}
+
+# gather.py's xlsx uses friendly column headers (see REVIEW_COLS in gather.py)
+# instead of the raw field names — map them back. Keep in sync if those
+# headers ever change.
+HEADER_TO_FIELD = {
+    "include?": "include", "headline / description": "srcdesc",
+    "date": "srcdate", "link": "url",
+    "category (optional)": "category", "event (optional)": "event",
+    "impact (optional)": "impact", "week of": "week_of", "date(s)": "dates",
+}
 MAX_ARTICLE_CHARS = 6000
 REQUEST_TIMEOUT = 20
 HEADERS = {
@@ -133,9 +148,14 @@ def classify(client, outlet, headline, article_text):
     return extract_json(raw)
 
 
+def _cell_str(ws, row, col):
+    v = ws.cell(row=row, column=col).value
+    return "" if v in (None, "") else str(v).strip()
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--csv", help="Candidates CSV to enrich (default: newest in candidates/)")
+    ap.add_argument("--file", help="Candidates file (.xlsx or .csv) to enrich (default: newest in candidates/)")
     ap.add_argument("--candir", default="candidates")
     args = ap.parse_args()
 
@@ -152,19 +172,38 @@ def main():
         print("anthropic package not installed — skipping enrichment.")
         return
 
-    csv_path = args.csv
-    if not csv_path:
-        pool = sorted(glob.glob(os.path.join(args.candir, "*.csv")))
+    cand_path = args.file
+    if not cand_path:
+        pool = sorted(glob.glob(os.path.join(args.candir, "*.xlsx")) +
+                      glob.glob(os.path.join(args.candir, "*.csv")))
         if not pool:
-            print("No candidates CSV found — nothing to enrich.")
+            print("No candidates file found — nothing to enrich.")
             return
-        csv_path = pool[-1]
-    print(f"Enriching: {csv_path}")
+        cand_path = pool[-1]
+    print(f"Enriching: {cand_path}")
 
-    with open(csv_path, newline="", encoding="utf-8") as f:
-        reader = csv.DictReader(f)
-        fieldnames = reader.fieldnames
-        rows = list(reader)
+    is_xlsx = cand_path.lower().endswith(".xlsx")
+    wb = ws = headers = fieldnames = None
+    if is_xlsx:
+        wb = load_workbook(cand_path)
+        ws = wb.active
+        headers = {}
+        for col in range(1, ws.max_column + 1):
+            v = ws.cell(row=1, column=col).value
+            if v:
+                key = str(v).strip().lower()
+                headers[HEADER_TO_FIELD.get(key, key)] = col
+        rows = []
+        for r in range(2, ws.max_row + 1):
+            row = {name: _cell_str(ws, r, col) for name, col in headers.items()}
+            if any(row.values()):
+                row["_row"] = r
+                rows.append(row)
+    else:
+        with open(cand_path, newline="", encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            fieldnames = reader.fieldnames
+            rows = list(reader)
 
     targets = [r for r in rows if needs_enrichment(r)]
     if not targets:
@@ -207,16 +246,24 @@ def main():
         print(f"     filled in: {cat}")
         time.sleep(0.4)  # gentle pacing between API calls
 
-    with open(csv_path, "w", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=fieldnames)
-        w.writeheader()
-        w.writerows(rows)
+    if is_xlsx:
+        for row in targets:
+            r = row["_row"]
+            ws.cell(row=r, column=headers["category"], value=row["category"] or None)
+            ws.cell(row=r, column=headers["event"], value=row["event"] or None)
+            ws.cell(row=r, column=headers["impact"], value=row["impact"] or None)
+        wb.save(cand_path)
+    else:
+        with open(cand_path, "w", newline="", encoding="utf-8") as f:
+            w = csv.DictWriter(f, fieldnames=fieldnames)
+            w.writeheader()
+            w.writerows(rows)
 
     left_blank = len(targets) - enriched
     print(f"\nEnriched {enriched} row(s)."
           + (f" {left_blank} row(s) still need details filled in by hand."
              if left_blank else "")
-          + f" Saved back to {csv_path}.")
+          + f" Saved back to {cand_path}.")
 
 
 if __name__ == "__main__":

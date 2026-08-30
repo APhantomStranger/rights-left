@@ -4,18 +4,28 @@ gather.py — Stage 1 of the Rights Left pipeline (GATHER).
 
 Runs on a schedule (Sundays). Pulls the past week's political news from a set of
 RSS feeds, keeps items that look like Trump-administration actions, and writes a
-review CSV to  candidates/<monday>.csv  with the columns the Excel workbook needs.
+review workbook to  candidates/<monday>.xlsx  — a formatted Excel sheet with a
+dropdown on the Include? column, so approving is done in Excel rather than by
+hand-editing a raw CSV in the browser.
 
-You then EDIT that CSV (the "approve" step): delete junk rows, fill in
-category / event / impact, and set include = y on the rows you want kept.
-Stage 2 (ingest.py) appends the approved rows into the workbook automatically.
+You then EDIT that workbook (the "approve" step) in Excel: pick "y" from the
+Include? dropdown on every row you want kept (rows marked y highlight green as
+you go). Category / event / impact are optional — leave them for enrich.py, or
+fill them in yourself if you'd rather. Re-upload the edited file to candidates/
+(replacing the original — same filename), then Stage 2 (ingest.py) appends the
+approved rows into the tracker workbook automatically.
 
 Optional: set an ANTHROPIC_API_KEY secret and pass --draft to have the model
 pre-fill category / event / impact for you (you still review before ingest).
 Without --draft, no API key is needed and nothing is sent anywhere.
 """
 
-import csv, os, sys, re, argparse, datetime as dt
+import os, sys, re, argparse, datetime as dt
+from openpyxl import Workbook
+from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+from openpyxl.worksheet.datavalidation import DataValidation
+from openpyxl.formatting.rule import FormulaRule
+from openpyxl.utils import get_column_letter
 
 try:
     import feedparser
@@ -82,10 +92,77 @@ CATEGORIES = [
     "Public Health", "Women's Rights / LGBTQ+",
 ]
 
-COLUMNS = ["include", "week_of", "dates", "category", "event", "impact",
-           "outlet", "srcdesc", "url", "srcdate"]
-
 MAX_CANDIDATES = 60
+
+# ---- Review workbook layout ---------------------------------------------------
+# (row-dict key, column header, column width). Include + Headline lead since
+# those are the two things you actually look at to decide keep-or-skip; the
+# AI-optional fields are grouped together after; week_of/dates trail since
+# they're administrative and rarely need a glance.
+REVIEW_COLS = [
+    ("include",  "Include?",                  10),
+    ("srcdesc",  "Headline / Description",    55),
+    ("outlet",   "Outlet",                    16),
+    ("srcdate",  "Date",                      12),
+    ("url",      "Link",                      40),
+    ("category", "Category (optional)",       26),
+    ("event",    "Event (optional)",          40),
+    ("impact",   "Impact (optional)",         40),
+    ("week_of",  "Week Of",                   14),
+    ("dates",    "Date(s)",                   12),
+]
+
+NAVY, LIGHT_GREEN = "1F3864", "C6E8C6"
+HDR_FONT = Font(name="Arial", size=10, bold=True, color="FFFFFF")
+HDR_FILL = PatternFill("solid", start_color=NAVY)
+BODY = Font(name="Arial", size=10)
+LINK_FONT = Font(name="Arial", size=10, color="0563C1", underline="single")
+WRAP = Alignment(wrap_text=True, vertical="top")
+THIN = Border(bottom=Side(style="thin", color="BFBFBF"))
+
+
+def write_candidates_xlsx(rows, path):
+    """Write the week's candidates as a formatted, easy-to-review workbook:
+    a dropdown on Include?, rows that highlight green once marked y, wrapped
+    text so headlines are readable, a clickable Link column, and a frozen,
+    filterable header row."""
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Candidates"
+
+    n = len(REVIEW_COLS)
+    for c, (key, label, width) in enumerate(REVIEW_COLS, start=1):
+        cell = ws.cell(row=1, column=c, value=label)
+        cell.font = HDR_FONT
+        cell.fill = HDR_FILL
+        ws.column_dimensions[get_column_letter(c)].width = width
+    ws.freeze_panes = "A2"
+    ws.auto_filter.ref = f"A1:{get_column_letter(n)}1"
+
+    url_col = [k for k, _, _ in REVIEW_COLS].index("url") + 1
+    for r, row in enumerate(rows, start=2):
+        for c, (key, label, width) in enumerate(REVIEW_COLS, start=1):
+            cell = ws.cell(row=r, column=c, value=row.get(key) or None)
+            cell.font = BODY
+            cell.alignment = WRAP
+            cell.border = THIN
+        if row.get("url"):
+            link = ws.cell(row=r, column=url_col)
+            link.hyperlink = row["url"]
+            link.font = LINK_FONT
+
+    last_row = max(len(rows) + 1, 2)
+
+    dv = DataValidation(type="list", formula1='"y,n"', allow_blank=True)
+    ws.add_data_validation(dv)
+    dv.add(f"A2:A{last_row}")
+
+    green = PatternFill("solid", start_color=LIGHT_GREEN)
+    ws.conditional_formatting.add(
+        f"A2:{get_column_letter(n)}{last_row}",
+        FormulaRule(formula=['LOWER($A2)="y"'], fill=green))
+
+    wb.save(path)
 
 
 def target_week(today=None):
@@ -199,19 +276,16 @@ def main():
         rows = ai_draft(rows)
 
     os.makedirs(args.outdir, exist_ok=True)
-    fname = f"{monday:%Y-%m-%d}.csv"
+    fname = f"{monday:%Y-%m-%d}.xlsx"
     path = os.path.join(args.outdir, fname)
-    with open(path, "w", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=COLUMNS)
-        w.writeheader()
-        w.writerows(rows)
+    write_candidates_xlsx(rows, path)
     print(f"Wrote {path}")
 
     # expose to the workflow (for the review issue link/name)
     out = os.environ.get("GITHUB_OUTPUT")
     if out:
         with open(out, "a") as f:
-            f.write(f"csv={path}\n")
+            f.write(f"file={path}\n")
             f.write(f"count={len(rows)}\n")
             f.write(f"week={monday:%Y-%m-%d}\n")
 
