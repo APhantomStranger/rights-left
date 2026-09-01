@@ -82,23 +82,43 @@ _MONTH_NUM = {m: i + 1 for i, m in enumerate(
      "jul", "aug", "sep", "oct", "nov", "dec"])}
 
 
-def _entry_date_key(entry, index):
-    """Best-effort sort key for ordering entries within one week, newest first.
-
-    The 'Date(s)' column is free text — 'Aug 20', 'Jul 24-25', 'Feb 11+',
-    even vague values like 'Mid-Feb' — not a clean date, so this is
-    deliberately forgiving: it reads the first day number it can find (or
-    treats 'Mid-' as day 15), and anything it can't confidently read just
-    falls back to its original position instead of raising and breaking
-    the whole site build.
+def _parse_month_day(date_str):
+    """Best-effort (month, day) from the free-text Date(s) column — 'Aug 20',
+    'Jul 24-25', 'Feb 11+', even vague values like 'Mid-Feb'. Returns None
+    for anything it can't confidently read.
     """
-    s = entry["date"].strip().lower()
+    s = date_str.strip().lower()
     m = re.match(r"(mid-)?([a-z]{3})[a-z]*\.?\s*(\d{1,2})?", s)
     if m and m.group(2) in _MONTH_NUM:
         month = _MONTH_NUM[m.group(2)]
         day = int(m.group(3)) if m.group(3) else (15 if m.group(1) else 1)
-        return (1, month, day, -index)
+        return month, day
+    return None
+
+
+def _entry_date_key(entry, index):
+    """Sort key for ordering entries within one week, newest first. See
+    _parse_month_day — anything unparseable falls back to its original
+    position instead of raising and breaking the whole site build.
+    """
+    md = _parse_month_day(entry["date"])
+    if md:
+        return (1, md[0], md[1], -index)
     return (0, 0, 0, -index)  # unparseable: sorts last, keeps original order
+
+
+def _entry_date(entry, week_year):
+    """Best-effort real date for an entry: its own month/day combined with
+    the year from its 'Week Of' label. None if unparseable or invalid
+    (e.g. a typo producing Feb 30).
+    """
+    md = _parse_month_day(entry["date"])
+    if not md:
+        return None
+    try:
+        return dt.date(week_year, md[0], md[1])
+    except ValueError:
+        return None
 
 
 def group_by_week(entries):
@@ -148,6 +168,40 @@ def build_site_json(groups, cats):
     }
 
 
+def compute_stats(entries, today=None):
+    """Category stats for the sidebar: the top 3 categories by entry count
+    over the last 30 days ('trending'), and every category's all-time share
+    ('totals', for the pie chart). Both skip entries still missing a
+    category (not yet enriched) — an 'Uncategorized' slice would describe
+    the pipeline's backlog, not the tracker's actual subject matter,
+    which isn't what either chart is for. Recomputed fresh on every call,
+    so both always reflect whatever's in the workbook as of this build.
+    """
+    today = today or dt.date.today()
+    window_start = today - dt.timedelta(days=30)
+
+    trend_counts, total_counts = {}, {}
+    for e in entries:
+        cat = e["cat"]
+        if not cat:
+            continue
+        total_counts[cat] = total_counts.get(cat, 0) + 1
+
+        parsed_week = _parse_week(e["week"])
+        year = parsed_week.year if parsed_week != dt.datetime.min else today.year
+        edate = _entry_date(e, year)
+        if edate and window_start <= edate <= today:
+            trend_counts[cat] = trend_counts.get(cat, 0) + 1
+
+    trending = sorted(trend_counts.items(), key=lambda kv: kv[1], reverse=True)[:3]
+    totals = sorted(total_counts.items(), key=lambda kv: kv[1], reverse=True)
+
+    return {
+        "trending": [{"category": c, "count": n} for c, n in trending],
+        "totals": [{"category": c, "count": n} for c, n in totals],
+    }
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--xlsx", required=True, help="Path to the master workbook")
@@ -167,20 +221,23 @@ def main():
     groups = group_by_week(entries)
     cats = sorted({e["cat"] for e in entries if e["cat"]})
     site = build_site_json(groups, cats)
+    stats = compute_stats(entries)
 
     # Serialize to JSON, escaping </ for safe embedding in <script>
     data_json = json.dumps(groups, ensure_ascii=False).replace("</", "<\\/")
     cats_json = json.dumps(cats, ensure_ascii=False)
     site_json = json.dumps(site, ensure_ascii=False)
+    stats_json = json.dumps(stats, ensure_ascii=False)
 
     template = open(TEMPLATE_PATH, encoding="utf-8").read()
     html = (template
             .replace("__DATA__", data_json)
             .replace("__CATS__", cats_json)
-            .replace("__SITE__", site_json))
+            .replace("__SITE__", site_json)
+            .replace("__STATS__", stats_json))
 
     # Sanity check
-    for token in ("__DATA__", "__CATS__", "__SITE__"):
+    for token in ("__DATA__", "__CATS__", "__SITE__", "__STATS__"):
         if token in html:
             raise RuntimeError(f"Token {token} was not replaced — template issue")
 

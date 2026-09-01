@@ -79,6 +79,11 @@
   .infile button{all:unset;cursor:pointer;color:var(--paper);line-height:1.35}
   .infile button:hover{color:var(--blue-bright)}
 
+  .newsince{border-top:none;margin-top:26px;padding:18px 20px;border-radius:6px;
+    background:rgba(59,111,246,.08);border:1px solid rgba(59,111,246,.35)}
+  .newsince h4{color:var(--blue-bright)}
+  .newsince-more{margin:10px 0 0;font-size:12.5px;color:var(--paper-faint)}
+
   /* record layout */
   .record{padding:52px 0 20px}
   .rhead{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.16em;
@@ -105,6 +110,21 @@
   .wk .c{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--blue-bright);
     background:rgba(59,111,246,.14);border:1px solid rgba(59,111,246,.3);border-radius:10px;
     padding:1px 8px;flex:none}
+
+  /* trending + category breakdown, in the archive sidebar */
+  .side-block{margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
+  .trend-row{display:flex;align-items:center;gap:8px;padding:5px 14px;font-size:12px}
+  .trend-label{flex:0 0 96px;color:var(--paper-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .trend-track{flex:1;height:6px;background:var(--panel2);border-radius:3px;overflow:hidden}
+  .trend-bar{height:100%;background:var(--blue);border-radius:3px}
+  .trend-count{flex:none;font-family:"IBM Plex Mono",monospace;color:var(--blue-bright);font-size:11px;width:22px;text-align:right}
+  .pie-wrap{padding:6px 14px 4px}
+  .pie{width:100%;max-width:150px;display:block;margin:4px auto 14px}
+  .pie-legend{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+  .pie-legend li{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--paper-dim)}
+  .pie-legend .swatch{width:9px;height:9px;border-radius:2px;flex:none}
+  .pie-legend .pl-name{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pie-legend .pl-pct{flex:none;font-family:"IBM Plex Mono",monospace;color:var(--paper-faint)}
 
   /* reader */
   .wtitle{font-family:"Archivo",sans-serif;font-weight:800;color:var(--paper);
@@ -156,6 +176,8 @@
     font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:12px;text-transform:uppercase;
     letter-spacing:.08em;cursor:pointer}
   .support-btn:hover{filter:brightness(1.12)}
+  .subscribe-btn{background:transparent;border:1px solid var(--line-strong);color:var(--paper)}
+  .subscribe-btn:hover{border-color:var(--blue);filter:none}
 
   /* about page */
   .about-hero{position:relative;min-height:max(34vh,300px);display:flex;align-items:flex-end;
@@ -199,6 +221,13 @@
   .pay-note{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--paper-faint);
     text-align:center;border:1px dashed var(--line-strong);border-radius:4px;padding:16px}
   .pay-fine{font-size:11.5px;color:var(--paper-faint);margin:16px 0 0;line-height:1.5}
+  .subscribe-form{display:flex;gap:10px;margin:22px 0 6px}
+  .subscribe-form input[type=email]{flex:1;min-width:0;background:var(--panel);border:1px solid var(--line-strong);
+    border-radius:5px;padding:0 14px;color:var(--paper);font-family:"IBM Plex Sans",sans-serif;font-size:.95rem}
+  .subscribe-form input[type=email]::placeholder{color:var(--paper-faint)}
+  .subscribe-form input[type=email]:focus{outline:2px solid var(--blue);outline-offset:1px}
+  .subscribe-submit.pay-btn{background:var(--blue);flex:0 0 auto;padding:0 20px}
+  @media(max-width:480px){ .subscribe-form{flex-direction:column} }
 
   @media(max-width:760px){
     .top .wrap{flex-wrap:wrap;height:auto;padding-top:10px;padding-bottom:10px;gap:8px 12px}
@@ -215,6 +244,7 @@
 const DATA = __DATA__;
 const CATS = __CATS__;
 const SITE = __SITE__;
+const STATS = __STATS__;
 
 /* =========================================================================
    EDIT THESE THREE LINES to add your own image and donation links.
@@ -223,6 +253,7 @@ const SITE = __SITE__;
 const ABOUT_IMAGE = "https://i.imgur.com/ijS1D3P.png";   // hosted image for the top of the About page, e.g. "https://i.imgur.com/abc123.jpg"
 const PAYPAL_URL  = "https://www.paypal.com/donate/?hosted_button_id=5KDHNKC6WELKY";   // your PayPal.me link, e.g. "https://paypal.me/YourName"
 const VENMO_URL   = "https://venmo.com/u/Chris-2600";   // your Venmo profile link, e.g. "https://venmo.com/u/YourUsername"
+const BUTTONDOWN_USERNAME = "";   // your Buttondown username (buttondown.com/settings), e.g. "rightsleft" — leave "" to hide the Subscribe button
 /* ========================================================================= */
 
 const GLYPH_MAP = {
@@ -289,21 +320,72 @@ function Card({e}){
   </article>);
 }
 
+function PieChart({data}){
+  const total=data.reduce((s,d)=>s+d.count,0);
+  const r=42,cx=50,cy=50;
+  let angle=-90;   // start at 12 o'clock, slices proceed clockwise
+  const slices=data.map((d,i)=>{
+    const frac=d.count/total;
+    const start=angle, end=angle+frac*360;
+    angle=end;
+    const large=(end-start)>180?1:0;
+    const toXY=(deg)=>{ const rad=deg*Math.PI/180; return [cx+r*Math.cos(rad),cy+r*Math.sin(rad)]; };
+    const [x0,y0]=toXY(start), [x1,y1]=toXY(end);
+    const path=frac>=0.9995
+      ? `M ${cx-r},${cy} A ${r},${r} 0 1,1 ${cx+r-0.01},${cy} A ${r},${r} 0 1,1 ${cx-r},${cy} Z`
+      : `M ${cx},${cy} L ${x0},${y0} A ${r},${r} 0 ${large},1 ${x1},${y1} Z`;
+    return {...d,path,color:`hsl(${Math.round(i*360/data.length)},58%,54%)`};
+  });
+  return (<div className="pie-wrap">
+    <svg viewBox="0 0 100 100" className="pie" role="img" aria-label="Share of entries by category">
+      {slices.map(s=><path key={s.category} d={s.path} fill={s.color}/>)}
+    </svg>
+    <ul className="pie-legend">
+      {slices.map(s=>(
+        <li key={s.category}>
+          <span className="swatch" style={{background:s.color}}/>
+          <span className="pl-name">{s.category}</span>
+          <span className="pl-pct">{Math.round(s.count/total*100)}%</span>
+        </li>))}
+    </ul>
+  </div>);
+}
+
 function App(){
   const [idx,setIdx]=React.useState(0);
   const [cat,setCat]=React.useState("All");
   const [q,setQ]=React.useState("");
   const [view,setView]=React.useState("record");   // "record" | "about"
   const [showSupport,setShowSupport]=React.useState(false);
+  const [showSubscribe,setShowSubscribe]=React.useState(false);
+  const [newSince,setNewSince]=React.useState([]);
   const readerRef=React.useRef(null);
 
-  // close the support modal on Escape
+  // close whichever modal is open on Escape
   React.useEffect(()=>{
-    if(!showSupport) return;
-    const onKey=e=>{ if(e.key==="Escape") setShowSupport(false); };
+    if(!showSupport && !showSubscribe) return;
+    const onKey=e=>{ if(e.key==="Escape"){ setShowSupport(false); setShowSubscribe(false); } };
     window.addEventListener("keydown",onKey);
     return ()=>window.removeEventListener("keydown",onKey);
-  },[showSupport]);
+  },[showSupport,showSubscribe]);
+
+  // "New Events Since Your Last Visit": compares today's highest File No.
+  // against whatever was stored locally on the last visit, then updates
+  // that marker for next time. Runs once per page load. If there's no
+  // prior marker (first-ever visit) it just sets one without showing
+  // anything, so a first-time visitor never sees a "new" list spanning
+  // the entire history of the tracker.
+  React.useEffect(()=>{
+    try{
+      const all=DATA.flatMap(w=>w.entries);
+      const maxN=Math.max(...all.map(e=>e.n));
+      const lastSeen=parseInt(localStorage.getItem("rl_last_seen")||"0",10);
+      if(lastSeen>0){
+        setNewSince(all.filter(e=>e.n>lastSeen).sort((a,b)=>b.n-a.n));
+      }
+      localStorage.setItem("rl_last_seen",String(maxN));
+    }catch(err){ /* localStorage unavailable (private browsing etc.) — skip quietly */ }
+  },[]);
 
   const hasPay = PAYPAL_URL || VENMO_URL;
   function goRecord(){ setView("record"); }
@@ -345,6 +427,7 @@ function App(){
           <input type="search" placeholder="Search…" value={q}
             onChange={e=>setQ(e.target.value)} aria-label="Search entries"/>
         </React.Fragment>}
+        {BUTTONDOWN_USERNAME && <button className="support-btn subscribe-btn" onClick={()=>setShowSubscribe(true)}>✉ Subscribe</button>}
         <button className="support-btn" onClick={()=>setShowSupport(true)}>♥ Support</button>
       </div>
     </div></header>
@@ -359,6 +442,17 @@ function App(){
         <div className="stat"><b>{totalEntries}</b><span>Entries logged</span></div>
         <div className="stat"><b>{totalWeeks}</b><span>Weeks on record</span></div>
       </div>
+      {newSince.length>0 && <div className="infile newsince">
+        <h4>New Events Since Your Last Visit</h4>
+        <ul>
+          {newSince.slice(0,5).map(e=>(
+            <li key={e.n}>
+              <span className="fn">{String(e.n).padStart(3,"0")}</span>
+              <button onClick={()=>{setCat("All");setQ("");pick(DATA.findIndex(w=>w.entries.includes(e)));}}>{e.srcdesc}</button>
+            </li>))}
+        </ul>
+        {newSince.length>5 && <p className="newsince-more">+ {newSince.length-5} more since your last visit</p>}
+      </div>}
       <div className="infile">
         <h4>In This Week's File:</h4>
         <ul>
@@ -386,6 +480,22 @@ function App(){
               <span className="d">{w.week}</span>
               <span className="c">{counts[i]}</span>
             </button>))}
+
+          {STATS.trending.length>0 && <div className="side-block">
+            <div className="archive-h">Trending · last 30 days</div>
+            {STATS.trending.map(t=>(
+              <div key={t.category} className="trend-row">
+                <span className="trend-label">{t.category}</span>
+                <div className="trend-track"><div className="trend-bar"
+                  style={{width:(t.count/STATS.trending[0].count*100)+"%"}}/></div>
+                <span className="trend-count">{t.count}</span>
+              </div>))}
+          </div>}
+
+          {STATS.totals.length>0 && <div className="side-block">
+            <div className="archive-h">All Categories</div>
+            <PieChart data={STATS.totals}/>
+          </div>}
         </nav>
         <div ref={readerRef}>
           <h2 className="wtitle">Week of {active.week}
@@ -449,6 +559,24 @@ function App(){
           {!hasPay && <div className="pay-note">Payment links coming soon — add your PayPal or Venmo link in the settings at the top of the file.</div>}
         </div>
         <p className="pay-fine">Contributions are personal gifts of support, not tax-deductible donations, and are not affiliated with any campaign or organization.</p>
+      </div>
+    </div>}
+
+    {showSubscribe && <div className="modal-backdrop" onClick={()=>setShowSubscribe(false)}>
+      <div className="modal" role="dialog" aria-modal="true" aria-label="Subscribe to the newsletter"
+        onClick={e=>e.stopPropagation()}>
+        <button className="modal-close" aria-label="Close" onClick={()=>setShowSubscribe(false)}>×</button>
+        <div className="eyebrow">Weekly digest</div>
+        <h3>Get the record by email</h3>
+        <p>A short recap of this week's approved entries, once a week. No spam, unsubscribe anytime.</p>
+        {BUTTONDOWN_USERNAME
+          ? <form action={"https://buttondown.com/api/emails/embed-subscribe/"+BUTTONDOWN_USERNAME}
+              method="post" target="_blank" className="subscribe-form">
+              <input type="email" name="email" required placeholder="you@example.com" aria-label="Email address"/>
+              <input type="hidden" value="1" name="embed"/>
+              <button type="submit" className="pay-btn subscribe-submit">Subscribe</button>
+            </form>
+          : <div className="pay-note">Signup coming soon — add your Buttondown username in the settings at the top of the file.</div>}
       </div>
     </div>}
   </React.Fragment>);
