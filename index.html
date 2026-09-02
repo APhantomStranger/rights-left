@@ -2,6 +2,21 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Rights Left — The Rights That Have Left of Us Project</title>
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Rights Left">
+<meta property="og:title" content="Rights Left — The Rights That Have Left of Us Project">
+<meta property="og:description" content="A weekly, source-linked record of actions against rights and institutions under the second Trump administration.">
+<meta property="og:url" content="https://rightsleft.org">
+<meta property="og:image" content="https://rightsleft.org/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Rights Left — The Rights That Have Left of Us Project">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Rights Left — The Rights That Have Left of Us Project">
+<meta name="twitter:description" content="A weekly, source-linked record of actions against rights and institutions under the second Trump administration.">
+<meta name="twitter:image" content="https://rightsleft.org/og-image.png">
+
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -113,7 +128,10 @@
 
   /* trending + category breakdown, in the archive sidebar */
   .side-block{margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
-  .trend-row{display:flex;align-items:center;gap:8px;padding:5px 14px;font-size:12px}
+  .trend-row{all:unset;display:flex;align-items:center;gap:8px;padding:5px 14px;font-size:12px;
+    width:100%;box-sizing:border-box;cursor:pointer;border-radius:4px}
+  .trend-row:hover{background:var(--panel2)}
+  .trend-row:hover .trend-label{color:var(--blue-bright);text-decoration:underline}
   .trend-label{flex:0 0 96px;color:var(--paper-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .trend-track{flex:1;height:6px;background:var(--panel2);border-radius:3px;overflow:hidden}
   .trend-bar{height:100%;background:var(--blue);border-radius:3px}
@@ -121,10 +139,19 @@
   .pie-wrap{padding:6px 14px 4px}
   .pie{width:100%;max-width:150px;display:block;margin:4px auto 14px}
   .pie-legend{list-style:none;margin:0;padding:0;display:grid;gap:6px}
-  .pie-legend li{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--paper-dim)}
+  .pie-legend li{font-size:11.5px;color:var(--paper-dim)}
+  .pie-legend-btn{all:unset;display:flex;align-items:center;gap:8px;width:100%;box-sizing:border-box;
+    cursor:pointer;padding:3px 4px;border-radius:4px}
+  .pie-legend-btn:hover{background:var(--panel2)}
+  .pie-legend-btn:hover .pl-name{color:var(--blue-bright);text-decoration:underline}
   .pie-legend .swatch{width:9px;height:9px;border-radius:2px;flex:none}
-  .pie-legend .pl-name{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pie-legend .pl-name{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:inherit}
   .pie-legend .pl-pct{flex:none;font-family:"IBM Plex Mono",monospace;color:var(--paper-faint)}
+  .pie-slice{cursor:pointer;transition:opacity .12s}
+  .pie-slice:hover{opacity:.78}
+  .clear-link{all:unset;cursor:pointer;color:var(--blue-bright);text-decoration:underline;
+    margin-left:8px;font-size:inherit;font-family:inherit}
+  .clear-link:hover{color:var(--paper)}
 
   /* reader */
   .wtitle{font-family:"Archivo",sans-serif;font-weight:800;color:var(--paper);
@@ -321,7 +348,7 @@ function Card({e}){
   </article>);
 }
 
-function PieChart({data}){
+function PieChart({data,onSelect}){
   const total=data.reduce((s,d)=>s+d.count,0);
   const r=42,cx=50,cy=50;
   let angle=-90;   // start at 12 o'clock, slices proceed clockwise
@@ -339,14 +366,20 @@ function PieChart({data}){
   });
   return (<div className="pie-wrap">
     <svg viewBox="0 0 100 100" className="pie" role="img" aria-label="Share of entries by category">
-      {slices.map(s=><path key={s.category} d={s.path} fill={s.color}/>)}
+      {slices.map(s=>(
+        <path key={s.category} d={s.path} fill={s.color} className="pie-slice"
+          onClick={()=>onSelect(s.category)}>
+          <title>{s.category} — click to see all entries</title>
+        </path>))}
     </svg>
     <ul className="pie-legend">
       {slices.map(s=>(
         <li key={s.category}>
-          <span className="swatch" style={{background:s.color}}/>
-          <span className="pl-name">{s.category}</span>
-          <span className="pl-pct">{Math.round(s.count/total*100)}%</span>
+          <button className="pie-legend-btn" onClick={()=>onSelect(s.category)}>
+            <span className="swatch" style={{background:s.color}}/>
+            <span className="pl-name">{s.category}</span>
+            <span className="pl-pct">{Math.round(s.count/total*100)}%</span>
+          </button>
         </li>))}
     </ul>
   </div>);
@@ -360,6 +393,7 @@ function App(){
   const [showSupport,setShowSupport]=React.useState(false);
   const [showSubscribe,setShowSubscribe]=React.useState(false);
   const [newSince,setNewSince]=React.useState([]);
+  const [catView,setCatView]=React.useState(false);   // true = showing ALL entries for `cat`, across every week
   const readerRef=React.useRef(null);
 
   // close whichever modal is open on Escape
@@ -394,7 +428,9 @@ function App(){
 
   const counts=DATA.map(w=>w.entries.filter(e=>match(e,cat,q)).length);
   const active=DATA[idx];
-  const shown=active.entries.filter(e=>match(e,cat,q));
+  const shown=catView
+    ? DATA.flatMap(w=>w.entries).filter(e=>match(e,cat,q))
+    : active.entries.filter(e=>match(e,cat,q));
   const latest=DATA[0];
   const catCount=new Set(latest.entries.map(e=>e.cat)).size;
 
@@ -405,10 +441,21 @@ function App(){
 
   function pick(i){
     setIdx(i);
+    setCatView(false);
     if(window.innerWidth<=900 && readerRef.current){
       readerRef.current.scrollIntoView({behavior:"smooth",block:"start"});
     }
   }
+
+  // Entry point for clicking a category in Trending or the pie chart: shows
+  // every entry in that category across every week, not just the current one.
+  function viewCategory(c){
+    setCat(c); setQ(""); setCatView(true);
+    if(window.innerWidth<=900 && readerRef.current){
+      readerRef.current.scrollIntoView({behavior:"smooth",block:"start"});
+    }
+  }
+  function clearCatView(){ setCatView(false); setCat("All"); setQ(""); }
 
   return (<React.Fragment>
     <header className="top"><div className="wrap">
@@ -421,7 +468,7 @@ function App(){
       </nav>
       <div className="controls">
         {view==="record" && <React.Fragment>
-          <select value={cat} onChange={e=>setCat(e.target.value)} aria-label="Filter by category">
+          <select value={cat} onChange={e=>{setCat(e.target.value);setCatView(false);}} aria-label="Filter by category">
             <option value="All">All categories</option>
             {CATS.map(c=><option key={c} value={c}>{c}</option>)}
           </select>
@@ -476,35 +523,37 @@ function App(){
           {STATS.trending.length>0 && <div>
             <div className="archive-h">Trending · last 30 days</div>
             {STATS.trending.map(t=>(
-              <div key={t.category} className="trend-row">
+              <button key={t.category} className="trend-row" onClick={()=>viewCategory(t.category)}>
                 <span className="trend-label">{t.category}</span>
                 <div className="trend-track"><div className="trend-bar"
                   style={{width:(t.count/STATS.trending[0].count*100)+"%"}}/></div>
                 <span className="trend-count">{t.count}</span>
-              </div>))}
+              </button>))}
           </div>}
 
           {STATS.totals.length>0 && <div className="side-block">
             <div className="archive-h">All Categories</div>
-            <PieChart data={STATS.totals}/>
+            <PieChart data={STATS.totals} onSelect={viewCategory}/>
           </div>}
 
           <div className="archive-h side-block">Archive · {totalWeeks} weeks</div>
           {DATA.map((w,i)=>(
             <button key={w.week}
-              className={"wk"+(i===idx?" active":"")+(counts[i]===0?" dim":"")}
+              className={"wk"+(!catView && i===idx?" active":"")+(counts[i]===0?" dim":"")}
               onClick={()=>pick(i)}>
               <span className="d">{w.week}</span>
               <span className="c">{counts[i]}</span>
             </button>))}
         </nav>
         <div ref={readerRef}>
-          <h2 className="wtitle">Week of {active.week}
-            <small>{shown.length} {shown.length===1?"entry":"entries"}{cat!=="All"?" · "+cat:""}{q?' · "'+q+'"':""}</small>
+          <h2 className="wtitle">{catView ? cat : "Week of "+active.week}
+            <small>{shown.length} {shown.length===1?"entry":"entries"}{catView?" · all-time":(cat!=="All"?" · "+cat:"")}{q?' · "'+q+'"':""}
+              {catView && <button className="clear-link" onClick={clearCatView}>✕ Back to weekly view</button>}
+            </small>
           </h2>
           {shown.length
             ? <div className="cards">{shown.map(e=><Card key={e.n} e={e}/>)}</div>
-            : <div className="empty">No entries match this filter for this week.<br/>Try another week or clear the filter.</div>}
+            : <div className="empty">{catView ? "No entries match this filter." : "No entries match this filter for this week."}<br/>{catView ? "Try clearing the filter." : "Try another week or clear the filter."}</div>}
         </div>
       </div>
     </div></section>
