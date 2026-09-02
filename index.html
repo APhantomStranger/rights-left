@@ -473,16 +473,7 @@ function App(){
       </div>
       <div className="grid">
         <nav className="archive" aria-label="Weekly archive">
-          <div className="archive-h">Archive · {totalWeeks} weeks</div>
-          {DATA.map((w,i)=>(
-            <button key={w.week}
-              className={"wk"+(i===idx?" active":"")+(counts[i]===0?" dim":"")}
-              onClick={()=>pick(i)}>
-              <span className="d">{w.week}</span>
-              <span className="c">{counts[i]}</span>
-            </button>))}
-
-          {STATS.trending.length>0 && <div className="side-block">
+          {STATS.trending.length>0 && <div>
             <div className="archive-h">Trending · last 30 days</div>
             {STATS.trending.map(t=>(
               <div key={t.category} className="trend-row">
@@ -497,6 +488,15 @@ function App(){
             <div className="archive-h">All Categories</div>
             <PieChart data={STATS.totals}/>
           </div>}
+
+          <div className="archive-h side-block">Archive · {totalWeeks} weeks</div>
+          {DATA.map((w,i)=>(
+            <button key={w.week}
+              className={"wk"+(i===idx?" active":"")+(counts[i]===0?" dim":"")}
+              onClick={()=>pick(i)}>
+              <span className="d">{w.week}</span>
+              <span className="c">{counts[i]}</span>
+            </button>))}
         </nav>
         <div ref={readerRef}>
           <h2 className="wtitle">Week of {active.week}
