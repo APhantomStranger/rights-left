@@ -264,7 +264,7 @@ const GLYPH_MAP = {
   "Women's Rights / LGBTQ+":"heart","Press Freedom":"megaphone",
   "Public Health":"cross","Healthcare":"cross","Environment & Science":"leaf",
   "Education":"book","Foreign Policy & Aid":"globe","Federal Workforce":"briefcase",
-  "Civil Liberties":"shield"
+  "Civil Liberties":"shield","Infrastructure and History":"column"
 };
 const PATHS = {
   scales:"M12 3v18 M5 8h14 M5 8l-2 5h4z M19 8l-2 5h4z M8 21h8",
@@ -279,7 +279,8 @@ const PATHS = {
   globe:"M12 3a9 9 0 100 18 9 9 0 000-18z M3 12h18 M12 3c3 3.2 3 14.8 0 18 M12 3c-3 3.2-3 14.8 0 18",
   briefcase:"M4 8h16v11H4z M9 8V6a2 2 0 012-2h2a2 2 0 012 2v2 M4 13h16",
   shield:"M12 3l7 3v6c0 4-3 7-7 9-4-2-7-5-7-9V6l7-3z",
-  heart:"M12 20s-7-4.4-7-10a3.8 3.8 0 017-2 3.8 3.8 0 017 2c0 5.6-7 10-7 10z"
+  heart:"M12 20s-7-4.4-7-10a3.8 3.8 0 017-2 3.8 3.8 0 017 2c0 5.6-7 10-7 10z",
+  column:"M4 6l8-4 8 4 M5 6h14 M7 6v15 M12 6v15 M17 6v15 M4 21h16"
 };
 function Glyph({cat}){
   const d = PATHS[GLYPH_MAP[cat]||"shield"];
