@@ -45,11 +45,12 @@ except ImportError:
     trafilatura = None  # falls back to a crude tag-strip if unavailable
 
 CATEGORIES = [
-    "Civil Liberties", "Civil Rights & Minorities", "Courts & SCOTUS",
+    "Civil Rights & Minorities", "Courts & SCOTUS",
     "Democracy & Rule of Law", "Economy & Tariffs", "Education",
     "Environment & Science", "Executive Power", "Federal Workforce",
     "Foreign Policy & Aid", "Healthcare", "Immigration",
-    "Immigration / Free Speech", "LGBTQ+ Rights", "Press Freedom",
+    "Immigration / Free Speech", "Infrastructure and History",
+    "LGBTQ+ Rights", "Press Freedom",
     "Public Health", "Women's Rights / LGBTQ+",
 ]
 
