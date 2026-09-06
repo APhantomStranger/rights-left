@@ -1,10 +1,18 @@
 name: Gather weekly entries
 
 on:
-  schedule:
-    # Every Sunday at 13:00 UTC (~8–9am US Eastern). Cron is ALWAYS UTC.
-    - cron: '0 13 * * 0'
-  workflow_dispatch: {}      # also lets you run it manually from the Actions tab
+  # TRIAL: GitHub's own `schedule` cron was landing 36-101 minutes late most
+  # weeks (sometimes not firing at all — see chat from 2026-09-06). Switched
+  # to an external trigger instead: cron-job.org calls the workflow_dispatch
+  # API below at a precise time, using a repo-scoped PAT. GitHub Actions'
+  # scheduler is best-effort by design (their own docs say so); an external
+  # single-purpose scheduler doesn't share that congestion problem.
+  #
+  # TO REVERT: delete the "schedule:" trigger from cron-job.org (or just let
+  # the free account lapse), then uncomment the two lines below.
+  #   schedule:
+  #     - cron: '7 13 * * 0'
+  workflow_dispatch: {}      # this is what cron-job.org calls now, same as the manual "Run workflow" button always did
 
 permissions:
   contents: write            # to commit the candidates file
