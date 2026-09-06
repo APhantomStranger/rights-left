@@ -46,12 +46,11 @@ except ImportError:
 
 CATEGORIES = [
     "Civil Rights & Minorities", "Courts & SCOTUS",
-    "Democracy & Rule of Law", "Economy & Tariffs", "Education",
+    "Democracy & Rule of Law", "Economy & Tariffs", "Education", "Elections",
     "Environment & Science", "Executive Power", "Federal Workforce",
-    "Foreign Policy & Aid", "Healthcare", "Immigration",
-    "Immigration / Free Speech", "Infrastructure and History",
-    "LGBTQ+ Rights", "Press Freedom",
-    "Public Health", "Women's Rights / LGBTQ+",
+    "Foreign Policy & Aid", "Free Speech", "Healthcare", "Immigration",
+    "Infrastructure and History", "LGBTQ+ Rights", "National Security",
+    "Press Freedom", "Public Health",
 ]
 
 FIELDS = ("category", "event", "impact")
