@@ -55,12 +55,12 @@ jobs:
           git commit -m "Ingest approved entries ($(date -u +%Y-%m-%d))" || echo "nothing to commit"
           git push
 
-      - name: Draft this week's newsletter
+      - name: Send this week's newsletter
         if: always()
         env:
           # Needs this secret set (Settings → Secrets and variables → Actions).
           # Without it, this step prints a notice and does nothing — everything
-          # else in the pipeline is unaffected either way. Only ever creates a
-          # DRAFT in Buttondown; you review and send it yourself.
+          # else in the pipeline is unaffected either way. SENDS the email live
+          # to every subscriber immediately — no draft, no review step.
           BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
         run: python scripts/newsletter.py --xlsx "data/Trump_Second_Term_Weekly_Tracker.xlsx"
