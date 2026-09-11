@@ -328,6 +328,30 @@ function match(e, cat, q){
   return true;
 }
 
+const MONTHS_SHORT=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function ordinal(n){
+  const j=n%10, k=n%100;
+  if(j===1 && k!==11) return n+"st";
+  if(j===2 && k!==12) return n+"nd";
+  if(j===3 && k!==13) return n+"rd";
+  return n+"th";
+}
+// "Week Of" labels are always a Monday (see gather.py) — expand that single
+// date into the full Monday-through-Sunday range for display. Falls back to
+// the plain label untouched if it ever fails to parse, rather than showing
+// a broken date.
+function formatWeekRange(weekLabel){
+  const start=new Date(weekLabel);
+  if(isNaN(start)) return weekLabel;
+  const end=new Date(start);
+  end.setDate(start.getDate()+6);
+  const startStr=MONTHS_SHORT[start.getMonth()]+" "+ordinal(start.getDate());
+  const endStr=MONTHS_SHORT[end.getMonth()]+" "+ordinal(end.getDate());
+  return start.getFullYear()===end.getFullYear()
+    ? `${startStr} – ${endStr}, ${start.getFullYear()}`
+    : `${startStr}, ${start.getFullYear()} – ${endStr}, ${end.getFullYear()}`;
+}
+
 function Card({e}){
   return (<article className="card">
     <div className="plate">
@@ -484,7 +508,7 @@ function App(){
 
     {view==="record" && <React.Fragment>
     <section className="hero"><div className="wrap">
-      <div className="eyebrow">Latest dispatch · File No. {String(highestFileNo).padStart(3,"0")} · Week of {latest.week}</div>
+      <div className="eyebrow">Latest dispatch · File No. {String(highestFileNo).padStart(3,"0")} · Week of {formatWeekRange(latest.week)}</div>
       <h1 className="htitle">THE <span className="rights">RIGHTS</span><br/>WE HAVE <span className="left">LEFT</span></h1>
       <p className="hsub">The Project to Keep a Ledger of What's Been Done and What's Been Lost</p>
       <p className="hstand">This week: {latest.entries.length} logged {latest.entries.length===1?"action":"actions"} across {catCount} {catCount===1?"category":"categories"}. Browse every prior week in the archive below.</p>
@@ -548,7 +572,7 @@ function App(){
             </button>))}
         </nav>
         <div ref={readerRef}>
-          <h2 className="wtitle">{catView ? cat : "Week of "+active.week}
+          <h2 className="wtitle">{catView ? cat : "Week of "+formatWeekRange(active.week)}
             <small>{shown.length} {shown.length===1?"entry":"entries"}{catView?" · all-time":(cat!=="All"?" · "+cat:"")}{q?' · "'+q+'"':""}
               {catView && <button className="clear-link" onClick={clearCatView}>✕ Back to weekly view</button>}
             </small>
