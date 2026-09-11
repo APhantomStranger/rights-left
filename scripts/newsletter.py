@@ -50,6 +50,10 @@ from build_site import read_workbook, group_by_week  # reuse the site's own logi
 
 BUTTONDOWN_API = "https://api.buttondown.com/v1/emails"
 SITE_URL = "https://rightsleft.org"
+# Same PayPal link as the Support button on the site (site_template.html's
+# PAYPAL_URL constant) — if that ever changes on the site, update it here
+# too, since this script doesn't read the template file.
+PAYPAL_URL = "https://www.paypal.com/donate/?hosted_button_id=5KDHNKC6WELKY"
 
 # Email-safe palette/fonts — hardcoded hex and web-safe font stacks, not the
 # site's CSS variables or Google Fonts, since most email clients support
@@ -98,7 +102,7 @@ def _entry_row(e):
     </td></tr>'''
 
 
-def format_digest(week_label, entries, site_url):
+def format_digest(week_label, entries, site_url, paypal_url):
     """Full HTML email body, styled to evoke the site's identity within
     what email clients actually support (see module docstring). The
     leading HTML comment forces Buttondown to treat this as rich HTML
@@ -107,6 +111,7 @@ def format_digest(week_label, entries, site_url):
     n = len(entries)
     rows = "".join(_entry_row(e) for e in entries)
     return f'''<!-- buttondown-editor-mode: fancy -->
+<meta charset="utf-8">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:{INK};padding:36px 0;">
 <tr><td align="center">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background-color:{INK};">
@@ -129,8 +134,16 @@ def format_digest(week_label, entries, site_url):
   <tr><td style="padding:26px 28px 6px 28px;">
     <a href="{site_url}" style="font-family:{SANS};font-size:14px;font-weight:bold;color:{BLUE_BRIGHT};text-decoration:none;">View the full tracker &rarr;</a>
   </td></tr>
-  <tr><td style="padding:6px 28px 28px 28px;">
+  <tr><td style="padding:6px 28px 24px 28px;">
     <a href="{site_url}" style="font-family:{SANS};font-size:12.5px;color:{PAPER_FAINT};text-decoration:underline;">See the complete record, every entry ever logged</a>
+  </td></tr>
+
+  <tr><td style="padding:22px 28px 30px 28px;border-top:1px solid {LINE};">
+    <table role="presentation" cellpadding="0" cellspacing="0" style="margin:18px 0 0 0;">
+      <tr><td style="background-color:{BLUE};border-radius:4px;">
+        <a href="{paypal_url}" style="display:inline-block;padding:11px 24px;font-family:{SANS};font-size:13px;font-weight:bold;color:#ffffff;text-decoration:none;">&hearts; Support This Project</a>
+      </td></tr>
+    </table>
   </td></tr>
 
 </table>
@@ -157,7 +170,7 @@ def main():
 
     latest = group_by_week(entries)[0]
     subject = f"Rights Left — week of {latest['week']}"
-    body = format_digest(latest["week"], latest["entries"], args.site_url)
+    body = format_digest(latest["week"], latest["entries"], args.site_url, PAYPAL_URL)
 
     try:
         resp = requests.post(
