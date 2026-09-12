@@ -134,16 +134,11 @@ def format_digest(week_label, entries, site_url, paypal_url):
   <tr><td style="padding:26px 28px 6px 28px;">
     <a href="{site_url}" style="font-family:{SANS};font-size:14px;font-weight:bold;color:{BLUE_BRIGHT};text-decoration:none;">View the full tracker &rarr;</a>
   </td></tr>
-  <tr><td style="padding:6px 28px 24px 28px;">
+  <tr><td style="padding:6px 28px 20px 28px;">
     <a href="{site_url}" style="font-family:{SANS};font-size:12.5px;color:{PAPER_FAINT};text-decoration:underline;">See the complete record, every entry ever logged</a>
   </td></tr>
-
-  <tr><td style="padding:22px 28px 30px 28px;border-top:1px solid {LINE};">
-    <table role="presentation" cellpadding="0" cellspacing="0" style="margin:18px 0 0 0;">
-      <tr><td style="background-color:{BLUE};border-radius:4px;">
-        <a href="{paypal_url}" style="display:inline-block;padding:11px 24px;font-family:{SANS};font-size:13px;font-weight:bold;color:#ffffff;text-decoration:none;">&hearts; Support This Project</a>
-      </td></tr>
-    </table>
+  <tr><td style="padding:16px 28px 30px 28px;border-top:1px solid {LINE};">
+    <a href="{paypal_url}" style="font-family:{SANS};font-size:14px;font-weight:bold;color:{BLUE_BRIGHT};text-decoration:none;">Support this project &rarr;</a>
   </td></tr>
 
 </table>
