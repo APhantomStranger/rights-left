@@ -183,6 +183,72 @@
   .empty{border:1px dashed var(--line-strong);border-radius:4px;padding:40px;text-align:center;
     color:var(--paper-faint);font-family:"IBM Plex Mono",monospace;font-size:13px}
 
+  /* entry points to the All Weeks archive */
+  .hero-archive-btn{all:unset;cursor:pointer;align-self:flex-end;margin-bottom:4px;
+    font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.06em;
+    color:var(--blue-bright);border-bottom:1px solid var(--line-strong);padding-bottom:3px}
+  .hero-archive-btn:hover{color:var(--paper);border-color:var(--blue)}
+  .allweeks-link{border-top:2px solid var(--line-strong);color:var(--blue-bright);font-weight:600}
+  .allweeks-link:hover{background:var(--panel2);color:var(--paper)}
+  .allweeks-link .d{color:inherit}
+
+  /* All Weeks archive page */
+  .allweeks{padding:54px 0 80px}
+  .aw-title{font-family:"Archivo",sans-serif;font-weight:800;color:var(--paper);
+    text-transform:uppercase;line-height:1;letter-spacing:-.01em;
+    font-size:clamp(2rem,5vw,3.4rem);margin:14px 0 10px}
+  .aw-sub{color:var(--paper-dim);margin:0 0 26px;max-width:720px}
+  .aw-toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+    padding:16px 0 18px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .aw-toolbar input[type=search]{width:240px;flex:1 1 200px;max-width:340px}
+  .aw-back,.aw-dl{all:unset;cursor:pointer;font-family:"IBM Plex Mono",monospace;font-size:12px;
+    letter-spacing:.06em;padding:8px 14px;border-radius:3px;border:1px solid var(--line-strong);
+    color:var(--paper-dim)}
+  .aw-back:hover{color:var(--paper);border-color:var(--blue)}
+  .aw-dl{margin-left:auto;background:var(--blue);color:#fff;border-color:var(--blue);font-weight:600}
+  .aw-dl:hover{filter:brightness(1.12)}
+  .aw-count{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--paper-faint);
+    margin:16px 0 0;display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+  .aw-jump{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 6px}
+  .aw-jump a{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.06em;
+    color:var(--paper-dim);text-decoration:none;padding:5px 10px;border-radius:3px;
+    border:1px solid var(--line);background:var(--panel)}
+  .aw-jump a:hover{color:var(--paper);border-color:var(--blue);background:var(--panel2)}
+
+  .aw-month{margin-top:42px;scroll-margin-top:96px}
+  .aw-month-h{font-family:"Archivo",sans-serif;font-weight:800;color:var(--paper);
+    text-transform:uppercase;font-size:1.5rem;letter-spacing:.01em;margin:0 0 4px;
+    padding-bottom:10px;border-bottom:2px solid var(--line-strong);
+    display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+  .aw-month-h span{font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:500;
+    letter-spacing:.14em;color:var(--paper-faint);text-transform:uppercase;flex:none}
+  .aw-week{margin-top:22px}
+  .aw-week-h{margin:0 0 10px;display:flex;align-items:baseline;gap:10px}
+  .aw-week-h button{all:unset;cursor:pointer;font-family:"IBM Plex Mono",monospace;
+    font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue-bright)}
+  .aw-week-h button:hover{color:var(--paper);text-decoration:underline}
+  .aw-week-c{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--blue-bright);
+    background:rgba(59,111,246,.14);border:1px solid rgba(59,111,246,.3);border-radius:10px;
+    padding:1px 8px;flex:none}
+  .aw-list{list-style:none;margin:0;padding:0;display:grid;gap:1px;background:var(--line);
+    border:1px solid var(--line);border-radius:4px;overflow:hidden}
+  .aw-list li{display:flex;gap:14px;padding:13px 16px;background:var(--panel);align-items:flex-start}
+  .aw-list li:hover{background:var(--panel2)}
+  .aw-fn{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--paper-faint);
+    flex:none;padding-top:2px;min-width:30px}
+  .aw-body{display:flex;flex-direction:column;gap:5px;min-width:0}
+  .aw-head{color:var(--paper);font-size:15px;line-height:1.4}
+  .aw-meta{display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+    font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--paper-faint)}
+  .aw-cat{color:var(--blue-bright);text-transform:uppercase;letter-spacing:.1em;font-size:10px}
+  .aw-meta a{color:var(--blue-bright);text-decoration:none}
+  .aw-meta a:hover{text-decoration:underline}
+  .aw-foot{margin-top:46px;padding-top:22px;border-top:1px solid var(--line)}
+  @media(max-width:720px){
+    .aw-dl{margin-left:0}
+    .aw-toolbar input[type=search]{max-width:none}
+  }
+
   /* footer */
   footer{border-top:1px solid var(--line);margin-top:60px;padding:40px 0 70px}
   .disc{background:var(--panel);border:1px solid var(--line);border-radius:4px;
@@ -352,6 +418,60 @@ function formatWeekRange(weekLabel){
     : `${startStr}, ${start.getFullYear()} – ${endStr}, ${end.getFullYear()}`;
 }
 
+const MONTHS_FULL=["January","February","March","April","May","June",
+  "July","August","September","October","November","December"];
+// A "Week Of" label is always that week's Monday, so a week that straddles
+// two months is filed under the month it STARTED in. Keeps every week in
+// exactly one place instead of splitting or duplicating it.
+function monthOf(weekLabel){
+  const d=new Date(weekLabel);
+  if(isNaN(d)) return {key:"undated",label:"Undated"};
+  return {
+    key:d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"),
+    label:MONTHS_FULL[d.getMonth()]+" "+d.getFullYear()
+  };
+}
+
+// Download the (currently filtered) archive. Tries for a real .xlsx by
+// lazy-loading SheetJS only on click — so the library costs nothing on page
+// load and is never a dependency for anyone who doesn't use the button. If
+// that fetch fails for any reason, falls back to CSV, which Excel opens
+// natively, so the button always produces a usable file.
+function loadScriptOnce(src){
+  return new Promise((resolve,reject)=>{
+    const s=document.createElement("script");
+    s.src=src; s.onload=resolve; s.onerror=()=>reject(new Error("load failed"));
+    document.head.appendChild(s);
+  });
+}
+function downloadArchive(rows){
+  const header=["File No.","Week Of","Date","Category","Headline","Outlet","Source URL"];
+  const body=rows.map(e=>[e.n,e.week,e.srcdate,e.cat,e.srcdesc,e.outlet,e.url]);
+  const saveCsv=()=>{
+    const esc=v=>'"'+String(v==null?"":v).replace(/"/g,'""')+'"';
+    const csv=[header,...body].map(r=>r.map(esc).join(",")).join("\r\n");
+    // BOM so Excel reads the UTF-8 correctly (curly quotes, dashes, etc.)
+    const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8;"});
+    const a=document.createElement("a");
+    a.href=URL.createObjectURL(blob);
+    a.download="rights-left-archive.csv";
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
+  };
+  const build=()=>{
+    const ws=window.XLSX.utils.aoa_to_sheet([header,...body]);
+    ws["!cols"]=[{wch:9},{wch:15},{wch:13},{wch:26},{wch:72},{wch:16},{wch:52}];
+    ws["!freeze"]={xSplit:"0",ySplit:"1"};
+    const wb=window.XLSX.utils.book_new();
+    window.XLSX.utils.book_append_sheet(wb,ws,"Rights Left");
+    window.XLSX.writeFile(wb,"rights-left-archive.xlsx");
+  };
+  if(window.XLSX){ try{ build(); }catch(err){ saveCsv(); } return; }
+  loadScriptOnce("https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js")
+    .then(()=>{ try{ build(); }catch(err){ saveCsv(); } })
+    .catch(saveCsv);
+}
+
 function Card({e}){
   return (<article className="card">
     <div className="plate">
@@ -415,7 +535,12 @@ function App(){
   const [idx,setIdx]=React.useState(0);
   const [cat,setCat]=React.useState("All");
   const [q,setQ]=React.useState("");
-  const [view,setView]=React.useState("record");   // "record" | "about"
+  const [view,setView]=React.useState("record");   // "record" | "about" | "weeks"
+  // The archive page keeps its OWN search/category state, deliberately separate
+  // from the record view's — so filtering the archive never quietly changes
+  // what you see when you go back to the weekly view, and vice versa.
+  const [aq,setAq]=React.useState("");
+  const [acat,setAcat]=React.useState("All");
   const [showSupport,setShowSupport]=React.useState(false);
   const [showSubscribe,setShowSubscribe]=React.useState(false);
   const [newSince,setNewSince]=React.useState([]);
@@ -451,6 +576,36 @@ function App(){
   const hasPay = PAYPAL_URL || VENMO_URL;
   function goRecord(){ setView("record"); }
   function goAbout(){ setView("about"); window.scrollTo({top:0,behavior:"smooth"}); }
+  function goWeeks(){ setView("weeks"); window.scrollTo({top:0,behavior:"smooth"}); }
+
+  // Archive page: months (newest first) -> weeks (newest first) -> entries.
+  // DATA is already sorted newest-first by build_site.py, so month order and
+  // week order both fall out of that automatically — nothing re-sorts here.
+  // Weeks (and whole months) with no matching entries drop out while filtering.
+  const awMonths=React.useMemo(()=>{
+    const months=[],seen={};
+    DATA.forEach(w=>{
+      const hits=w.entries.filter(e=>match(e,acat,aq));
+      if(!hits.length) return;
+      const m=monthOf(w.week);
+      if(!seen[m.key]){ seen[m.key]={key:m.key,label:m.label,weeks:[],count:0}; months.push(seen[m.key]); }
+      seen[m.key].weeks.push({week:w.week,hits});
+      seen[m.key].count+=hits.length;
+    });
+    return months;
+  },[acat,aq]);
+
+  // Flat rows for the download — same filter, so the file matches what's shown.
+  const awRows=React.useMemo(()=>DATA.flatMap(w=>
+    w.entries.filter(e=>match(e,acat,aq)).map(e=>({...e,week:w.week}))
+  ),[acat,aq]);
+
+  function jumpToWeek(weekLabel){
+    const i=DATA.findIndex(w=>w.week===weekLabel);
+    if(i<0) return;
+    setIdx(i); setCatView(false); setCat("All"); setQ(""); setView("record");
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
 
   const counts=DATA.map(w=>w.entries.filter(e=>match(e,cat,q)).length);
   const active=DATA[idx];
@@ -490,6 +645,7 @@ function App(){
         RIGHTS<span className="stamp">LEFT</span><span className="cursor"></span></div>
       <nav className="nav-links">
         <button className={view==="record"?"active":""} onClick={goRecord}>The Record</button>
+        <button className={view==="weeks"?"active":""} onClick={goWeeks}>All Weeks</button>
         <button className={view==="about"?"active":""} onClick={goAbout}>About</button>
       </nav>
       <div className="controls">
@@ -515,6 +671,7 @@ function App(){
       <div className="hmeta">
         <div className="stat"><b>{totalEntries}</b><span>Entries logged</span></div>
         <div className="stat"><b>{totalWeeks}</b><span>Weeks on record</span></div>
+        <button className="hero-archive-btn" onClick={goWeeks}>View All Weeks →</button>
       </div>
       {newSince.length>0 && <div className="infile newsince">
         <h4>New Events Since Your Last Visit</h4>
@@ -570,6 +727,9 @@ function App(){
               <span className="d">{w.week}</span>
               <span className="c">{counts[i]}</span>
             </button>))}
+          <button className="wk allweeks-link" onClick={goWeeks}>
+            <span className="d">View All Weeks →</span>
+          </button>
         </nav>
         <div ref={readerRef}>
           <h2 className="wtitle">{catView ? cat : "Week of "+formatWeekRange(active.week)}
@@ -584,6 +744,69 @@ function App(){
       </div>
     </div></section>
     </React.Fragment>}
+
+    {view==="weeks" && <section className="allweeks"><div className="wrap">
+      <div className="eyebrow">Complete archive</div>
+      <h1 className="aw-title">All Weeks</h1>
+      <p className="aw-sub">Every week on record, grouped by month — {totalEntries} entries across {totalWeeks} weeks, {SITE.range}.</p>
+
+      <div className="aw-toolbar">
+        <button className="aw-back" onClick={goRecord}>← Back to The Record</button>
+        <select value={acat} onChange={e=>setAcat(e.target.value)} aria-label="Filter the archive by category">
+          <option value="All">All categories</option>
+          {CATS.map(c=><option key={c} value={c}>{c}</option>)}
+        </select>
+        <input type="search" placeholder="Search all weeks…" value={aq}
+          onChange={e=>setAq(e.target.value)} aria-label="Search the archive"/>
+        <button className="aw-dl" onClick={()=>downloadArchive(awRows)}
+          title="Download what's currently shown as a spreadsheet">⤓ Download Excel</button>
+      </div>
+
+      {(aq||acat!=="All") && <div className="aw-count">
+        {awRows.length} matching {awRows.length===1?"entry":"entries"}
+        <button className="clear-link" onClick={()=>{setAq("");setAcat("All");}}>✕ Clear filters</button>
+      </div>}
+
+      {awMonths.length>1 && <nav className="aw-jump" aria-label="Jump to month">
+        {awMonths.map(m=><a key={m.key} href={"#m-"+m.key}>{m.label}</a>)}
+      </nav>}
+
+      {awMonths.map(m=>(
+        <section key={m.key} id={"m-"+m.key} className="aw-month">
+          <h2 className="aw-month-h">{m.label}<span>{m.count} {m.count===1?"entry":"entries"}</span></h2>
+          {m.weeks.map(w=>(
+            <div key={w.week} className="aw-week">
+              <h3 className="aw-week-h">
+                <button onClick={()=>jumpToWeek(w.week)}
+                  title="Open this week in The Record">Week of {formatWeekRange(w.week)}</button>
+                <span className="aw-week-c">{w.hits.length}</span>
+              </h3>
+              <ul className="aw-list">
+                {w.hits.map(e=>(
+                  <li key={e.n}>
+                    <span className="aw-fn">{String(e.n).padStart(3,"0")}</span>
+                    <span className="aw-body">
+                      <span className="aw-head">{e.srcdesc}</span>
+                      <span className="aw-meta">
+                        {e.cat && <span className="aw-cat">{e.cat}</span>}
+                        {e.outlet && <span>{e.outlet}</span>}
+                        <span>{e.srcdate}</span>
+                        {e.url && <a href={e.url} target="_blank" rel="noopener noreferrer">Read the source →</a>}
+                      </span>
+                    </span>
+                  </li>))}
+              </ul>
+            </div>))}
+        </section>))}
+
+      {awMonths.length===0 && <div className="empty">
+        No entries match this search.<br/>Try a different term or clear the filters.
+      </div>}
+
+      <div className="aw-foot">
+        <button className="aw-back" onClick={goRecord}>← Back to The Record</button>
+      </div>
+    </div></section>}
 
     {view==="about" && <section className="about">
       <div className="about-hero" style={ABOUT_IMAGE?{backgroundImage:'url("'+ABOUT_IMAGE+'")'}:{}}>
