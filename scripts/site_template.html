@@ -65,7 +65,7 @@
   select:focus,input:focus{outline:2px solid var(--blue);outline-offset:1px;border-color:var(--blue)}
   /* full subscribe label while there's room for it; short one once there isn't */
   .sub-short{display:none}
-  @media(max-width:1560px){.sub-full{display:none}.sub-short{display:inline}}
+  @media(max-width:1000px){.sub-full{display:none}.sub-short{display:inline}}
   @media(max-width:720px){.top-tag{display:none}.controls{gap:6px}input[type=search]{width:110px}}
 
   /* hero */
@@ -83,7 +83,16 @@
   .hsub{font-size:clamp(1.05rem,2.2vw,1.35rem);color:var(--paper);margin:20px 0 0;
     font-weight:500;line-height:1.4;text-wrap:balance}
   .hstand{color:var(--paper-dim);margin:14px 0 0;text-wrap:pretty}
-  .hmeta{display:flex;flex-wrap:wrap;gap:26px;margin-top:30px}
+  .hmeta{display:flex;flex-wrap:wrap;gap:26px;margin-top:30px;align-items:flex-end}
+  /* category filter + search now live here rather than in the top bar, so they
+     sit on the same line as the stats and leave the nav row to Subscribe/Support */
+  .hero-filters{display:flex;gap:10px;align-items:center;margin-left:auto;margin-bottom:2px}
+  .hero-filters input[type=search]{width:190px}
+  @media(max-width:900px){
+    .hero-filters{margin-left:0;width:100%;flex-wrap:wrap}
+    .hero-filters select{flex:1 1 150px;min-width:0}
+    .hero-filters input[type=search]{flex:1 1 130px;min-width:0;width:auto}
+  }
   .stat{display:flex;flex-direction:column;gap:2px}
   .stat b{font-family:"Archivo",sans-serif;font-weight:800;color:var(--paper);font-size:34px;line-height:1}
   .stat span{font-family:"IBM Plex Mono",monospace;font-size:11px;text-transform:uppercase;
@@ -356,9 +365,7 @@
     .top .wrap{flex-wrap:wrap;height:auto;padding-top:10px;padding-bottom:10px;gap:8px 12px}
     /* controls were overflowing the viewport on phones — let them wrap and
        let the select/search shrink instead of forcing a horizontal scroll */
-    .controls{flex-wrap:wrap;margin-left:0;width:100%}
-    .controls select{flex:1 1 140px;min-width:0}
-    .controls input[type=search]{flex:1 1 120px;min-width:0;width:auto}
+    .controls{flex-wrap:wrap;margin-left:auto}
     .nav-links{order:3}
   }
   @media(prefers-reduced-motion:reduce){
@@ -802,14 +809,6 @@ function App(){
         <button className={view==="about"?"active":""} onClick={goAbout}>About</button>
       </nav>
       <div className="controls">
-        {view==="record" && <React.Fragment>
-          <select value={cat} onChange={e=>{setCat(e.target.value);setCatView(false);}} aria-label="Filter by category">
-            <option value="All">All categories</option>
-            {CATS.map(c=><option key={c} value={c}>{c}</option>)}
-          </select>
-          <input type="search" placeholder="Search…" value={q}
-            onChange={e=>setQ(e.target.value)} aria-label="Search entries"/>
-        </React.Fragment>}
         {BUTTONDOWN_USERNAME && <button className="support-btn subscribe-btn" onClick={()=>setShowSubscribe(true)}>✉ <span className="sub-full">Subscribe for Weekly Email Report</span><span className="sub-short">Subscribe</span></button>}
         <button className="support-btn" onClick={()=>setShowSupport(true)}>♥ Support</button>
       </div>
@@ -825,6 +824,14 @@ function App(){
         <div className="stat"><b>{totalEntries}</b><span>Entries logged</span></div>
         <div className="stat"><b>{totalWeeks}</b><span>Weeks on record</span></div>
         <button className="hero-archive-btn" onClick={goWeeks}>View All Weeks →</button>
+        <div className="hero-filters">
+          <select value={cat} onChange={e=>{setCat(e.target.value);setCatView(false);}} aria-label="Filter by category">
+            <option value="All">All categories</option>
+            {CATS.map(c=><option key={c} value={c}>{c}</option>)}
+          </select>
+          <input type="search" placeholder="Search…" value={q}
+            onChange={e=>setQ(e.target.value)} aria-label="Search entries"/>
+        </div>
       </div>
       {newSince.length>0 && <div className="infile newsince">
         <h4>New Events Since Your Last Visit</h4>
