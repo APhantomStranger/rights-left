@@ -503,14 +503,19 @@ function weekUrl(weekLabel){
 // Note Facebook is the odd one out: its sharer accepts ONLY a url and ignores
 // any text you pass, pulling the headline and image from the page's Open Graph
 // tags instead. So the shared text below applies to the other three.
-const SHARE_TEXT="America's Changelog With Eyes on the Trump Administration";
+const SHARE_BASE="America's Changelog With Eyes on the Trump Administration";
+const SHARE_TAIL="Keeping track of what's been lost in America";
+function shareText(weekLabel){
+  return SHARE_BASE+"\nFor the week of "+formatWeekRange(weekLabel)+"\n"+SHARE_TAIL;
+}
 function shareTargets(weekLabel){
   const url=weekUrl(weekLabel);
+  const text=shareText(weekLabel);
   const u=encodeURIComponent(url);
-  const t=encodeURIComponent(SHARE_TEXT);
+  const t=encodeURIComponent(text);
   return [
     {name:"X",        href:"https://twitter.com/intent/tweet?url="+u+"&text="+t},
-    {name:"Bluesky",  href:"https://bsky.app/intent/compose?text="+encodeURIComponent(SHARE_TEXT+" "+url)},
+    {name:"Bluesky",  href:"https://bsky.app/intent/compose?text="+encodeURIComponent(text+"\n"+url)},
     {name:"Facebook", href:"https://www.facebook.com/sharer/sharer.php?u="+u},
     {name:"Reddit",   href:"https://www.reddit.com/submit?url="+u+"&title="+t},
   ];
@@ -738,27 +743,36 @@ function App(){
     const i=DATA.findIndex(w=>w.week===weekLabel);
     if(i<0) return;
     setIdx(i); setCatView(false); setCat("All"); setQ(""); setView("record");
+    userPickedWeek.current=true;
     window.scrollTo({top:0,behavior:"smooth"});
   }
+
+  // Has the user actively picked a week in this session? Used below to decide
+  // whether the URL should be rewritten. See the effect for the full reason.
+  const userPickedWeek = React.useRef(false);
 
   // Open straight to a shared week if the URL carries one, and keep responding
   // to the back/forward buttons afterwards.
   React.useEffect(()=>{
     const i=weekIndexFromHash();
-    if(i>=0){ setIdx(i); setView("record"); }
+    if(i>=0){ setIdx(i); setView("record"); userPickedWeek.current=true; }
     function onHash(){
       const j=weekIndexFromHash();
-      if(j>=0){ setIdx(j); setView("record"); setCatView(false); }
+      if(j>=0){ setIdx(j); setView("record"); setCatView(false); userPickedWeek.current=true; }
     }
     window.addEventListener("hashchange",onHash);
     return ()=>window.removeEventListener("hashchange",onHash);
   },[]);
 
-  // Keep the address bar pointing at the week being viewed, so copying the URL
-  // out of the browser works as well as the Share button does. replaceState
-  // rather than assigning location.hash: no scroll jump, no history spam.
+  // Keep the address bar in sync with the week being viewed, so copying the URL
+  // out of the browser works as well as the Share button does. But only AFTER
+  // the user actually picks a week — a bare rightsleft.org bookmark should
+  // stay bare so that reopening it always lands on the newest week, rather
+  // than silently getting rewritten to whatever week happened to be showing
+  // when the tab was last open.
   React.useEffect(()=>{
     if(view!=="record" || catView) return;
+    if(!userPickedWeek.current) return;
     const slug=weekSlug(DATA[idx] && DATA[idx].week);
     if(!slug) return;
     const want="#week="+slug;
@@ -783,6 +797,7 @@ function App(){
   function pick(i){
     setIdx(i);
     setCatView(false);
+    userPickedWeek.current=true;
     if(window.innerWidth<=900 && readerRef.current){
       readerRef.current.scrollIntoView({behavior:"smooth",block:"start"});
     }

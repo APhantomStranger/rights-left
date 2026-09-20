@@ -38,7 +38,7 @@ Usage:
     python scripts/newsletter.py --xlsx data/Trump_Second_Term_Weekly_Tracker.xlsx
 """
 
-import argparse, html, os, sys
+import argparse, datetime as dt, html, os, sys
 
 try:
     import requests
@@ -146,6 +146,42 @@ def format_digest(week_label, entries, site_url, paypal_url):
 </table>'''
 
 
+THROTTLE_HOURS = 48  # skip the send if a sent email went out within this window
+
+
+def _last_send_within_hours(key, hours):
+    """Ask Buttondown for the most recent SENT email. Returns True if it went
+    out within the throttle window. Fails OPEN — if the check itself errors
+    for any reason (network, unexpected shape), we fall through to sending
+    rather than silently skipping a legitimate weekly digest. The reverse
+    (fail-closed) would be worse: a Buttondown blip could silently drop
+    subscribers' weekly newsletter."""
+    try:
+        resp = requests.get(
+            BUTTONDOWN_API,
+            headers={"Authorization": f"Token {key}", "X-API-Version": "2026-04-01"},
+            params={"status": "sent", "ordering": "-publish_date"},
+            timeout=20,
+        )
+        if resp.status_code >= 300:
+            print(f"  (throttle check: HTTP {resp.status_code}, proceeding with send)")
+            return False
+        results = (resp.json() or {}).get("results") or []
+        if not results:
+            return False
+        last = results[0].get("publish_date") or results[0].get("modification_date")
+        if not last:
+            return False
+        # ISO 8601 with a Z suffix — normalise to +00:00 for fromisoformat
+        last_dt = dt.datetime.fromisoformat(last.replace("Z", "+00:00"))
+        now = dt.datetime.now(dt.timezone.utc)
+        delta_h = (now - last_dt).total_seconds() / 3600.0
+        return 0 <= delta_h < hours
+    except Exception as ex:
+        print(f"  (throttle check failed: {ex.__class__.__name__}, proceeding with send)")
+        return False
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--xlsx", required=True)
@@ -161,6 +197,11 @@ def main():
     entries = read_workbook(args.xlsx)
     if not entries:
         print("Workbook has no entries — nothing to send.")
+        return
+
+    if _last_send_within_hours(key, THROTTLE_HOURS):
+        print(f"Newsletter throttled: a send went out within the last {THROTTLE_HOURS}h. "
+              f"Skipping this run — the site and workbook update as normal.")
         return
 
     latest = group_by_week(entries)[0]
