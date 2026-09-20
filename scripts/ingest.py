@@ -181,18 +181,54 @@ def main():
         v = tl.cell(row=r, column=6).value
         if isinstance(v, int):
             max_ref = max(max_ref, v)
-    existing_urls = {src.cell(row=r, column=4).value
-                     for r in range(3, src_last + 1)
-                     if src.cell(row=r, column=4).value}
+    # url -> (source_row, timeline_row_via_ref) so we can UPDATE, not just detect
+    existing_urls = {}
+    ref_to_tl_row = {}
+    for r in range(3, tl_last + 1):
+        v = tl.cell(row=r, column=6).value
+        if isinstance(v, int):
+            ref_to_tl_row[v] = r
+    for r in range(3, src_last + 1):
+        u = src.cell(row=r, column=4).value
+        ref = src.cell(row=r, column=1).value
+        if u and isinstance(ref, int) and ref in ref_to_tl_row:
+            existing_urls[u] = (r, ref_to_tl_row[ref])
 
     band = is_light(tl.cell(row=tl_last, column=1))
     prev_week = tl.cell(row=tl_last, column=1).value
 
     added = 0
+    updated = 0
     tr, sr = tl_last, src_last
     for row in approved:
+        # If a row's URL is already in the workbook, treat this run as a
+        # CORRECTION rather than an insert: update the category/event/impact
+        # cells in place, keeping the same File No. and position. This is what
+        # makes "I forgot to fill in categories, let me re-run" work — without
+        # it, the old rows would sit unchanged with their blank fields, since
+        # the second run would just skip them as duplicate URLs. Overwriting
+        # the whole week wholesale would be riskier (any partial re-run loses
+        # the good data), so we specifically only touch the enrichment fields
+        # here — the row itself, its File No., outlet, headline, and URL are
+        # left alone.
         if row.get("url") and row["url"] in existing_urls:
-            print(f"  · duplicate URL, skipping: {row['url']}")
+            src_r, tl_r = existing_urls[row["url"]]
+            changes = []
+            # cols on Weekly Timeline: 1 week_of, 2 dates, 3 category, 4 event, 5 impact, 6 ref#
+            for col, key in ((3, "category"), (4, "event"), (5, "impact")):
+                new_val = row[key] or None
+                old_val = tl.cell(row=tl_r, column=col).value
+                if new_val != old_val:
+                    cell = tl.cell(row=tl_r, column=col, value=new_val)
+                    cell.font = BODY; cell.alignment = WRAP; cell.border = THIN
+                    if is_light(tl.cell(row=tl_r, column=1)):
+                        cell.fill = PatternFill("solid", start_color=LIGHT)
+                    changes.append(key)
+            if changes:
+                updated += 1
+                print(f"  · updated existing entry ({', '.join(changes)}): {row['url']}")
+            else:
+                print(f"  · duplicate URL, no changes needed: {row['url']}")
             continue
         max_ref += 1
         if row["week_of"] != prev_week:
@@ -224,7 +260,7 @@ def main():
             link.hyperlink = row["url"]
             link.font = LINK
         if row.get("url"):
-            existing_urls.add(row["url"])
+            existing_urls[row["url"]] = (sr, tr)
         added += 1
 
     # keep the autofilter covering all rows
@@ -232,8 +268,8 @@ def main():
     rebuild_summary(wb, "Weekly Timeline", tr)
 
     wb.save(args.xlsx)
-    print(f"Appended {added} row(s). Timeline now ends at row {tr}, "
-          f"last File No. {max_ref}.")
+    print(f"Appended {added} row(s), updated {updated} existing row(s). "
+          f"Timeline now ends at row {tr}, last File No. {max_ref}.")
 
     if args.recalc:
         _recalc(args.xlsx)
