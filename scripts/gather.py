@@ -2,11 +2,23 @@
 """
 gather.py — Stage 1 of the Rights Left pipeline (GATHER).
 
-Runs on a schedule (Sundays). Pulls the past week's political news from a set of
-RSS feeds, keeps items that look like Trump-administration actions, and writes a
-review workbook to  candidates/<monday>.xlsx  — a formatted Excel sheet with a
-dropdown on the Include? column, so approving is done in Excel rather than by
-hand-editing a raw CSV in the browser.
+Two modes:
+
+  gather.py --accumulate --pool-dir pool
+      Run every few hours by collect.yml. Pulls ~25 news feeds and saves any
+      relevant stories into a rolling per-week pool (the gather-pool branch).
+      Needed because most feeds only hold the last day or two of stories.
+
+  gather.py --pool-dir pool
+      Run on Sundays by gather.yml. Combines a live pull with the week's pool,
+      adds late stories from the end of last week that missed last Sunday's
+      sheet, drops anything already offered or already in the tracker, and
+      writes a review workbook to  candidates/<monday>.xlsx  — a formatted
+      Excel sheet with a dropdown on the Include? column. If that file already
+      exists, its rows (and your edits) are kept and only new stories added.
+
+You can add stories yourself in the empty rows under the gathered ones; see the
+"How to add your own" tab in the sheet.
 
 You then EDIT that workbook (the "approve" step) in Excel: pick "y" from the
 Include? dropdown on every row you want kept (rows marked y highlight green as
@@ -33,16 +45,38 @@ except ImportError:
     sys.exit("feedparser not installed — run: pip install -r requirements.txt")
 
 # ---- Feeds (edit freely; a feed that errors is skipped, not fatal) -----------
-FEEDS = {
-    "NPR":            "https://feeds.npr.org/1014/rss.xml",
-    "CNN Politics":   "http://rss.cnn.com/rss/cnn_allpolitics.rss",
-    "Politico":       "https://rss.politico.com/politics-news.xml",
-    "NBC News":       "https://feeds.nbcnews.com/nbcnews/public/politics",
-    "The Guardian":   "https://www.theguardian.com/us-news/us-politics/rss",
-    "CBS News":       "https://www.cbsnews.com/latest/rss/politics",
-    "ABC News":       "https://abcnews.go.com/abcnews/politicsheadlines",
-    "PBS NewsHour":   "https://www.pbs.org/newshour/feeds/rss/politics",
-}
+FEEDS = [
+    # (outlet name shown on the site, feed URL). Several outlets have both a
+    # politics feed and a national/US feed: a lot of what this tracker covers
+    # (ICE and police shootings, raids, court fights) runs as national news,
+    # not politics, so politics-only feeds were missing it.
+    # CNN is gone: its public RSS stopped updating in 2023.
+    ("NPR",                 "https://feeds.npr.org/1014/rss.xml"),
+    ("NPR",                 "https://feeds.npr.org/1003/rss.xml"),
+    ("BBC News",            "https://feeds.bbci.co.uk/news/world/us_and_canada/rss.xml"),
+    ("The New York Times",  "https://rss.nytimes.com/services/xml/rss/nyt/Politics.xml"),
+    ("The New York Times",  "https://rss.nytimes.com/services/xml/rss/nyt/US.xml"),
+    ("The Washington Post", "https://feeds.washingtonpost.com/rss/politics"),
+    ("The Washington Post", "https://feeds.washingtonpost.com/rss/national"),
+    ("Politico",            "https://rss.politico.com/politics-news.xml"),
+    ("NBC News",            "https://feeds.nbcnews.com/nbcnews/public/politics"),
+    ("NBC News",            "https://feeds.nbcnews.com/nbcnews/public/news"),
+    ("The Guardian",        "https://www.theguardian.com/us-news/us-politics/rss"),
+    ("The Guardian",        "https://www.theguardian.com/us-news/rss"),
+    ("CBS News",            "https://www.cbsnews.com/latest/rss/politics"),
+    ("CBS News",            "https://www.cbsnews.com/latest/rss/us"),
+    ("ABC News",            "https://abcnews.go.com/abcnews/politicsheadlines"),
+    ("ABC News",            "https://abcnews.go.com/abcnews/usheadlines"),
+    ("PBS NewsHour",        "https://www.pbs.org/newshour/feeds/rss/politics"),
+    ("PBS NewsHour",        "https://www.pbs.org/newshour/feeds/rss/nation"),
+    ("Los Angeles Times",   "https://www.latimes.com/politics/rss2.0.xml"),
+    ("Bloomberg",           "https://feeds.bloomberg.com/politics/news.rss"),
+    ("Axios",               "https://api.axios.com/feed/"),
+    ("The Hill",            "https://thehill.com/homenews/feed/"),
+    ("ProPublica",          "https://www.propublica.org/feeds/propublica/main"),
+    ("The Intercept",       "https://theintercept.com/feed/?rss"),
+    ("Al Jazeera",          "https://www.aljazeera.com/xml/rss/all.xml"),
+]
 
 # ---- Relevance filter: keep items whose title/summary mentions any of these --
 KEYWORDS = [
@@ -53,7 +87,9 @@ KEYWORDS = [
     "insurrection", "national guard",
 
     # --- Immigration, ICE & DHS ---
-    "ice ", "i.c.e.", "immigration", "deport", "deportation",
+    # (ICE itself is matched separately, as a capitalised whole word — see
+    # ICE_RE below. A lowercase "ice " also matched police, justice, office.)
+    "i.c.e.", "immigration", "deport", "deportation",
     "customs enforcement", "immigration enforcement",
     "ice agent", "ice raid", "ice arrest", "ice detention",
     "homeland security", "dhs", "border", "border patrol",
@@ -92,7 +128,40 @@ KEYWORDS = [
     "renamed", "rename", "erase history", "erasing history",
     "rewrite history", "rewriting history", "historical marker",
     "national archives", "smithsonian",
+
+    # --- Law enforcement, force & policing ---
+    "police", "law enforcement", "federal agent", "officer",
+    "shooting", "fatally shot", "shot and killed", "shot and wounded",
+    "shot dead", "use of force", "excessive force", "tear gas",
+    "pepper spray", "body camera", "bodycam", "fbi", "u.s. marshals",
+    "us marshals", "atf", "dea", "arrest", "detain", "custody", "raid",
+    "protester", "crackdown", "consent decree", "civil rights investigation",
 ]
+
+# Whole-word, case-sensitive: catches "ICE agents shot..." without matching
+# "police", "justice", "office", "iced", or a winter-storm "ice".
+ICE_RE = re.compile(r"\bICE\b")
+
+# Keywords only match at the START of a word (so "deport" still catches
+# "deported"), never in the middle of one ("vance" no longer hits "advance").
+_KW_RES = [(k, re.compile(r"(?<![a-z0-9])" + re.escape(k))) for k in KEYWORDS]
+
+# Terms that point straight at the administration or its enforcement arms.
+# They weigh more when ranking, so "Trump's arch moves ahead" outranks a local
+# story that merely mentions a school and a police officer.
+CORE_KEYWORDS = {
+    "trump", "white house", "executive order", "administration", "pardon",
+    "vance", "rfk", "kennedy", "bondi", "patel", "epstein", "hegseth", "noem",
+    "insurrection", "national guard", "i.c.e.", "deport", "deportation",
+    "customs enforcement", "immigration enforcement", "ice agent", "ice raid",
+    "ice arrest", "ice detention", "homeland security", "dhs", "border patrol",
+    "asylum", "birthright", "temporary protected status", "supreme court",
+    "scotus", "doj", "justice department", "tariff", "fcc",
+    "federal communications commission", "censor", "press freedom",
+    "smithsonian", "national archives", "federal agent", "use of force",
+    "excessive force", "fatally shot", "shot and killed", "shot and wounded",
+    "shot dead",
+}
 
 # ---- Semantic concepts (for the OPTIONAL embeddings-based matcher) ------------
 # These are rich, meaning-carrying descriptions of what the tracker covers —
@@ -118,6 +187,7 @@ CONCEPTS = [
     "Attacks on scientific research, public health agencies, environmental protections, vaccines, or the suppression of scientific findings.",
     "Federal action affecting schools, universities, academic freedom, curriculum, book bans, or student funding.",
     "Actions on tariffs, the economy, healthcare, Medicaid, or federal benefits programs that affect ordinary people.",
+    "Police, federal agents, or other law enforcement shoot, injure, arrest, detain, or raid people, or face allegations of misconduct, excessive force, or civil-rights violations.",
 ]
 
 # Similarity threshold: a candidate is kept if its cosine similarity to ANY
@@ -126,17 +196,24 @@ CONCEPTS = [
 # matches. Raise it if too much junk gets in; lower it if real stories slip by.
 SEMANTIC_THRESHOLD = 0.62
 
-# ---- The 17 categories the workbook uses (for the AI drafter / your reference)
+# ---- The categories the workbook uses (for the AI drafter / your reference)
 CATEGORIES = [
     "Civil Rights & Minorities", "Courts & SCOTUS",
     "Democracy & Rule of Law", "Economy & Tariffs", "Education", "Elections",
     "Environment & Science", "Executive Power", "Federal Workforce",
     "Foreign Policy & Aid", "Free Speech", "Healthcare", "Immigration",
-    "Infrastructure and History", "LGBTQ+ Rights", "National Security",
+    "Infrastructure and History", "Law Enforcement", "LGBTQ+ Rights",
+    "National Security",
     "Press Freedom", "Public Health",
 ]
 
-MAX_CANDIDATES = 60
+# Most NEW candidates one weekly sheet will hold. When more than this match,
+# the strongest matches are kept (see score_item), not whichever sorted first.
+MAX_CANDIDATES = 250
+
+# Blank rows under the gathered ones that still get the dropdowns, for
+# stories you add by hand.
+MANUAL_ROWS = 50
 
 # ---- Review workbook layout ---------------------------------------------------
 # (row-dict key, column header, column width). Include + Headline lead since
@@ -165,7 +242,7 @@ WRAP = Alignment(wrap_text=True, vertical="top")
 THIN = Border(bottom=Side(style="thin", color="BFBFBF"))
 
 
-def write_candidates_xlsx(rows, path):
+def write_candidates_xlsx(rows, path, more=()):
     """Write the week's candidates as a formatted, easy-to-review workbook:
     a dropdown on Include?, rows that highlight green once marked y, wrapped
     text so headlines are readable, a clickable Link column, and a frozen,
@@ -205,7 +282,10 @@ def write_candidates_xlsx(rows, path):
             link.hyperlink = row["url"]
             link.font = LINK_FONT
 
-    last_row = max(len(rows) + 1, 2)
+    # Dropdowns and the green highlight run well past the last gathered row,
+    # so any story you add yourself underneath gets the same Include? and
+    # Category dropdowns as the gathered ones.
+    last_row = max(len(rows) + 1, 2) + MANUAL_ROWS
 
     dv = DataValidation(type="list", formula1='"y,n"', allow_blank=True)
     ws.add_data_validation(dv)
@@ -221,6 +301,50 @@ def write_candidates_xlsx(rows, path):
     ws.conditional_formatting.add(
         f"A2:{get_column_letter(n)}{last_row}",
         FormulaRule(formula=['LOWER($A2)="y"'], fill=green))
+
+    # Weaker matches that didn't fit under MAX_CANDIDATES. Nothing is thrown
+    # away silently: to use one, copy its row onto the Candidates tab and
+    # mark it y. Ingest never reads this tab.
+    if more:
+        mws = wb.create_sheet(MORE_TAB)
+        mcols = [c for c in REVIEW_COLS if c[0] in
+                 ("srcdesc", "outlet", "srcdate", "url", "week_of", "dates")]
+        for c, (key, label, width) in enumerate(mcols, start=1):
+            cell = mws.cell(row=1, column=c, value=label)
+            cell.font = HDR_FONT; cell.fill = HDR_FILL
+            mws.column_dimensions[get_column_letter(c)].width = width
+        mws.freeze_panes = "A2"
+        for r, row in enumerate(more, start=2):
+            for c, (key, _, _) in enumerate(mcols, start=1):
+                cell = mws.cell(row=r, column=c, value=row.get(key) or None)
+                cell.font = BODY; cell.alignment = WRAP; cell.border = THIN
+            if row.get("url"):
+                link = mws.cell(row=r, column=[k for k, _, _ in mcols].index("url") + 1)
+                link.hyperlink = row["url"]; link.font = LINK_FONT
+
+    # A short how-to on a second tab. The Candidates tab stays first and
+    # active, which is the one ingest.py reads.
+    how = wb.create_sheet("How to add your own")
+    how.column_dimensions["A"].width = 110
+    lines = [
+        ("Adding a story the gather step missed", True),
+        ("", False),
+        ("1. On the Candidates tab, go to the first empty row under the gathered stories.", False),
+        ("2. Pick y in Include?.", False),
+        ("3. Paste the headline into Headline / Description and the article URL into Link.", False),
+        ("4. Type the article's date in Date (e.g. Sep 20, 2026 — any normal date format works).", False),
+        ("5. Pick a Category if you like. Everything else is optional:", False),
+        ("     · Outlet — filled in from the link if left blank (bbc.com → BBC News, npr.org → NPR, …)", False),
+        ("     · Week Of and Date(s) — worked out from the Date if left blank", False),
+        ("     · Event / Impact — left for the enrich step, or type your own", False),
+        ("", False),
+        ("Ingest treats your rows exactly like gathered ones. A story dated in an earlier", False),
+        ("week lands in that earlier week on the site.", False),
+    ]
+    for i, (text, bold) in enumerate(lines, start=1):
+        c = how.cell(row=i, column=1, value=text)
+        c.font = Font(name="Arial", size=11 if bold else 10, bold=bold)
+    wb.active = 0
 
     wb.save(path)
 
@@ -242,10 +366,28 @@ def entry_date(e):
     return None
 
 
+def score_item(title, summary):
+    """How strongly an item matches the keyword list. 0 = no match.
+    A hit in the headline counts double a hit in the summary; ICE in the
+    headline counts extra, since that's the core of what this tracks."""
+    t, sm = title.lower(), summary.lower()
+    score = 0
+    for k, rx in _KW_RES:
+        w = 2 if k in CORE_KEYWORDS else 1
+        if rx.search(t):
+            score += 2 * w
+        elif rx.search(sm):
+            score += w
+    if ICE_RE.search(title):
+        score += 6
+    elif ICE_RE.search(summary):
+        score += 2
+    return score
+
+
 def keyword_match(title, summary):
-    """The original literal-keyword check — fast, free, always runs."""
-    blob = (title + " " + summary).lower()
-    return any(k in blob for k in KEYWORDS)
+    """The literal-keyword check — fast, free, always runs."""
+    return score_item(title, summary) > 0
 
 
 # --- Optional semantic layer (Voyage embeddings) ------------------------------
@@ -324,47 +466,253 @@ def relevant(title, summary, voyage_key=None):
     return False
 
 
-def collect(monday, start, end, voyage_key=None):
-    seen_url, seen_title, rows = set(), set(), []
+def week_monday(d):
+    return d - dt.timedelta(days=d.weekday())
+
+
+def week_label(d):
+    """'Sep 14, 2026' — the Monday of d's week, in the label format the
+    workbook and site use everywhere."""
+    return week_monday(d).strftime("%b %-d, %Y")
+
+
+def fetch_items(start, end, voyage_key=None, skip_urls=()):
+    """Pull every feed and return matching items dated in [start, end).
+
+    Each item is the candidate-row dict plus a 'score' used only to decide
+    what to keep if a week overflows MAX_CANDIDATES. URLs in skip_urls are
+    not re-checked at all (the rolling pool passes the ones it has already
+    judged, so semantic matching isn't paid for twice)."""
+    seen_url, seen_title, items = set(skip_urls), set(), []
+    rejected = []
     semantic_extra = 0
-    week_label = monday.strftime("%b %-d, %Y")
-    for outlet, url in FEEDS.items():
+    for outlet, url in FEEDS:
         try:
             feed = feedparser.parse(url)
         except Exception as ex:
-            print(f"  ! skipped {outlet}: {ex}", file=sys.stderr)
+            print(f"  ! skipped {outlet} ({url}): {ex}", file=sys.stderr)
             continue
+        if not feed.entries:
+            print(f"  ! {outlet} returned no items ({url})", file=sys.stderr)
         for e in feed.entries:
             d = entry_date(e)
             if not d or not (start <= d < end):
                 continue
             title = re.sub(r"\s+", " ", (e.get("title") or "")).strip()
             summary = re.sub(r"<[^>]+>", " ", e.get("summary", "") or "")
-            if not title:
-                continue
-            kw = keyword_match(title, summary)
-            if not kw:
-                # only reaches the paid API for items the keywords DIDN'T catch
-                if not (voyage_key and semantic_match(title, summary, voyage_key)):
-                    continue
-                semantic_extra += 1
             link = (e.get("link") or "").strip()
             norm = title.lower()
-            if link in seen_url or norm in seen_title:
+            if not title or link in seen_url or norm in seen_title:
                 continue
+            score = score_item(title, summary)
+            if not score:
+                # only reaches the paid API for items the keywords DIDN'T catch
+                if voyage_key and semantic_match(title, summary, voyage_key):
+                    score = 1
+                    semantic_extra += 1
+                else:
+                    rejected.append(link)
+                    seen_url.add(link)
+                    continue
             seen_url.add(link); seen_title.add(norm)
-            rows.append({
-                "include": "", "week_of": week_label,
+            items.append({
+                "include": "", "week_of": week_label(d),
                 "dates": d.strftime("%b %-d"), "category": "",
                 "event": "", "impact": "", "outlet": outlet,
                 "srcdesc": title, "url": link,
                 "srcdate": d.strftime("%b %-d, %Y"),
+                "score": score, "_date": d.isoformat(),
             })
-    rows.sort(key=lambda r: r["srcdate"])
     if voyage_key:
         print(f"  (semantic matching caught {semantic_extra} extra item(s) "
               f"the keywords missed)")
-    return rows[:MAX_CANDIDATES]
+    return items, rejected
+
+
+# ---- Rolling pool -------------------------------------------------------------
+# Most feeds only hold the last day or two of stories (NPR ~27h, PBS ~32h,
+# NYT ~37h, WaPo ~42h, measured Sep 2026). A single Sunday pull therefore
+# never saw most of the week. collect.yml runs `gather.py --accumulate` every
+# few hours and saves what it finds into one JSON file per week on the
+# `gather-pool` branch; Sunday's run reads that pool back in.
+
+def _pool_path(pool_dir, monday):
+    return os.path.join(pool_dir, f"{monday:%Y-%m-%d}.json")
+
+
+def load_pool(pool_dir, monday):
+    import json
+    path = _pool_path(pool_dir, monday)
+    if not pool_dir or not os.path.exists(path):
+        return {"items": {}, "seen": []}
+    try:
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+        data.setdefault("items", {}); data.setdefault("seen", [])
+        return data
+    except Exception as ex:
+        print(f"  ! couldn't read pool {path}: {ex}", file=sys.stderr)
+        return {"items": {}, "seen": []}
+
+
+def save_pool(pool_dir, monday, data):
+    import json
+    os.makedirs(pool_dir, exist_ok=True)
+    with open(_pool_path(pool_dir, monday), "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=1, ensure_ascii=False, sort_keys=True)
+
+
+def accumulate(pool_dir, voyage_key=None, today=None, keep_weeks=6):
+    """Fetch now and add anything new to this week's and last week's pools."""
+    today = today or dt.datetime.now(dt.timezone.utc).date()
+    this_mon = week_monday(today)
+    weeks = [this_mon - dt.timedelta(days=7), this_mon]
+    pools = {w: load_pool(pool_dir, w) for w in weeks}
+    known = set()
+    for data in pools.values():
+        known |= set(data["items"]) | set(data["seen"])
+    items, rejected = fetch_items(weeks[0], this_mon + dt.timedelta(days=7),
+                                  voyage_key, skip_urls=known)
+    added = 0
+    for it in items:
+        w = week_monday(dt.date.fromisoformat(it["_date"]))
+        if w in pools and it["url"] not in pools[w]["items"]:
+            pools[w]["items"][it["url"]] = it
+            pools[w]["seen"].append(it["url"])
+            added += 1
+    # remember rejects too, so they aren't re-judged every few hours
+    for url in rejected:
+        pools[this_mon]["seen"].append(url)
+    for w, data in pools.items():
+        data["seen"] = sorted(set(data["seen"]))
+        save_pool(pool_dir, w, data)
+    # tidy: drop pool files older than keep_weeks
+    cutoff = this_mon - dt.timedelta(weeks=keep_weeks)
+    for name in os.listdir(pool_dir):
+        try:
+            if dt.date.fromisoformat(name[:10]) < cutoff:
+                os.remove(os.path.join(pool_dir, name))
+        except ValueError:
+            pass
+    total = sum(len(d["items"]) for d in pools.values())
+    print(f"Pool: +{added} new item(s); {total} held across "
+          f"{', '.join(f'{w:%b %-d}' for w in weeks)} weeks")
+    return added
+
+
+# ---- What has already been offered for review ---------------------------------
+
+MORE_TAB = "More matches"
+
+
+def read_sheet_rows(path, tab="Candidates"):
+    """Rows of an existing candidates .xlsx/.csv as field dicts (the same
+    header mapping ingest.py uses), so a re-run can keep your edits."""
+    import csv
+    headers = {label.strip().lower(): key for key, label, _ in REVIEW_COLS}
+    if path.lower().endswith(".csv"):
+        if tab != "Candidates":
+            return []
+        with open(path, newline="", encoding="utf-8") as f:
+            return [dict(r) for r in csv.DictReader(f)]
+    from openpyxl import load_workbook
+    wb = load_workbook(path, data_only=True)
+    if tab in wb.sheetnames:
+        ws = wb[tab]
+    elif tab == "Candidates":
+        ws = wb.active
+    else:
+        return []
+    cols = {}
+    for c in range(1, ws.max_column + 1):
+        v = ws.cell(row=1, column=c).value
+        if v and str(v).strip().lower() in headers:
+            cols[headers[str(v).strip().lower()]] = c
+    rows = []
+    for r in range(2, ws.max_row + 1):
+        row = {}
+        for key, c in cols.items():
+            v = ws.cell(row=r, column=c).value
+            if isinstance(v, (dt.datetime, dt.date)):
+                v = v.strftime("%b %-d, %Y")
+            row[key] = "" if v is None else str(v).strip()
+        if any(row.values()):
+            rows.append(row)
+    return rows
+
+
+def delivered_urls(candir, tracker_xlsx):
+    """Every URL already put in front of you: any candidates sheet (pending or
+    processed) plus everything already in the tracker workbook. These are
+    never offered again, so pulling in last week's late stories can't
+    resurface ones you've already seen and passed on."""
+    import glob
+    urls = set()
+    for path in (glob.glob(os.path.join(candir, "*.xlsx")) +
+                 glob.glob(os.path.join(candir, "*.csv")) +
+                 glob.glob(os.path.join(candir, "processed", "*.xlsx")) +
+                 glob.glob(os.path.join(candir, "processed", "*.csv"))):
+        try:
+            urls |= {r.get("url") for r in read_sheet_rows(path) if r.get("url")}
+            urls |= {r.get("url") for r in read_sheet_rows(path, MORE_TAB) if r.get("url")}
+        except Exception as ex:
+            print(f"  ! couldn't read {path}: {ex}", file=sys.stderr)
+    if tracker_xlsx and os.path.exists(tracker_xlsx):
+        from openpyxl import load_workbook
+        wb = load_workbook(tracker_xlsx, read_only=True, data_only=True)
+        if "Sources" in wb.sheetnames:
+            for row in wb["Sources"].iter_rows(min_row=3, values_only=True):
+                if len(row) >= 4 and row[3]:
+                    urls.add(str(row[3]).strip())
+    return urls
+
+
+def collect(monday, start, end, voyage_key=None, pool_dir=None,
+            candir="candidates", tracker_xlsx=None):
+    """This week's new candidates: a live pull plus the rolling pool, for this
+    week AND last week (stories that broke after last Sunday's sheet was
+    made would otherwise fall through the gap). Anything already offered in
+    an earlier sheet or already in the tracker is left out. Returns rows
+    strongest match first; if more than MAX_CANDIDATES match, keeps the
+    strongest."""
+    prev_monday = monday - dt.timedelta(days=7)
+    live, _ = fetch_items(prev_monday, end, voyage_key)
+    merged = {it["url"]: it for it in live}
+    if pool_dir:
+        pooled = 0
+        for w in (prev_monday, monday):
+            for url, it in load_pool(pool_dir, w)["items"].items():
+                if url not in merged:
+                    merged[url] = it
+                    pooled += 1
+        print(f"  (+{pooled} item(s) from the rolling pool that the live "
+              f"pull no longer shows)")
+    done = delivered_urls(candir, tracker_xlsx)
+    fresh = [it for it in merged.values() if it["url"] not in done]
+    # dedupe identical headlines across feeds / pool
+    by_title = {}
+    for it in fresh:
+        k = it["srcdesc"].lower()
+        if k not in by_title or it["score"] > by_title[k]["score"]:
+            by_title[k] = it
+    fresh = list(by_title.values())
+    late = sum(1 for it in fresh if it["_date"] < monday.isoformat())
+    cut = []
+    if len(fresh) > MAX_CANDIDATES:
+        print(f"  {len(fresh)} matched; keeping the {MAX_CANDIDATES} strongest "
+              f"(the rest go on the sheet's More matches tab)")
+        fresh.sort(key=lambda it: (-it["score"], it["_date"]))
+        fresh, cut = fresh[:MAX_CANDIDATES], fresh[MAX_CANDIDATES:]
+    # Strongest matches first, so the top of the sheet is where the likely
+    # approvals are and the tail can be skimmed. The header row has a filter
+    # arrow on every column if you'd rather sort by Date.
+    fresh.sort(key=lambda it: (-it["score"], it["_date"], it["srcdesc"]))
+    if late:
+        print(f"  ({late} late item(s) from the week of "
+              f"{prev_monday:%b %-d} that weren't in last week's sheet)")
+    clean = lambda its: [{k: v for k, v in it.items()
+                          if not k.startswith("_") and k != "score"} for it in its]
+    return clean(fresh), clean(cut)
 
 
 def ai_draft(rows):
@@ -413,25 +761,48 @@ def main():
     ap.add_argument("--draft", action="store_true",
                     help="Use Anthropic API to pre-fill category/event/impact")
     ap.add_argument("--outdir", default="candidates")
+    ap.add_argument("--pool-dir", default="",
+                    help="rolling pool folder (the gather-pool branch checkout)")
+    ap.add_argument("--accumulate", action="store_true",
+                    help="only add today's finds to the rolling pool; no sheet")
+    ap.add_argument("--tracker", default="data/Trump_Second_Term_Weekly_Tracker.xlsx",
+                    help="tracker workbook, used to skip stories already logged")
     args = ap.parse_args()
+
+    voyage_key = os.environ.get("VOYAGE_API_KEY")
+    print("  Semantic matching: " + ("ON (Voyage embeddings)" if voyage_key
+          else "OFF (no VOYAGE_API_KEY) — keyword matching only"))
+
+    if args.accumulate:
+        if not args.pool_dir:
+            sys.exit("--accumulate needs --pool-dir")
+        accumulate(args.pool_dir, voyage_key)
+        return
 
     monday, start, end = target_week()
     print(f"Gathering week of {monday} ({start} .. {end - dt.timedelta(days=1)})")
-    voyage_key = os.environ.get("VOYAGE_API_KEY")
-    if voyage_key:
-        print("  Semantic matching: ON (Voyage embeddings)")
-    else:
-        print("  Semantic matching: OFF (no VOYAGE_API_KEY) — keyword matching only")
-    rows = collect(monday, start, end, voyage_key)
-    print(f"Collected {len(rows)} candidate items")
-    if args.draft:
-        rows = ai_draft(rows)
-
     os.makedirs(args.outdir, exist_ok=True)
-    fname = f"{monday:%Y-%m-%d}.xlsx"
-    path = os.path.join(args.outdir, fname)
-    write_candidates_xlsx(rows, path)
-    print(f"Wrote {path}")
+    path = os.path.join(args.outdir, f"{monday:%Y-%m-%d}.xlsx")
+
+    new_rows, cut_rows = collect(monday, start, end, voyage_key,
+                                 args.pool_dir or None, args.outdir, args.tracker)
+    if args.draft:
+        new_rows = ai_draft(new_rows)
+
+    # Never clobber a sheet that's already there (you may have started
+    # reviewing it, or added your own rows): keep every existing row exactly
+    # as it is and add only what's new underneath.
+    existing = read_sheet_rows(path) if os.path.exists(path) else []
+    held = read_sheet_rows(path, MORE_TAB) if os.path.exists(path) else []
+    if existing:
+        print(f"  {path} already exists — keeping its {len(existing)} row(s) "
+              f"and your edits, adding {len(new_rows)} new")
+    rows = existing + new_rows
+    in_sheet = {r.get("url") for r in rows}
+    more = [r for r in held if r.get("url") not in in_sheet] + cut_rows
+    write_candidates_xlsx(rows, path, more)
+    print(f"Collected {len(new_rows)} new candidate item(s); wrote {path} "
+          f"({len(rows)} rows)")
 
     # expose to the workflow (for the review issue link/name)
     out = os.environ.get("GITHUB_OUTPUT")
@@ -439,6 +810,7 @@ def main():
         with open(out, "a") as f:
             f.write(f"file={path}\n")
             f.write(f"count={len(rows)}\n")
+            f.write(f"new={len(new_rows)}\n")
             f.write(f"week={monday:%Y-%m-%d}\n")
 
 

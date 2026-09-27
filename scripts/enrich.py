@@ -49,7 +49,8 @@ CATEGORIES = [
     "Democracy & Rule of Law", "Economy & Tariffs", "Education", "Elections",
     "Environment & Science", "Executive Power", "Federal Workforce",
     "Foreign Policy & Aid", "Free Speech", "Healthcare", "Immigration",
-    "Infrastructure and History", "LGBTQ+ Rights", "National Security",
+    "Infrastructure and History", "Law Enforcement", "LGBTQ+ Rights",
+    "National Security",
     "Press Freedom", "Public Health",
 ]
 
@@ -186,7 +187,9 @@ def main():
     wb = ws = headers = fieldnames = None
     if is_xlsx:
         wb = load_workbook(cand_path)
-        ws = wb.active
+        # by name, not wb.active: if Excel was last saved with the How-to or
+        # More matches tab showing, "active" would be the wrong sheet
+        ws = wb["Candidates"] if "Candidates" in wb.sheetnames else wb.active
         headers = {}
         for col in range(1, ws.max_column + 1):
             v = ws.cell(row=1, column=col).value

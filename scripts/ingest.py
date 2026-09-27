@@ -22,7 +22,8 @@ Processed files are moved to candidates/processed/ so they can't be ingested
 twice.
 """
 
-import csv, os, sys, glob, shutil, argparse
+import csv, os, re, sys, glob, shutil, argparse, datetime as dt
+from urllib.parse import urlparse
 from openpyxl import load_workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 
@@ -56,7 +57,7 @@ def _read_xlsx_rows(path):
     csv.DictReader would produce, matching columns by header text (not
     position) so column order in the sheet doesn't matter."""
     wb = load_workbook(path, data_only=True)
-    ws = wb.active
+    ws = wb["Candidates"] if "Candidates" in wb.sheetnames else wb.active
     headers = {}
     for col in range(1, ws.max_column + 1):
         v = ws.cell(row=1, column=col).value
@@ -87,6 +88,118 @@ def last_data_row(ws):
     return r
 
 
+# ---- Filling in what a hand-added row leaves blank ----------------------------
+
+KNOWN_CATEGORIES = {
+    "Civil Rights & Minorities", "Courts & SCOTUS", "Democracy & Rule of Law",
+    "Economy & Tariffs", "Education", "Elections", "Environment & Science",
+    "Executive Power", "Federal Workforce", "Foreign Policy & Aid",
+    "Free Speech", "Healthcare", "Immigration", "Infrastructure and History",
+    "Law Enforcement", "LGBTQ+ Rights", "National Security", "Press Freedom",
+    "Public Health",
+}
+
+OUTLETS_BY_DOMAIN = {
+    "npr.org": "NPR", "bbc.com": "BBC News", "bbc.co.uk": "BBC News",
+    "nytimes.com": "The New York Times", "washingtonpost.com": "The Washington Post",
+    "politico.com": "Politico", "nbcnews.com": "NBC News",
+    "theguardian.com": "The Guardian", "cbsnews.com": "CBS News",
+    "abcnews.go.com": "ABC News", "abcnews.com": "ABC News",
+    "pbs.org": "PBS NewsHour", "latimes.com": "Los Angeles Times",
+    "bloomberg.com": "Bloomberg", "axios.com": "Axios", "thehill.com": "The Hill",
+    "propublica.org": "ProPublica", "theintercept.com": "The Intercept",
+    "aljazeera.com": "Al Jazeera", "cnn.com": "CNN", "apnews.com": "AP News",
+    "reuters.com": "Reuters", "ms.now": "MS NOW", "msnbc.com": "MSNBC",
+    "wsj.com": "The Wall Street Journal", "usatoday.com": "USA Today",
+    "foxnews.com": "Fox News", "theatlantic.com": "The Atlantic",
+    "newyorker.com": "The New Yorker", "vox.com": "Vox", "time.com": "TIME",
+    "newsweek.com": "Newsweek", "texastribune.org": "The Texas Tribune",
+    "motherjones.com": "Mother Jones", "huffpost.com": "HuffPost",
+    "lawfaremedia.org": "Lawfare", "scotusblog.com": "SCOTUSblog",
+}
+
+_DATE_FORMATS = ("%b %d, %Y", "%B %d, %Y", "%b %d %Y", "%B %d %Y",
+                 "%m/%d/%Y", "%m/%d/%y", "%Y-%m-%d", "%Y-%m-%d %H:%M:%S",
+                 "%d %b %Y", "%d %B %Y", "%b. %d, %Y")
+
+
+def parse_any_date(text, default_year=None):
+    """Best-effort read of whatever date a person typed (or Excel stored).
+    Returns a date, or None if it can't be read."""
+    if not text:
+        return None
+    t = str(text).strip().replace("Sept ", "Sep ").replace("Sept.", "Sep")
+    t = re.sub(r"(\d)(st|nd|rd|th)\b", r"\1", t)          # 20th -> 20
+    for fmt in _DATE_FORMATS:
+        try:
+            return dt.datetime.strptime(t, fmt).date()
+        except ValueError:
+            pass
+    if default_year:                                         # "Sep 20" / "9/20"
+        for fmt in ("%b %d", "%B %d", "%m/%d"):
+            try:
+                return dt.datetime.strptime(t, fmt).date().replace(year=default_year)
+            except ValueError:
+                pass
+    return None
+
+
+def outlet_from_url(url):
+    try:
+        host = urlparse(url).netloc.lower()
+    except Exception:
+        return ""
+    host = host[4:] if host.startswith("www.") else host
+    for domain, name in OUTLETS_BY_DOMAIN.items():
+        if host == domain or host.endswith("." + domain):
+            return name
+    return host
+
+
+def file_monday(path):
+    """candidates/2026-09-21.xlsx -> date(2026, 9, 21), else None."""
+    try:
+        return dt.date.fromisoformat(os.path.basename(path)[:10])
+    except ValueError:
+        return None
+
+
+def fill_in_blanks(row, sheet_monday):
+    """Complete a row the way gather.py would have, for stories added by
+    hand: date format, Week Of, Date(s) and Outlet. Only blank fields are
+    filled — anything you typed yourself is left alone."""
+    default_year = sheet_monday.year if sheet_monday else dt.date.today().year
+    d = parse_any_date(row.get("srcdate"), default_year)
+    if d is None and row.get("dates"):
+        d = parse_any_date(row["dates"], default_year)
+    if d:
+        row["srcdate"] = d.strftime("%b %-d, %Y")
+        if not row.get("dates"):
+            row["dates"] = d.strftime("%b %-d")
+    if not row.get("week_of"):
+        base = d or sheet_monday
+        if base:
+            mon = base - dt.timedelta(days=base.weekday())
+            row["week_of"] = mon.strftime("%b %-d, %Y")
+    elif parse_any_date(row["week_of"], default_year):
+        # tidy a typed week label into the site's exact format, so it lands
+        # in the same week group as the gathered rows
+        wk = parse_any_date(row["week_of"], default_year)
+        wk = wk - dt.timedelta(days=wk.weekday())
+        row["week_of"] = wk.strftime("%b %-d, %Y")
+    if not row.get("outlet") and row.get("url"):
+        row["outlet"] = outlet_from_url(row["url"])
+    cat = row.get("category")
+    if cat and cat not in KNOWN_CATEGORIES:
+        match = next((c for c in KNOWN_CATEGORIES if c.lower() == cat.lower()), None)
+        if match:
+            row["category"] = match
+        else:
+            print(f"  ! unrecognised category {cat!r} (typo?) on: "
+                  f"{(row.get('srcdesc') or '')[:60]} — kept as typed")
+    return row
+
+
 def read_approved(path):
     """Return every row marked include=y, from either a .xlsx or .csv
     candidates file. No other field is required — category/event/impact/
@@ -99,11 +212,13 @@ def read_approved(path):
         with open(path, newline="", encoding="utf-8") as f:
             raw_rows = list(csv.DictReader(f))
 
+    sheet_monday = file_monday(path)
     rows, incomplete = [], 0
     for r in raw_rows:
         if (r.get("include") or "").strip().lower() not in TRUTHY:
             continue
         row = {k: (r.get(k) or "").strip() for k in r}
+        row = fill_in_blanks(row, sheet_monday)
         blanks = [k for k in ("week_of", "dates", "category", "event",
                               "impact", "outlet", "srcdesc")
                   if not row.get(k)]
