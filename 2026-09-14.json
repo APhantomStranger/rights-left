@@ -1,5 +1,33 @@
 {
  "items": {
+  "https://abcnews.com/Politics/wireStory/republican-mike-rogers-courts-michigan-democrats-trump-voters-136597414": {
+   "_date": "2026-09-20",
+   "category": "",
+   "dates": "Sep 20",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "ABC News",
+   "score": 4,
+   "srcdate": "Sep 20, 2026",
+   "srcdesc": "Republican Mike Rogers courts Michigan Democrats and Trump voters as GOP hopes to hold the Senate",
+   "url": "https://abcnews.com/Politics/wireStory/republican-mike-rogers-courts-michigan-democrats-trump-voters-136597414",
+   "week_of": "Sep 14, 2026"
+  },
+  "https://abcnews.com/Politics/wireStory/trump-planned-arch-become-military-complex-host-drones-136597701": {
+   "_date": "2026-09-20",
+   "category": "",
+   "dates": "Sep 20",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "ABC News",
+   "score": 4,
+   "srcdate": "Sep 20, 2026",
+   "srcdesc": "Trump says his planned arch would become a 'military complex' able to host drones and snipers",
+   "url": "https://abcnews.com/Politics/wireStory/trump-planned-arch-become-military-complex-host-drones-136597701",
+   "week_of": "Sep 14, 2026"
+  },
   "https://theintercept.com/2026/09/18/leavenworth-kansas-corecivic-prison-ice-staffing/": {
    "_date": "2026-09-18",
    "category": "",
@@ -618,6 +646,8 @@
   }
  },
  "seen": [
+  "https://abcnews.com/Politics/wireStory/republican-mike-rogers-courts-michigan-democrats-trump-voters-136597414",
+  "https://abcnews.com/Politics/wireStory/trump-planned-arch-become-military-complex-host-drones-136597701",
   "https://theintercept.com/2026/09/18/leavenworth-kansas-corecivic-prison-ice-staffing/",
   "https://theintercept.com/2026/09/19/minneapolis-prosecutor-race-renee-good-alex-pretti-ice/",
   "https://www.axios.com/2026/09/18/epstein-files-vote-massie-khanna-support",
