@@ -31,13 +31,34 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Fetch the rolling pool (stories collected through the week)
+        # collect.yml saves what it finds every few hours to the gather-pool
+        # branch. Read-only here; if the branch doesn't exist yet this just
+        # leaves the folder empty and the live pull is used on its own.
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p pool
+          cd pool
+          git init -q
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          if git fetch -q --depth 1 origin gather-pool; then
+            git checkout -q FETCH_HEAD
+            echo "Pool files: $(ls *.json 2>/dev/null | tr '\n' ' ')"
+          else
+            echo "No gather-pool branch yet — using the live pull only."
+          fi
+
       - name: Collect candidate articles
         id: collect
         env:
           # Optional: set this secret + add "--draft" below to have the model
           # pre-fill category/event/impact. Remove both to keep it free/no-AI.
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: python scripts/gather.py            # add  --draft  to enable AI pre-fill
+          # Optional: semantic (meaning-based) matching. Without the secret,
+          # keyword matching only.
+          VOYAGE_API_KEY: ${{ secrets.VOYAGE_API_KEY }}
+        run: python scripts/gather.py --pool-dir pool   # add  --draft  to enable AI pre-fill
 
       - name: Commit candidates for review
         run: |
@@ -54,7 +75,9 @@ jobs:
           gh issue create \
             --title "Review candidates — week of ${{ steps.collect.outputs.week }}" \
             --body "$(cat <<'BODY'
-          **${{ steps.collect.outputs.count }} candidate items** were collected for the week of **${{ steps.collect.outputs.week }}**, in a review spreadsheet.
+          **${{ steps.collect.outputs.new }} new candidate items** were collected for the week of **${{ steps.collect.outputs.week }}** (${{ steps.collect.outputs.count }} rows in the sheet), in a review spreadsheet. Stories from the end of last week that broke after last Sunday's sheet are included too — their **Week Of** column shows the earlier week.
+
+          **Missed a story?** Add it yourself in the first empty row under the gathered ones: pick `y`, paste the headline and link, type the date. Outlet, Week Of and Date(s) fill themselves in at ingest. (There's a how-to tab in the sheet.)
 
           **To approve:**
           1. Open `${{ steps.collect.outputs.file }}` in this repo and click the ⬇ (download) icon near the top of the file to save it to your computer.

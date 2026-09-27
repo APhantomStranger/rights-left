@@ -1,0 +1,69 @@
+name: Collect articles (rolling)
+
+# Most news feeds only hold the last day or two of stories (NPR ~27h, NYT ~37h,
+# WaPo ~42h), so a single Sunday pull missed most of the week. This runs every
+# four hours, saves anything relevant into one JSON file per week on the
+# `gather-pool` branch, and Sunday's "Gather weekly entries" run reads it back.
+#
+# Timing drift doesn't matter here (GitHub's scheduler can run late) — it only
+# has to run often enough that nothing scrolls off a feed between runs.
+# It commits to the gather-pool branch only: main, the site, and Pages are
+# untouched, so it adds no noise to your history there.
+
+on:
+  schedule:
+    - cron: '23 */4 * * *'   # off the hour, where GitHub's scheduler is least congested
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gather-pool
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Check out the pool branch (created on first run)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p pool
+          cd pool
+          git init -q
+          git config user.name  "rights-left-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          if git fetch -q origin gather-pool; then
+            git checkout -q -b gather-pool FETCH_HEAD
+          else
+            git checkout -q --orphan gather-pool
+            printf 'Rolling article pool for scripts/gather.py. Written by collect.yml; safe to delete.\n' > README.md
+          fi
+
+      - name: Add new stories to the pool
+        env:
+          VOYAGE_API_KEY: ${{ secrets.VOYAGE_API_KEY }}
+        run: python scripts/gather.py --accumulate --pool-dir pool
+
+      - name: Save the pool
+        run: |
+          cd pool
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Nothing new."
+          else
+            git commit -q -m "Pool update $(date -u +%Y-%m-%dT%H:%MZ)"
+            git push -q origin gather-pool
+          fi
