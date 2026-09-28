@@ -350,6 +350,20 @@
    "url": "https://abcnews.com/US/wireStory/cnn-left-off-air-force-trumps-saturday-trip-136784107",
    "week_of": "Sep 21, 2026"
   },
+  "https://abcnews.com/US/wireStory/invited-china-state-dinner-white-house-releases-guest-136740703": {
+   "_date": "2026-09-25",
+   "category": "",
+   "dates": "Sep 25",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "ABC News",
+   "score": 6,
+   "srcdate": "Sep 25, 2026",
+   "srcdesc": "Who was invited to China state dinner: White House releases guest list",
+   "url": "https://abcnews.com/US/wireStory/invited-china-state-dinner-white-house-releases-guest-136740703",
+   "week_of": "Sep 21, 2026"
+  },
   "https://abcnews.com/US/wireStory/mississippis-governor-awarded-104-million-improve-rural-healthcare-136762518": {
    "_date": "2026-09-25",
    "category": "",
@@ -2072,6 +2086,20 @@
    "url": "https://www.bbc.co.uk/news/articles/c6lyqlx0kp0po?at_medium=RSS&at_campaign=rss",
    "week_of": "Sep 21, 2026"
   },
+  "https://www.bbc.co.uk/news/articles/c85ydnwqpzyzo?at_medium=RSS&at_campaign=rss": {
+   "_date": "2026-09-27",
+   "category": "",
+   "dates": "Sep 27",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "BBC News",
+   "score": 2,
+   "srcdate": "Sep 27, 2026",
+   "srcdesc": "What we know about UK airbase counter-terror probe",
+   "url": "https://www.bbc.co.uk/news/articles/c85ydnwqpzyzo?at_medium=RSS&at_campaign=rss",
+   "week_of": "Sep 21, 2026"
+  },
   "https://www.bbc.co.uk/news/articles/cjn5ddzekwnro?at_medium=RSS&at_campaign=rss": {
    "_date": "2026-09-25",
    "category": "",
@@ -2154,6 +2182,20 @@
    "srcdate": "Sep 25, 2026",
    "srcdesc": "Media outlets banned by Trump resume White House coverage after judge's order",
    "url": "https://www.bbc.co.uk/news/articles/cqe8ek7608mlo?at_medium=RSS&at_campaign=rss",
+   "week_of": "Sep 21, 2026"
+  },
+  "https://www.bbc.co.uk/news/articles/cqrm99mm9l84o?at_medium=RSS&at_campaign=rss": {
+   "_date": "2026-09-27",
+   "category": "",
+   "dates": "Sep 27",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "BBC News",
+   "score": 5,
+   "srcdate": "Sep 27, 2026",
+   "srcdesc": "Five arrested as counter-terror police investigate major incident near UK airbase used by US forces",
+   "url": "https://www.bbc.co.uk/news/articles/cqrm99mm9l84o?at_medium=RSS&at_campaign=rss",
    "week_of": "Sep 21, 2026"
   },
   "https://www.bbc.co.uk/news/articles/cr93e4x7kdjjo?at_medium=RSS&at_campaign=rss": {
@@ -3204,6 +3246,20 @@
    "srcdate": "Sep 26, 2026",
    "srcdesc": "Third suspect arrested in death of Mississippi woman found hanging at ‘staged’ crime scene",
    "url": "https://www.nbcnews.com/news/us-news/third-suspect-arrested-death-mississippi-woman-found-hanging-tree-rcna599617",
+   "week_of": "Sep 21, 2026"
+  },
+  "https://www.nbcnews.com/nightly-news/video/suspected-terror-attack-thwarted-near-u-s-air-base-in-u-k-270624325909": {
+   "_date": "2026-09-27",
+   "category": "",
+   "dates": "Sep 27",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "NBC News",
+   "score": 2,
+   "srcdate": "Sep 27, 2026",
+   "srcdesc": "Suspected terror attack thwarted near U.S. air base in U.K.",
+   "url": "https://www.nbcnews.com/nightly-news/video/suspected-terror-attack-thwarted-near-u-s-air-base-in-u-k-270624325909",
    "week_of": "Sep 21, 2026"
   },
   "https://www.nbcnews.com/politics/2026-election/nbc-news-polling-averages-democrats-enjoy-biggest-lead-yet-race-congre-rcna599378": {
@@ -5273,6 +5329,7 @@
   "https://abcnews.com/US/wireStory/china-usual-speech-promote-global-development-solution-worlds-136782053",
   "https://abcnews.com/US/wireStory/cnn-left-off-air-force-trumps-saturday-trip-136784107",
   "https://abcnews.com/US/wireStory/german-russian-foreign-ministers-rare-meeting-136785326",
+  "https://abcnews.com/US/wireStory/invited-china-state-dinner-white-house-releases-guest-136740703",
   "https://abcnews.com/US/wireStory/leaders-words-136787663",
   "https://abcnews.com/US/wireStory/mississippis-governor-awarded-104-million-improve-rural-healthcare-136762518",
   "https://abcnews.com/US/wireStory/nepals-leader-recent-floods-serve-warning-world-climate-136743190",
@@ -5461,6 +5518,7 @@
   "https://www.bbc.co.uk/news/articles/c539me79z1yno?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/articles/c5dj401d88l3o?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/articles/c6lyqlx0kp0po?at_medium=RSS&at_campaign=rss",
+  "https://www.bbc.co.uk/news/articles/c85ydnwqpzyzo?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/articles/cjn5ddzekwnro?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/articles/ck05rrj3jeylo?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/articles/ck1wxxzn5jndo?at_medium=RSS&at_campaign=rss",
@@ -5471,6 +5529,7 @@
   "https://www.bbc.co.uk/news/articles/cq0lrr8kxy0lo?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/articles/cq4g55r76d9lo?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/articles/cqe8ek7608mlo?at_medium=RSS&at_campaign=rss",
+  "https://www.bbc.co.uk/news/articles/cqrm99mm9l84o?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/articles/cr93e4x7kdjjo?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/articles/cw62jje658dlo?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/articles/cw62me2vlj07o?at_medium=RSS&at_campaign=rss",
@@ -5616,6 +5675,7 @@
   "https://www.nbcnews.com/news/us-news/san-francisco-giants-mom-year-rcna599973",
   "https://www.nbcnews.com/news/us-news/third-suspect-arrested-death-mississippi-woman-found-hanging-tree-rcna599617",
   "https://www.nbcnews.com/news/us-news/weekend-rundown-september-27-rcna599933",
+  "https://www.nbcnews.com/nightly-news/video/suspected-terror-attack-thwarted-near-u-s-air-base-in-u-k-270624325909",
   "https://www.nbcnews.com/politics/2026-election/nbc-news-polling-averages-democrats-enjoy-biggest-lead-yet-race-congre-rcna599378",
   "https://www.nbcnews.com/politics/congress/lawmakers-doubt-congress-s-barely-capable-email-can-regulate-ai-rcna599824",
   "https://www.nbcnews.com/politics/congress/lawmakers-slam-trumps-unlawful-move-cut-810-million-federal-funds-rcna599942",
