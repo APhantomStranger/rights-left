@@ -2086,6 +2086,20 @@
    "url": "https://www.bbc.co.uk/news/articles/c6lyqlx0kp0po?at_medium=RSS&at_campaign=rss",
    "week_of": "Sep 21, 2026"
   },
+  "https://www.bbc.co.uk/news/articles/c6pwl9g9ne1lo?at_medium=RSS&at_campaign=rss": {
+   "_date": "2026-09-26",
+   "category": "",
+   "dates": "Sep 26",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "BBC News",
+   "score": 1,
+   "srcdate": "Sep 26, 2026",
+   "srcdesc": "Killer Christa Pike to be executed within days - but her defence say she's a victim too",
+   "url": "https://www.bbc.co.uk/news/articles/c6pwl9g9ne1lo?at_medium=RSS&at_campaign=rss",
+   "week_of": "Sep 21, 2026"
+  },
   "https://www.bbc.co.uk/news/articles/c85ydnwqpzyzo?at_medium=RSS&at_campaign=rss": {
    "_date": "2026-09-27",
    "category": "",
@@ -2546,6 +2560,20 @@
    "srcdate": "Sep 26, 2026",
    "srcdesc": "The story behind the first CIA officers in Afghanistan after 9/11",
    "url": "https://www.cbsnews.com/news/first-cia-officers-in-afghanistan-9-11-russian-helicopter/",
+   "week_of": "Sep 21, 2026"
+  },
+  "https://www.cbsnews.com/news/fraternity-hazing-university-of-wisconsin-alpha-epsilon-pi/": {
+   "_date": "2026-09-25",
+   "category": "",
+   "dates": "Sep 25",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "CBS News",
+   "score": 1,
+   "srcdate": "Sep 25, 2026",
+   "srcdesc": "30 partially clothed men found in frat basement in alleged hazing incident",
+   "url": "https://www.cbsnews.com/news/fraternity-hazing-university-of-wisconsin-alpha-epsilon-pi/",
    "week_of": "Sep 21, 2026"
   },
   "https://www.cbsnews.com/news/ice-spending-detention-capacity-gao-report/": {
@@ -5518,6 +5546,7 @@
   "https://www.bbc.co.uk/news/articles/c539me79z1yno?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/articles/c5dj401d88l3o?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/articles/c6lyqlx0kp0po?at_medium=RSS&at_campaign=rss",
+  "https://www.bbc.co.uk/news/articles/c6pwl9g9ne1lo?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/articles/c85ydnwqpzyzo?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/articles/cjn5ddzekwnro?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/articles/ck05rrj3jeylo?at_medium=RSS&at_campaign=rss",
@@ -5573,6 +5602,7 @@
   "https://www.cbsnews.com/news/face-the-nation-full-transcript-09-27-2026/",
   "https://www.cbsnews.com/news/fast-food-menus-glp-1-users/",
   "https://www.cbsnews.com/news/first-cia-officers-in-afghanistan-9-11-russian-helicopter/",
+  "https://www.cbsnews.com/news/fraternity-hazing-university-of-wisconsin-alpha-epsilon-pi/",
   "https://www.cbsnews.com/news/giant-pandas-china-atlanta-zoo-arrive/",
   "https://www.cbsnews.com/news/ice-spending-detention-capacity-gao-report/",
   "https://www.cbsnews.com/news/identical-twin-doctors-travan-travis-jasper-richmond-virginia-hospital/",
