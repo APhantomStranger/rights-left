@@ -2688,6 +2688,20 @@
    "url": "https://www.cbsnews.com/news/supreme-court-missouri-map/",
    "week_of": "Sep 21, 2026"
   },
+  "https://www.cbsnews.com/news/trump-administration-white-south-africans-refugees-afrikaners/": {
+   "_date": "2026-09-22",
+   "category": "",
+   "dates": "Sep 22",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "CBS News",
+   "score": 6,
+   "srcdate": "Sep 22, 2026",
+   "srcdesc": "U.S. to welcome up to 17,500 more White South Africans as refugees",
+   "url": "https://www.cbsnews.com/news/trump-administration-white-south-africans-refugees-afrikaners/",
+   "week_of": "Sep 21, 2026"
+  },
   "https://www.cbsnews.com/news/trump-cancels-billion-spending-pocket-rescission/": {
    "_date": "2026-09-26",
    "category": "",
@@ -2714,6 +2728,20 @@
    "srcdate": "Sep 25, 2026",
    "srcdesc": "New Trump-focused \"Love Me\" ad campaign paid for by taxpayers hits airwaves",
    "url": "https://www.cbsnews.com/news/trump-focused-ad-campaign-taxpayers/",
+   "week_of": "Sep 21, 2026"
+  },
+  "https://www.cbsnews.com/news/trump-golden-age-event-tech-executives-elon-musk-jensen-huang-ai/": {
+   "_date": "2026-09-25",
+   "category": "",
+   "dates": "Sep 25",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "CBS News",
+   "score": 4,
+   "srcdate": "Sep 25, 2026",
+   "srcdesc": "Trump to headline \"Golden Age\" event with top officials, tech executives",
+   "url": "https://www.cbsnews.com/news/trump-golden-age-event-tech-executives-elon-musk-jensen-huang-ai/",
    "week_of": "Sep 21, 2026"
   },
   "https://www.cbsnews.com/news/trump-xi-us-china-ai-trade-summit/": {
@@ -5635,8 +5663,10 @@
   "https://www.cbsnews.com/news/this-week-on-sunday-morning-sept-27-2026/",
   "https://www.cbsnews.com/news/tiktok-alabama-youth-safety-lawsuit-settlement/",
   "https://www.cbsnews.com/news/transcript-iranian-president-masoud-pezeshkian-face-the-nation-transcript-09-27-2026/",
+  "https://www.cbsnews.com/news/trump-administration-white-south-africans-refugees-afrikaners/",
   "https://www.cbsnews.com/news/trump-cancels-billion-spending-pocket-rescission/",
   "https://www.cbsnews.com/news/trump-focused-ad-campaign-taxpayers/",
+  "https://www.cbsnews.com/news/trump-golden-age-event-tech-executives-elon-musk-jensen-huang-ai/",
   "https://www.cbsnews.com/news/trump-xi-us-china-ai-trade-summit/",
   "https://www.cbsnews.com/news/u-s-groundwork-potential-action-cuba-trump/",
   "https://www.cbsnews.com/news/us-diesel-prices-squeeze-schools-farms/",
