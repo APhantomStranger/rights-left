@@ -213,6 +213,13 @@
     font-family:"IBM Plex Sans",sans-serif;font-size:13px;color:var(--paper-dim);
     padding:8px 10px;border-radius:3px}
   .share-pop a:hover,.share-copy:hover{background:var(--panel2);color:var(--paper)}
+  .share-note{display:block;font-family:"IBM Plex Mono",monospace;font-size:10px;
+    color:var(--paper-faint);margin-top:2px;letter-spacing:.02em;white-space:nowrap}
+  .share-toast{position:absolute;top:calc(100% + 7px);left:0;z-index:61;width:min(320px,80vw);
+    background:var(--blue-deep);border:1px solid var(--blue);color:var(--paper);border-radius:5px;
+    padding:10px 12px;font-family:"IBM Plex Sans",sans-serif;font-size:12.5px;line-height:1.45;
+    text-transform:none;letter-spacing:normal;box-shadow:0 10px 30px rgba(0,0,0,.55)}
+  @media(max-width:520px){.share-toast{left:auto;right:0}}
   .share-copy{border-top:1px solid var(--line);margin-top:4px;padding-top:10px;
     font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--blue-bright)}
   @media(max-width:520px){.share-pop{left:auto;right:0}}
@@ -507,20 +514,41 @@ function weekUrl(weekLabel){
 // tags instead. So the shared text below applies to the other three.
 const SHARE_BASE="America's Changelog With Eyes on the Trump Administration";
 const SHARE_TAIL="Keeping track of what's been lost in America";
+const SHARE_HASHTAGS="#politics #elections #democrats #trump #resistance";
 function shareText(weekLabel){
   return SHARE_BASE+"\nFor the week of "+formatWeekRange(weekLabel)+"\n"+SHARE_TAIL;
 }
+// Facebook's sharer only accepts a link — it dropped its old prefilled-text
+// parameter, and its platform rules don't allow pre-filling a person's post.
+// So for Facebook the text is copied to the clipboard as the share window
+// opens, ready to paste. (`copy` marks a target that needs that.)
 function shareTargets(weekLabel){
   const url=weekUrl(weekLabel);
   const text=shareText(weekLabel);
+  const tagged=text+"\n"+SHARE_HASHTAGS;
   const u=encodeURIComponent(url);
-  const t=encodeURIComponent(text);
   return [
-    {name:"X",        href:"https://twitter.com/intent/tweet?url="+u+"&text="+t},
-    {name:"Bluesky",  href:"https://bsky.app/intent/compose?text="+encodeURIComponent(text+"\n"+url)},
-    {name:"Facebook", href:"https://www.facebook.com/sharer/sharer.php?u="+u},
-    {name:"Reddit",   href:"https://www.reddit.com/submit?url="+u+"&title="+t},
+    {name:"X",        href:"https://twitter.com/intent/tweet?url="+u+"&text="+encodeURIComponent(tagged)},
+    {name:"Bluesky",  href:"https://bsky.app/intent/compose?text="+encodeURIComponent(tagged+"\n"+url)},
+    {name:"Facebook", href:"https://www.facebook.com/sharer/sharer.php?u="+u, copy:text},
+    {name:"Reddit",   href:"https://www.reddit.com/submit?url="+u+"&title="+encodeURIComponent(text)},
   ];
+}
+
+// Copy a string, with a fallback for browsers/contexts without the
+// clipboard API. Calls done() only if the copy actually worked.
+function copyToClipboard(str, done){
+  function fallback(){
+    const ta=document.createElement("textarea");
+    ta.value=str; ta.setAttribute("readonly","");
+    ta.style.position="absolute"; ta.style.left="-9999px";
+    document.body.appendChild(ta); ta.select();
+    try{ if(document.execCommand("copy")) done(); }catch(err){ /* leave silent */ }
+    document.body.removeChild(ta);
+  }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(str).then(done).catch(fallback);
+  } else { fallback(); }
 }
 
 // Download the (currently filtered) archive. Tries for a real .xlsx by
@@ -637,38 +665,48 @@ function ShareMenu({weekLabel}){
     return ()=>{ document.removeEventListener("mousedown",onDoc); document.removeEventListener("keydown",onKey); };
   },[open]);
 
-  // reset the transient "Copied" confirmation when switching weeks
-  React.useEffect(()=>{ setCopied(false); setOpen(false); },[weekLabel]);
+  const [toast,setToast]=React.useState("");
+
+  // reset the transient confirmations when switching weeks
+  React.useEffect(()=>{ setCopied(false); setOpen(false); setToast(""); },[weekLabel]);
 
   function copyLink(){
-    const url=weekUrl(weekLabel);
-    const done=()=>{ setCopied(true); setTimeout(()=>setCopied(false),1800); };
-    if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(url).then(done).catch(fallback);
-    } else { fallback(); }
-    function fallback(){
-      // older browsers / insecure contexts, where the clipboard API is absent
-      const ta=document.createElement("textarea");
-      ta.value=url; ta.setAttribute("readonly","");
-      ta.style.position="absolute"; ta.style.left="-9999px";
-      document.body.appendChild(ta); ta.select();
-      try{ document.execCommand("copy"); done(); }catch(err){ /* leave silent */ }
-      document.body.removeChild(ta);
-    }
+    copyToClipboard(weekUrl(weekLabel),
+      ()=>{ setCopied(true); setTimeout(()=>setCopied(false),1800); });
+  }
+
+  // Facebook: copy the post text, then open the share window as a popup so
+  // this page — and the "paste it" note — stays visible behind it.
+  function shareWithCopiedText(ev,target){
+    ev.preventDefault();
+    setOpen(false);
+    copyToClipboard(target.copy, ()=>{
+      setToast("Post text copied — click in the Facebook post box and paste it (Ctrl+V, or ⌘V on a Mac).");
+      setTimeout(()=>setToast(""),9000);
+    });
+    // (no "noopener" in the features string: with it, window.open always
+    // returns null, which would look like a blocked popup below)
+    const w=window.open(target.href,"rl-share","width=640,height=600");
+    if(w){ try{ w.opener=null; }catch(err){} }
+    else { window.open(target.href,"_blank"); }   // popup blocked: plain new tab
   }
 
   return (<span className="share-wrap" ref={wrapRef}>
-    <button className="share-btn" onClick={()=>setOpen(o=>!o)}
+    <button className="share-btn" onClick={()=>{ setToast(""); setOpen(o=>!o); }}
       aria-haspopup="true" aria-expanded={open}
       title="Share this week">⇪ Share</button>
     {open && <div className="share-pop" role="menu">
       <div className="share-pop-h">Share this week</div>
       {shareTargets(weekLabel).map(s=>(
         <a key={s.name} href={s.href} target="_blank" rel="noopener noreferrer"
-          role="menuitem" onClick={()=>setOpen(false)}>{s.name}</a>))}
+          role="menuitem"
+          onClick={s.copy ? (ev=>shareWithCopiedText(ev,s)) : (()=>setOpen(false))}>
+          {s.name}{s.copy && <span className="share-note">copies post text to paste</span>}
+        </a>))}
       <button className="share-copy" onClick={copyLink} role="menuitem">
         {copied ? "✓ Link copied" : "Copy link"}</button>
     </div>}
+    {toast && <div className="share-toast" role="status">{toast}</div>}
   </span>);
 }
 
