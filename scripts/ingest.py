@@ -91,7 +91,8 @@ def last_data_row(ws):
 # ---- Filling in what a hand-added row leaves blank ----------------------------
 
 KNOWN_CATEGORIES = {
-    "Civil Rights & Minorities", "Courts & SCOTUS", "Democracy & Rule of Law",
+    "Civil Rights & Minorities", "Courts & SCOTUS", "Dangerous Rhetoric",
+    "Democracy & Rule of Law",
     "Economy & Tariffs", "Education", "Elections", "Environment & Science",
     "Executive Power", "Federal Workforce", "Foreign Policy & Aid",
     "Free Speech", "Healthcare", "Immigration", "Infrastructure and History",

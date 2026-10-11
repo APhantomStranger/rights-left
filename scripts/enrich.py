@@ -45,7 +45,7 @@ except ImportError:
     trafilatura = None  # falls back to a crude tag-strip if unavailable
 
 CATEGORIES = [
-    "Civil Rights & Minorities", "Courts & SCOTUS",
+    "Civil Rights & Minorities", "Courts & SCOTUS", "Dangerous Rhetoric",
     "Democracy & Rule of Law", "Economy & Tariffs", "Education", "Elections",
     "Environment & Science", "Executive Power", "Federal Workforce",
     "Foreign Policy & Aid", "Free Speech", "Healthcare", "Immigration",
@@ -132,6 +132,7 @@ def classify(client, outlet, headline, article_text):
         "preamble, no markdown fences: "
         '{"category": "...", "event": "...", "impact": "..."}. '
         f"category must be exactly one of: {cats}. "
+        "Use \"Dangerous Rhetoric\" when the story is mainly about what Trump or an official SAID — threats, dehumanizing or inflammatory language, calls to jail or punish opponents, or words that could incite violence — rather than a policy action. "
         "event = <=25 words, a plain factual description of what the "
         "administration did — no editorializing. "
         "impact = <=40 words, why courts, experts, or affected communities "

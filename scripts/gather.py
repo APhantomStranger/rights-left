@@ -136,6 +136,15 @@ KEYWORDS = [
     "pepper spray", "body camera", "bodycam", "fbi", "u.s. marshals",
     "us marshals", "atf", "dea", "arrest", "detain", "custody", "raid",
     "protester", "crackdown", "consent decree", "civil rights investigation",
+
+    # --- Dangerous rhetoric, threats & incitement ---
+    "rhetoric", "vermin", "enemy within", "enemies within",
+    "enemy of the people", "enemies of the people", "dehumaniz",
+    "incite", "incitement", "inflammatory", "retribution", "traitor",
+    "treason", "seditious", "political violence", "calls for violence",
+    "threatens to arrest", "threatened to arrest", "threatens to jail",
+    "threatened to jail", "should be jailed", "should be arrested",
+    "should be executed", "poisoning the blood", "slur", "racist remarks",
 ]
 
 # Whole-word, case-sensitive: catches "ICE agents shot..." without matching
@@ -160,7 +169,9 @@ CORE_KEYWORDS = {
     "federal communications commission", "censor", "press freedom",
     "smithsonian", "national archives", "federal agent", "use of force",
     "excessive force", "fatally shot", "shot and killed", "shot and wounded",
-    "shot dead",
+    "shot dead", "vermin", "enemy within", "enemies within",
+    "enemy of the people", "incitement", "political violence",
+    "poisoning the blood",
 }
 
 # ---- Semantic concepts (for the OPTIONAL embeddings-based matcher) ------------
@@ -188,6 +199,7 @@ CONCEPTS = [
     "Federal action affecting schools, universities, academic freedom, curriculum, book bans, or student funding.",
     "Actions on tariffs, the economy, healthcare, Medicaid, or federal benefits programs that affect ordinary people.",
     "Police, federal agents, or other law enforcement shoot, injure, arrest, detain, or raid people, or face allegations of misconduct, excessive force, or civil-rights violations.",
+    "Trump or an administration official uses threatening, dehumanizing, or inflammatory language — calling opponents enemies, vermin, or traitors, urging that critics be jailed or prosecuted, or rhetoric that could incite violence against people or groups.",
 ]
 
 # Similarity threshold: a candidate is kept if its cosine similarity to ANY
@@ -198,7 +210,7 @@ SEMANTIC_THRESHOLD = 0.62
 
 # ---- The categories the workbook uses (for the AI drafter / your reference)
 CATEGORIES = [
-    "Civil Rights & Minorities", "Courts & SCOTUS",
+    "Civil Rights & Minorities", "Courts & SCOTUS", "Dangerous Rhetoric",
     "Democracy & Rule of Law", "Economy & Tariffs", "Education", "Elections",
     "Environment & Science", "Executive Power", "Federal Workforce",
     "Foreign Policy & Aid", "Free Speech", "Healthcare", "Immigration",
@@ -251,7 +263,7 @@ def write_candidates_xlsx(rows, path, more=()):
     ws = wb.active
     ws.title = "Candidates"
 
-    # Hidden helper sheet holding the 17 categories, purely as a source for
+    # Hidden helper sheet holding the categories, purely as a source for
     # the Category dropdown below. Excel's inline data-validation list has a
     # ~255 character limit and the category names together run past that,
     # so the dropdown has to point at a cell range instead — this sheet is
@@ -734,6 +746,7 @@ def ai_draft(rows):
             "Trump administration actions. Given one headline, respond ONLY with "
             "JSON: {\"category\":..., \"event\":..., \"impact\":...}. "
             f"category must be exactly one of: {cats}. "
+            "Use \"Dangerous Rhetoric\" when the story is mainly about what Trump or an official SAID — threats, dehumanizing or inflammatory language, calls to jail or punish opponents, or words that could incite violence — rather than a policy action. "
             "event = <=25 words, plainly what the administration did. "
             "impact = <=40 words, why critics/courts/data call it harmful. "
             "If the headline is NOT about a specific administration action, set "
