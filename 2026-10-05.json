@@ -4550,6 +4550,20 @@
    "url": "https://www.aljazeera.com/news/2026/10/11/at-least-109-dead-over-100-missing-as-migrant-boat-capsizes-off-djibouti?traffic_source=rss",
    "week_of": "Oct 5, 2026"
   },
+  "https://www.aljazeera.com/news/2026/10/11/at-least-72-sudanese-miners-killed-in-air-strike-rights-monitor?traffic_source=rss": {
+   "_date": "2026-10-11",
+   "category": "",
+   "dates": "Oct 11",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "Al Jazeera",
+   "score": 1,
+   "srcdate": "Oct 11, 2026",
+   "srcdesc": "At least 72 Sudanese miners killed in air strike: Rights monitor",
+   "url": "https://www.aljazeera.com/news/2026/10/11/at-least-72-sudanese-miners-killed-in-air-strike-rights-monitor?traffic_source=rss",
+   "week_of": "Oct 5, 2026"
+  },
   "https://www.aljazeera.com/news/2026/10/11/ethiopia-eritrea-ramp-up-rhetoric-are-they-inching-towards-war?traffic_source=rss": {
    "_date": "2026-10-11",
    "category": "",
@@ -6510,6 +6524,34 @@
    "url": "https://www.aljazeera.com/video/newsfeed/2026/10/9/uproar-in-ny-after-ice-shoots-man-with-child-in-the-car?traffic_source=rss",
    "week_of": "Oct 5, 2026"
   },
+  "https://www.axios.com/2026/10/03/trumps-cabinet-camp-david-iran-war-yemen-houthis": {
+   "_date": "2026-10-05",
+   "category": "",
+   "dates": "Oct 5",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "Axios",
+   "score": 13,
+   "srcdate": "Oct 5, 2026",
+   "srcdesc": "Scoop: Trump's top national security aides meet secretly at Camp David on Iran, Yemen",
+   "url": "https://www.axios.com/2026/10/03/trumps-cabinet-camp-david-iran-war-yemen-houthis",
+   "week_of": "Oct 5, 2026"
+  },
+  "https://www.axios.com/2026/10/04/us-b-1-bombers-evacuated-from-uk-base-after-attack-threats-from-iran": {
+   "_date": "2026-10-05",
+   "category": "",
+   "dates": "Oct 5",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "Axios",
+   "score": 3,
+   "srcdate": "Oct 5, 2026",
+   "srcdesc": "U.S. B-1 bombers evacuated from UK base because of threat of Iranian drone attack",
+   "url": "https://www.axios.com/2026/10/04/us-b-1-bombers-evacuated-from-uk-base-after-attack-threats-from-iran",
+   "week_of": "Oct 5, 2026"
+  },
   "https://www.axios.com/2026/10/05/apple-iphone-duo-foldable-walkman-app": {
    "_date": "2026-10-05",
    "category": "",
@@ -7698,6 +7740,20 @@
    "srcdate": "Oct 10, 2026",
    "srcdesc": "U.S. official: Trump cut deal with Putin after Zelensky ignored his requests",
    "url": "https://www.axios.com/2026/10/10/trump-zelensky-putin-diesel-deal-war",
+   "week_of": "Oct 5, 2026"
+  },
+  "https://www.axios.com/2026/10/11/buttigieg-gambles-on-a-different-path-for-2028": {
+   "_date": "2026-10-11",
+   "category": "",
+   "dates": "Oct 11",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "Axios",
+   "score": 7,
+   "srcdate": "Oct 11, 2026",
+   "srcdesc": "Buttigieg gambles on a different path for 2028",
+   "url": "https://www.axios.com/2026/10/11/buttigieg-gambles-on-a-different-path-for-2028",
    "week_of": "Oct 5, 2026"
   },
   "https://www.axios.com/2026/10/11/pope-leo-nodule-lung": {
@@ -12362,6 +12418,20 @@
    "url": "https://www.cbsnews.com/video/101026-cbs-weekend-news/",
    "week_of": "Oct 5, 2026"
   },
+  "https://www.cbsnews.com/video/101126-cbs-weekend-news/": {
+   "_date": "2026-10-11",
+   "category": "",
+   "dates": "Oct 11",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "CBS News",
+   "score": 1,
+   "srcdate": "Oct 11, 2026",
+   "srcdesc": "10/11: CBS Weekend News",
+   "url": "https://www.cbsnews.com/video/101126-cbs-weekend-news/",
+   "week_of": "Oct 5, 2026"
+  },
   "https://www.cbsnews.com/video/101126-face-the-nation/": {
    "_date": "2026-10-11",
    "category": "",
@@ -13984,6 +14054,34 @@
    "srcdate": "Oct 9, 2026",
    "srcdesc": "NFL Hall of Fame coach Mike Ditka dead at 86",
    "url": "https://www.nbcnews.com/nightly-news/video/nfl-hall-of-fame-coach-mike-ditka-dead-at-86-271371333677",
+   "week_of": "Oct 5, 2026"
+  },
+  "https://www.nbcnews.com/nightly-news/video/saudi-airport-struck-again-after-deadly-attack-that-killed-american-271417925718": {
+   "_date": "2026-10-11",
+   "category": "",
+   "dates": "Oct 11",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "NBC News",
+   "score": 2,
+   "srcdate": "Oct 11, 2026",
+   "srcdesc": "Saudi airport struck again after deadly attack that killed American",
+   "url": "https://www.nbcnews.com/nightly-news/video/saudi-airport-struck-again-after-deadly-attack-that-killed-american-271417925718",
+   "week_of": "Oct 5, 2026"
+  },
+  "https://www.nbcnews.com/nightly-news/video/trump-claims-russia-and-ukraine-agree-to-energy-ceasefire-271416901581": {
+   "_date": "2026-10-11",
+   "category": "",
+   "dates": "Oct 11",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "NBC News",
+   "score": 4,
+   "srcdate": "Oct 11, 2026",
+   "srcdesc": "Trump claims Russia and Ukraine agree to energy ceasefire",
+   "url": "https://www.nbcnews.com/nightly-news/video/trump-claims-russia-and-ukraine-agree-to-energy-ceasefire-271416901581",
    "week_of": "Oct 5, 2026"
   },
   "https://www.nbcnews.com/nightly-news/video/trump-russia-will-send-diesel-fuel-to-the-u-s-to-bring-down-prices-271372357511": {
@@ -20944,6 +21042,20 @@
    "url": "https://www.theguardian.com/us-news/2026/oct/11/darializa-avila-chevalier-nypd-ice-protests-shooting",
    "week_of": "Oct 5, 2026"
   },
+  "https://www.theguardian.com/us-news/2026/oct/11/erie-pennsylvania-mass-shooting-grandfather": {
+   "_date": "2026-10-11",
+   "category": "",
+   "dates": "Oct 11",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "The Guardian",
+   "score": 1,
+   "srcdate": "Oct 11, 2026",
+   "srcdesc": "Pennsylvania shooter who killed eight was a grandfather, says slain child’s dad",
+   "url": "https://www.theguardian.com/us-news/2026/oct/11/erie-pennsylvania-mass-shooting-grandfather",
+   "week_of": "Oct 5, 2026"
+  },
   "https://www.theguardian.com/us-news/2026/oct/11/ice-agent-strikes-man-with-car-texas": {
    "_date": "2026-10-11",
    "category": "",
@@ -23312,6 +23424,7 @@
   "https://www.aljazeera.com/news/2026/10/10/why-is-us-turning-to-russia-for-diesel-despite-sanctions?traffic_source=rss",
   "https://www.aljazeera.com/news/2026/10/10/yemeni-governments-military-says-its-forces-advancing-against-houthis?traffic_source=rss",
   "https://www.aljazeera.com/news/2026/10/11/at-least-109-dead-over-100-missing-as-migrant-boat-capsizes-off-djibouti?traffic_source=rss",
+  "https://www.aljazeera.com/news/2026/10/11/at-least-72-sudanese-miners-killed-in-air-strike-rights-monitor?traffic_source=rss",
   "https://www.aljazeera.com/news/2026/10/11/at-least-five-people-missing-as-flash-floods-in-nepal-sweep-away-houses?traffic_source=rss",
   "https://www.aljazeera.com/news/2026/10/11/ebola-spreads-in-eastern-drc-as-kenya-confirms-imported-case?traffic_source=rss",
   "https://www.aljazeera.com/news/2026/10/11/ethiopia-eritrea-ramp-up-rhetoric-are-they-inching-towards-war?traffic_source=rss",
@@ -23751,6 +23864,8 @@
   "https://www.aljazeera.com/video/the-listening-post/2026/10/11/the-scramble-to-rewrite-bidens-record-on-gaza?traffic_source=rss",
   "https://www.aljazeera.com/video/true-crime-reports/2026/10/11/true-crime-reports-the-mafia-football-murders?traffic_source=rss",
   "https://www.aljazeera.com/video/witness/2026/10/8/shoot-the-people-global-activism-through-misan-harrimans-lens?traffic_source=rss",
+  "https://www.axios.com/2026/10/03/trumps-cabinet-camp-david-iran-war-yemen-houthis",
+  "https://www.axios.com/2026/10/04/us-b-1-bombers-evacuated-from-uk-base-after-attack-threats-from-iran",
   "https://www.axios.com/2026/10/05/apple-iphone-duo-foldable-walkman-app",
   "https://www.axios.com/2026/10/05/democrats-transgender-sports-ads-election-kaptur",
   "https://www.axios.com/2026/10/05/dennis-hastert-dies-house-speaker-sex-abuse-scandal",
@@ -23839,6 +23954,7 @@
   "https://www.axios.com/2026/10/10/trump-nobel-peace-prize-reaction",
   "https://www.axios.com/2026/10/10/trump-ukraine-zelensky-replace-putin-diesel",
   "https://www.axios.com/2026/10/10/trump-zelensky-putin-diesel-deal-war",
+  "https://www.axios.com/2026/10/11/buttigieg-gambles-on-a-different-path-for-2028",
   "https://www.axios.com/2026/10/11/pope-leo-nodule-lung",
   "https://www.axios.com/2026/10/11/russia-ukraine-oil-energy-ceasefire-trump-putin-zelensky",
   "https://www.axios.com/2026/10/11/silicon-valley-tech-founder-movies",
@@ -24376,6 +24492,7 @@
   "https://www.cbsnews.com/video/101026-cbs-saturday-morning/",
   "https://www.cbsnews.com/video/101026-cbs-weekend-news/",
   "https://www.cbsnews.com/video/101026-the-uplift/",
+  "https://www.cbsnews.com/video/101126-cbs-weekend-news/",
   "https://www.cbsnews.com/video/101126-face-the-nation/",
   "https://www.cbsnews.com/video/101126-sunday-morning/",
   "https://www.cbsnews.com/video/13-year-old-carves-monster-pumpkin-planted-seeds-grandmother/",
@@ -24559,6 +24676,8 @@
   "https://www.nbcnews.com/nightly-news/video/inside-nato-operation-to-protect-european-countries-from-russia-270970437673",
   "https://www.nbcnews.com/nightly-news/video/mystery-death-in-russian-lab-271080005659",
   "https://www.nbcnews.com/nightly-news/video/nfl-hall-of-fame-coach-mike-ditka-dead-at-86-271371333677",
+  "https://www.nbcnews.com/nightly-news/video/saudi-airport-struck-again-after-deadly-attack-that-killed-american-271417925718",
+  "https://www.nbcnews.com/nightly-news/video/trump-claims-russia-and-ukraine-agree-to-energy-ceasefire-271416901581",
   "https://www.nbcnews.com/nightly-news/video/trump-russia-will-send-diesel-fuel-to-the-u-s-to-bring-down-prices-271372357511",
   "https://www.nbcnews.com/nightly-news/video/trump-says-u-s-bombers-pulled-from-british-base-due-to-threats-271080005781",
   "https://www.nbcnews.com/nightly-news/video/trump-to-talk-with-putin-very-soon-about-death-at-anti-plague-lab-271147589840",
@@ -25361,6 +25480,7 @@
   "https://www.theguardian.com/us-news/2026/oct/11/abdul-el-sayed-michigan-senate-race-black-voters",
   "https://www.theguardian.com/us-news/2026/oct/11/child-rape-police-chief-louisiana",
   "https://www.theguardian.com/us-news/2026/oct/11/darializa-avila-chevalier-nypd-ice-protests-shooting",
+  "https://www.theguardian.com/us-news/2026/oct/11/erie-pennsylvania-mass-shooting-grandfather",
   "https://www.theguardian.com/us-news/2026/oct/11/ice-agent-strikes-man-with-car-texas",
   "https://www.theguardian.com/us-news/2026/oct/11/justice-department-investigates-tv-networks-trump-pool-coverage",
   "https://www.theguardian.com/us-news/2026/oct/11/los-angeles-mosquitoes-west-nile-virus-el-nino",
