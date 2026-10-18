@@ -3,7 +3,8 @@
 ingest.py — Stage 2 of the Rights Left pipeline (INGEST).
 
 Reads an approved candidates file (.xlsx, the current format, or a legacy
-.csv) and appends the rows you marked include=y into the existing workbook,
+.csv) and appends the rows you marked include=y — on the Candidates tab AND
+the More matches tab — into the existing workbook,
 reproducing the exact formatting already in the file:
  - Weekly Timeline: same Arial 10, wrap, hairline borders, per-week row banding,
    and continuing the File/Ref number sequence.
@@ -26,6 +27,9 @@ import csv, os, re, sys, glob, shutil, argparse, datetime as dt
 from urllib.parse import urlparse
 from openpyxl import load_workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from note import read_note, save_note, NOTES_DIR
 
 # --- styling constants copied verbatim from the original build ----------------
 NAVY, LIGHT = "1F3864", "D9E2F3"
@@ -52,23 +56,42 @@ def _cell_str(ws, row, col):
     return "" if v in (None, "") else str(v).strip()
 
 
-def _read_xlsx_rows(path):
-    """Read a candidates .xlsx into the same list-of-dicts shape
-    csv.DictReader would produce, matching columns by header text (not
-    position) so column order in the sheet doesn't matter."""
-    wb = load_workbook(path, data_only=True)
-    ws = wb["Candidates"] if "Candidates" in wb.sheetnames else wb.active
+# Tabs that hold reviewable stories, in the order they're ingested. Both are
+# laid out identically by gather.py (Include?, Category, Event, …). Older
+# sheets whose More matches tab has no Include? column are skipped there.
+REVIEW_TABS = ("Candidates", "More matches")
+
+
+def _read_tab(ws, tab_name):
     headers = {}
     for col in range(1, ws.max_column + 1):
         v = ws.cell(row=1, column=col).value
         if v:
             key = str(v).strip().lower()
             headers[HEADER_TO_FIELD.get(key, key)] = col
+    if "include" not in headers:
+        return []
     rows = []
     for r in range(2, ws.max_row + 1):
         row = {name: _cell_str(ws, r, col) for name, col in headers.items()}
         if any(row.values()):
+            row["_tab"] = tab_name
             rows.append(row)
+    return rows
+
+
+def _read_xlsx_rows(path):
+    """Read a candidates .xlsx into the same list-of-dicts shape
+    csv.DictReader would produce, matching columns by header text (not
+    position) so column order in the sheet doesn't matter. Reads the
+    Candidates tab and then the More matches tab."""
+    wb = load_workbook(path, data_only=True)
+    rows = []
+    for tab in REVIEW_TABS:
+        if tab in wb.sheetnames:
+            rows += _read_tab(wb[tab], tab)
+    if "Candidates" not in wb.sheetnames:      # an odd hand-made sheet
+        rows = _read_tab(wb.active, wb.active.title) + rows
     return rows
 
 
@@ -214,10 +237,16 @@ def read_approved(path):
             raw_rows = list(csv.DictReader(f))
 
     sheet_monday = file_monday(path)
-    rows, incomplete = [], 0
+    rows, incomplete, seen, per_tab = [], 0, set(), {}
     for r in raw_rows:
         if (r.get("include") or "").strip().lower() not in TRUTHY:
             continue
+        url = (r.get("url") or "").strip()
+        if url and url in seen:
+            continue                     # same story marked y on both tabs
+        seen.add(url)
+        tab = r.pop("_tab", "Candidates")
+        per_tab[tab] = per_tab.get(tab, 0) + 1
         row = {k: (r.get(k) or "").strip() for k in r}
         row = fill_in_blanks(row, sheet_monday)
         blanks = [k for k in ("week_of", "dates", "category", "event",
@@ -231,6 +260,8 @@ def read_approved(path):
     if incomplete:
         print(f"  {incomplete} row(s) ingested with some fields left blank — "
               f"fill those in directly in the workbook whenever you're ready.")
+    if per_tab:
+        print("  Approved: " + ", ".join(f"{n} from {t}" for t, n in per_tab.items()))
     return rows
 
 
@@ -263,6 +294,8 @@ def main():
     ap.add_argument("--xlsx", required=True)
     ap.add_argument("--file", help="approved candidates file, .xlsx or .csv (default: newest in candidates/)")
     ap.add_argument("--candir", default="candidates")
+    ap.add_argument("--notes-dir", default=NOTES_DIR,
+                    help="where your weekly newsletter notes are kept")
     ap.add_argument("--recalc", action="store_true",
                     help="round-trip through LibreOffice to bake formula values")
     args = ap.parse_args()
@@ -275,6 +308,13 @@ def main():
             sys.exit("No candidates file (.xlsx or .csv) found to ingest.")
         cand_path = pool[-1]
     print(f"Ingesting: {cand_path}")
+
+    # Your newsletter note (My Note tab) -> data/notes/<week>.md, which
+    # newsletter.py puts at the top of this week's email.
+    note = read_note(cand_path)
+    monday = file_monday(cand_path)
+    if note and monday:
+        print(f"  Saved your newsletter note to {save_note(note, monday, args.notes_dir)}")
 
     approved = read_approved(cand_path)
     if not approved:

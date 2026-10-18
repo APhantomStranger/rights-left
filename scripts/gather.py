@@ -36,6 +36,8 @@ import os, sys, re, argparse, datetime as dt
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.worksheet.datavalidation import DataValidation
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from note import write_note_tab, read_note
 from openpyxl.formatting.rule import FormulaRule
 from openpyxl.utils import get_column_letter
 
@@ -254,25 +256,11 @@ WRAP = Alignment(wrap_text=True, vertical="top")
 THIN = Border(bottom=Side(style="thin", color="BFBFBF"))
 
 
-def write_candidates_xlsx(rows, path, more=()):
-    """Write the week's candidates as a formatted, easy-to-review workbook:
-    a dropdown on Include?, rows that highlight green once marked y, wrapped
-    text so headlines are readable, a clickable Link column, and a frozen,
-    filterable header row."""
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Candidates"
-
-    # Hidden helper sheet holding the categories, purely as a source for
-    # the Category dropdown below. Excel's inline data-validation list has a
-    # ~255 character limit and the category names together run past that,
-    # so the dropdown has to point at a cell range instead — this sheet is
-    # that range. You'll never need to open it; it's hidden by default.
-    lists_ws = wb.create_sheet("Lists")
-    for i, cat in enumerate(CATEGORIES, start=1):
-        lists_ws.cell(row=i, column=1, value=cat)
-    lists_ws.sheet_state = "hidden"
-
+def _fill_review_tab(ws, rows):
+    """Lay out one review tab: header row, the rows, a clickable Link
+    column, the Include? and Category dropdowns, and the green highlight on
+    rows marked y. The Candidates and More matches tabs are built the same
+    way, so either one can be reviewed and ingested exactly alike."""
     n = len(REVIEW_COLS)
     for c, (key, label, width) in enumerate(REVIEW_COLS, start=1):
         cell = ws.cell(row=1, column=c, value=label)
@@ -314,28 +302,41 @@ def write_candidates_xlsx(rows, path, more=()):
         f"A2:{get_column_letter(n)}{last_row}",
         FormulaRule(formula=['LOWER($A2)="y"'], fill=green))
 
-    # Weaker matches that didn't fit under MAX_CANDIDATES. Nothing is thrown
-    # away silently: to use one, copy its row onto the Candidates tab and
-    # mark it y. Ingest never reads this tab.
-    if more:
-        mws = wb.create_sheet(MORE_TAB)
-        mcols = [c for c in REVIEW_COLS if c[0] in
-                 ("srcdesc", "outlet", "srcdate", "url", "week_of", "dates")]
-        for c, (key, label, width) in enumerate(mcols, start=1):
-            cell = mws.cell(row=1, column=c, value=label)
-            cell.font = HDR_FONT; cell.fill = HDR_FILL
-            mws.column_dimensions[get_column_letter(c)].width = width
-        mws.freeze_panes = "A2"
-        for r, row in enumerate(more, start=2):
-            for c, (key, _, _) in enumerate(mcols, start=1):
-                cell = mws.cell(row=r, column=c, value=row.get(key) or None)
-                cell.font = BODY; cell.alignment = WRAP; cell.border = THIN
-            if row.get("url"):
-                link = mws.cell(row=r, column=[k for k, _, _ in mcols].index("url") + 1)
-                link.hyperlink = row["url"]; link.font = LINK_FONT
 
-    # A short how-to on a second tab. The Candidates tab stays first and
-    # active, which is the one ingest.py reads.
+def write_candidates_xlsx(rows, path, more=(), note=None):
+    """Write the week's candidates as a formatted, easy-to-review workbook:
+    a dropdown on Include?, rows that highlight green once marked y, wrapped
+    text so headlines are readable, a clickable Link column, and a frozen,
+    filterable header row. The More matches tab is laid out identically and
+    ingest reads both. `note` keeps anything already typed on the My Note
+    tab when gather re-runs over an existing sheet."""
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Candidates"
+
+    # Hidden helper sheet holding the categories, purely as a source for
+    # the Category dropdowns. Excel's inline data-validation list has a
+    # ~255 character limit and the category names together run past that,
+    # so the dropdown has to point at a cell range instead — this sheet is
+    # that range. You'll never need to open it; it's hidden by default.
+    lists_ws = wb.create_sheet("Lists")
+    for i, cat in enumerate(CATEGORIES, start=1):
+        lists_ws.cell(row=i, column=1, value=cat)
+    lists_ws.sheet_state = "hidden"
+
+    _fill_review_tab(ws, rows)
+
+    # Weaker matches that didn't fit under MAX_CANDIDATES. Same columns,
+    # dropdowns and highlighting as Candidates: mark any of them y and
+    # ingest brings them in just the same.
+    if more:
+        _fill_review_tab(wb.create_sheet(MORE_TAB), list(more))
+
+    # Your optional personal note for this week's newsletter
+    write_note_tab(wb, note)
+
+    # A short how-to on the last tab. The Candidates tab stays first and
+    # active, so it's what opens.
     how = wb.create_sheet("How to add your own")
     how.column_dimensions["A"].width = 110
     lines = [
@@ -352,6 +353,17 @@ def write_candidates_xlsx(rows, path, more=()):
         ("", False),
         ("Ingest treats your rows exactly like gathered ones. A story dated in an earlier", False),
         ("week lands in that earlier week on the site.", False),
+        ("", False),
+        ("The More matches tab", True),
+        ("", False),
+        ("More matches holds the weaker keyword matches that didn't make the top of the list.", False),
+        ("It works exactly like Candidates: pick y in Include?, choose a Category if you like,", False),
+        ("and ingest brings those rows in too. You can also add your own stories at its bottom.", False),
+        ("", False),
+        ("The My Note tab", True),
+        ("", False),
+        ("Anything you type on My Note goes at the top of this week's newsletter, signed by you.", False),
+        ("Leave it blank and the newsletter goes out with just the week's stories.", False),
     ]
     for i, (text, bold) in enumerate(lines, start=1):
         c = how.cell(row=i, column=1, value=text)
@@ -813,7 +825,8 @@ def main():
     rows = existing + new_rows
     in_sheet = {r.get("url") for r in rows}
     more = [r for r in held if r.get("url") not in in_sheet] + cut_rows
-    write_candidates_xlsx(rows, path, more)
+    note = read_note(path) if os.path.exists(path) else None
+    write_candidates_xlsx(rows, path, more, note)
     print(f"Collected {len(new_rows)} new candidate item(s); wrote {path} "
           f"({len(rows)} rows)")
 

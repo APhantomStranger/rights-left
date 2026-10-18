@@ -46,7 +46,8 @@ except ImportError:
     sys.exit("requests not installed — run: pip install -r requirements.txt")
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from build_site import read_workbook, group_by_week  # reuse the site's own logic
+from build_site import read_workbook, group_by_week, _parse_week  # reuse the site's own logic
+from note import load_note, paragraph_html, NOTES_DIR
 
 BUTTONDOWN_API = "https://api.buttondown.com/v1/emails"
 SITE_URL = "https://rightsleft.org"
@@ -102,7 +103,32 @@ def _entry_row(e):
     </td></tr>'''
 
 
-def format_digest(week_label, entries, site_url, paypal_url):
+def _note_block(note):
+    """Your personal note (data/notes/<week>.md) as the first section of the
+    email, set apart from the list of stories. Empty string when there's no
+    note, so the email reads exactly as it always has."""
+    if not note:
+        return ""
+    title = ""
+    if note.get("title"):
+        title = (f'<div style="font-family:{SANS};font-size:21px;font-weight:bold;color:{PAPER};'
+                 f'line-height:1.3;margin:0 0 14px 0;">{_esc(note["title"])}</div>')
+    paras = "".join(
+        f'<p style="font-family:Georgia,\'Times New Roman\',serif;font-size:16px;line-height:1.65;'
+        f'color:{PAPER};margin:0 0 14px 0;">{paragraph_html(p, BLUE_BRIGHT)}</p>'
+        for p in note.get("paragraphs") or [])
+    sign = ""
+    if note.get("signoff"):
+        sign = (f'<div style="font-family:Georgia,\'Times New Roman\',serif;font-size:16px;'
+                f'font-style:italic;color:{PAPER_DIM};margin:4px 0 0 0;">{_esc(note["signoff"])}</div>')
+    return f'''
+  <tr><td style="padding:26px 28px 24px 28px;border-bottom:2px solid {LINE};">
+    <div style="font-family:{MONO};font-size:11px;letter-spacing:3px;color:{RED};text-transform:uppercase;margin:0 0 12px 0;">From the Editor</div>
+    {title}{paras}{sign}
+  </td></tr>'''
+
+
+def format_digest(week_label, entries, site_url, paypal_url, note=None):
     """Full HTML email body, styled to evoke the site's identity within
     what email clients actually support (see module docstring). The
     leading HTML comment forces Buttondown to treat this as rich HTML
@@ -123,6 +149,8 @@ def format_digest(week_label, entries, site_url, paypal_url):
     </div>
     <div style="font-family:{SANS};font-size:13px;color:{PAPER_FAINT};margin:10px 0 0 0;">The Rights That Have Left of Us Project</div>
   </td></tr>
+
+  {_note_block(note)}
 
   <tr><td style="padding:24px 28px 6px 28px;">
     <div style="font-family:{SANS};font-size:19px;font-weight:bold;color:{PAPER};">Week of {_esc(week_label)}</div>
@@ -186,7 +214,35 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--xlsx", required=True)
     ap.add_argument("--site-url", default=SITE_URL)
+    ap.add_argument("--notes-dir", default=NOTES_DIR)
+    ap.add_argument("--preview", metavar="FILE",
+                    help="write the email's HTML to FILE instead of sending it")
     args = ap.parse_args()
+
+    entries = read_workbook(args.xlsx)
+    if not entries:
+        print("Workbook has no entries — nothing to send.")
+        return
+
+    latest = group_by_week(entries)[0]
+    # Your note for this week, if you wrote one (My Note tab, or a file you
+    # uploaded to data/notes/ named for the week's Monday)
+    note = None
+    monday = _parse_week(latest["week"]).date()
+    if monday.year > 1:
+        note = load_note(monday, args.notes_dir)
+    print("  Editor's note: " + (f"yes ({len(note['paragraphs'])} paragraph(s))"
+                                 if note else "none this week"))
+    subject = f"Rights Left — week of {latest['week']}"
+    if note and note.get("title"):
+        subject += f": {note['title']}"
+    body = format_digest(latest["week"], latest["entries"], args.site_url, PAYPAL_URL, note)
+
+    if args.preview:
+        with open(args.preview, "w", encoding="utf-8") as f:
+            f.write(f"<title>{html.escape(subject)}</title>\n" + body)
+        print(f"Preview written to {args.preview} (nothing sent). Subject: {subject}")
+        return
 
     key = os.environ.get("BUTTONDOWN_API_KEY")
     if not key:
@@ -194,19 +250,10 @@ def main():
               "The site and workbook are unaffected either way.")
         return
 
-    entries = read_workbook(args.xlsx)
-    if not entries:
-        print("Workbook has no entries — nothing to send.")
-        return
-
     if _last_send_within_hours(key, THROTTLE_HOURS):
         print(f"Newsletter throttled: a send went out within the last {THROTTLE_HOURS}h. "
               f"Skipping this run — the site and workbook update as normal.")
         return
-
-    latest = group_by_week(entries)[0]
-    subject = f"Rights Left — week of {latest['week']}"
-    body = format_digest(latest["week"], latest["entries"], args.site_url, PAYPAL_URL)
 
     try:
         resp = requests.post(

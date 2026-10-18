@@ -188,21 +188,27 @@ def main():
     wb = ws = headers = fieldnames = None
     if is_xlsx:
         wb = load_workbook(cand_path)
-        # by name, not wb.active: if Excel was last saved with the How-to or
-        # More matches tab showing, "active" would be the wrong sheet
-        ws = wb["Candidates"] if "Candidates" in wb.sheetnames else wb.active
-        headers = {}
-        for col in range(1, ws.max_column + 1):
-            v = ws.cell(row=1, column=col).value
-            if v:
-                key = str(v).strip().lower()
-                headers[HEADER_TO_FIELD.get(key, key)] = col
+        # by name, not wb.active: if Excel was last saved with another tab
+        # showing, "active" would be the wrong sheet. Both review tabs are
+        # read; a More matches tab without an Include? column (older sheets)
+        # is skipped.
+        tabs = [wb[t] for t in ("Candidates", "More matches") if t in wb.sheetnames] \
+            or [wb.active]
         rows = []
-        for r in range(2, ws.max_row + 1):
-            row = {name: _cell_str(ws, r, col) for name, col in headers.items()}
-            if any(row.values()):
-                row["_row"] = r
-                rows.append(row)
+        for ws in tabs:
+            headers = {}
+            for col in range(1, ws.max_column + 1):
+                v = ws.cell(row=1, column=col).value
+                if v:
+                    key = str(v).strip().lower()
+                    headers[HEADER_TO_FIELD.get(key, key)] = col
+            if not {"include", "category", "event", "impact"} <= set(headers):
+                continue
+            for r in range(2, ws.max_row + 1):
+                row = {name: _cell_str(ws, r, col) for name, col in headers.items()}
+                if any(row.values()):
+                    row["_row"], row["_ws"], row["_headers"] = r, ws, headers
+                    rows.append(row)
     else:
         with open(cand_path, newline="", encoding="utf-8") as f:
             reader = csv.DictReader(f)
@@ -252,7 +258,7 @@ def main():
 
     if is_xlsx:
         for row in targets:
-            r = row["_row"]
+            r, ws, headers = row["_row"], row["_ws"], row["_headers"]
             ws.cell(row=r, column=headers["category"], value=row["category"] or None)
             ws.cell(row=r, column=headers["event"], value=row["event"] or None)
             ws.cell(row=r, column=headers["impact"], value=row["impact"] or None)
