@@ -8638,6 +8638,20 @@
    "url": "https://www.bbc.co.uk/news/articles/cwy8lx3pg4k2o?at_medium=RSS&at_campaign=rss",
    "week_of": "Oct 12, 2026"
   },
+  "https://www.bbc.co.uk/news/articles/cwzrd6123jyyo?at_medium=RSS&at_campaign=rss": {
+   "_date": "2026-10-18",
+   "category": "",
+   "dates": "Oct 18",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "BBC News",
+   "score": 2,
+   "srcdate": "Oct 18, 2026",
+   "srcdesc": "Cindy Crawford 'beyond heartbroken' after death of son Presley at 27",
+   "url": "https://www.bbc.co.uk/news/articles/cwzrd6123jyyo?at_medium=RSS&at_campaign=rss",
+   "week_of": "Oct 12, 2026"
+  },
   "https://www.bbc.co.uk/news/articles/cxj0ly1m3q81o?at_medium=RSS&at_campaign=rss": {
    "_date": "2026-10-18",
    "category": "",
@@ -8666,6 +8680,20 @@
    "url": "https://www.bbc.co.uk/news/articles/cxr5yvzv7rp0o?at_medium=RSS&at_campaign=rss",
    "week_of": "Oct 12, 2026"
   },
+  "https://www.bbc.co.uk/news/videos/c32l4kqg2q4ro?at_medium=RSS&at_campaign=rss": {
+   "_date": "2026-10-16",
+   "category": "",
+   "dates": "Oct 16",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "BBC News",
+   "score": 4,
+   "srcdate": "Oct 16, 2026",
+   "srcdesc": "Watch: 'A dollar on gas won't change our vote' - Iowans sticking with Trump",
+   "url": "https://www.bbc.co.uk/news/videos/c32l4kqg2q4ro?at_medium=RSS&at_campaign=rss",
+   "week_of": "Oct 12, 2026"
+  },
   "https://www.bbc.co.uk/news/videos/c6gqw9q1qk2jo?at_medium=RSS&at_campaign=rss": {
    "_date": "2026-10-12",
    "category": "",
@@ -8678,6 +8706,20 @@
    "srcdate": "Oct 12, 2026",
    "srcdesc": "BBC on the scene as agents search Congresswoman Ilhan Omar's home",
    "url": "https://www.bbc.co.uk/news/videos/c6gqw9q1qk2jo?at_medium=RSS&at_campaign=rss",
+   "week_of": "Oct 12, 2026"
+  },
+  "https://www.bbc.co.uk/news/videos/c6x2wvgz5nlno?at_medium=RSS&at_campaign=rss": {
+   "_date": "2026-10-16",
+   "category": "",
+   "dates": "Oct 16",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "BBC News",
+   "score": 5,
+   "srcdate": "Oct 16, 2026",
+   "srcdesc": "Candlelit vigil held for Oregon school shooting victims",
+   "url": "https://www.bbc.co.uk/news/videos/c6x2wvgz5nlno?at_medium=RSS&at_campaign=rss",
    "week_of": "Oct 12, 2026"
   },
   "https://www.bbc.co.uk/news/videos/cmp3g12en1exo?at_medium=RSS&at_campaign=rss": {
@@ -23547,12 +23589,15 @@
   "https://www.bbc.co.uk/news/articles/cwg5jq4vlddzo?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/articles/cwly3zd1r45ro?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/articles/cwy8lx3pg4k2o?at_medium=RSS&at_campaign=rss",
+  "https://www.bbc.co.uk/news/articles/cwzrd6123jyyo?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/articles/cxj0ly1m3q81o?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/articles/cxr5yvzv7rp0o?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/articles/cxvgdneplgzeo?at_medium=RSS&at_campaign=rss",
+  "https://www.bbc.co.uk/news/videos/c32l4kqg2q4ro?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/videos/c6e3x9z8jpj1o?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/videos/c6gqw9q1qk2jo?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/videos/c6kg51yn7dgvo?at_medium=RSS&at_campaign=rss",
+  "https://www.bbc.co.uk/news/videos/c6x2wvgz5nlno?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/videos/c84g166kz003o?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/videos/cmj47n488v47o?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/videos/cmp3g12en1exo?at_medium=RSS&at_campaign=rss",
