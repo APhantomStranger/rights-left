@@ -8806,6 +8806,20 @@
    "url": "https://www.bbc.co.uk/news/articles/ckj0ly6qnp1lo?at_medium=RSS&at_campaign=rss",
    "week_of": "Oct 19, 2026"
   },
+  "https://www.bbc.co.uk/news/articles/ckp8gzdj5m4eo?at_medium=RSS&at_campaign=rss": {
+   "_date": "2026-10-25",
+   "category": "",
+   "dates": "Oct 25",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "BBC News",
+   "score": 1,
+   "srcdate": "Oct 25, 2026",
+   "srcdesc": "How a California mansion filled with surrogate children became a 'House of Horrors'",
+   "url": "https://www.bbc.co.uk/news/articles/ckp8gzdj5m4eo?at_medium=RSS&at_campaign=rss",
+   "week_of": "Oct 19, 2026"
+  },
   "https://www.bbc.co.uk/news/articles/cm1dwzvn6227o?at_medium=RSS&at_campaign=rss": {
    "_date": "2026-10-24",
    "category": "",
@@ -15426,6 +15440,20 @@
    "srcdate": "Oct 23, 2026",
    "srcdesc": "Send your questions for Steve Kornacki on the midterm elections",
    "url": "https://www.nbcnews.com/politics/elections/send-questions-steve-kornacki-midterm-elections-rcna605264",
+   "week_of": "Oct 19, 2026"
+  },
+  "https://www.nbcnews.com/politics/elections/trump-administrations-election-lawsuits-shaky-legal-ground-experts-rcna605296": {
+   "_date": "2026-10-24",
+   "category": "",
+   "dates": "Oct 24",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "NBC News",
+   "score": 8,
+   "srcdate": "Oct 24, 2026",
+   "srcdesc": "DOJ’s election lawsuits are on shaky legal ground, experts say",
+   "url": "https://www.nbcnews.com/politics/elections/trump-administrations-election-lawsuits-shaky-legal-ground-experts-rcna605296",
    "week_of": "Oct 19, 2026"
   },
   "https://www.nbcnews.com/politics/justice-department/blanche-wont-rule-doj-post-election-action-doomsday-scenario-rcna605035": {
@@ -24106,6 +24134,7 @@
   "https://www.bbc.co.uk/news/articles/ck20rery78lro?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/articles/ck4g1jg4n9dno?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/articles/ckj0ly6qnp1lo?at_medium=RSS&at_campaign=rss",
+  "https://www.bbc.co.uk/news/articles/ckp8gzdj5m4eo?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/articles/cm1dwzvn6227o?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/articles/cm20rer9dl8wo?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/articles/cm2kez327gdko?at_medium=RSS&at_campaign=rss",
@@ -24894,6 +24923,7 @@
   "https://www.nbcnews.com/politics/donald-trump/trump-hopes-flatter-putin-negotiating-ukraine-experts-say-rcna604770",
   "https://www.nbcnews.com/politics/donald-trump/trump-sit-deposition-10-billion-defamation-lawsuit-bbc-jan-6-rcna605034",
   "https://www.nbcnews.com/politics/elections/send-questions-steve-kornacki-midterm-elections-rcna605264",
+  "https://www.nbcnews.com/politics/elections/trump-administrations-election-lawsuits-shaky-legal-ground-experts-rcna605296",
   "https://www.nbcnews.com/politics/justice-department/blanche-wont-rule-doj-post-election-action-doomsday-scenario-rcna605035",
   "https://www.nbcnews.com/politics/justice-department/doj-charges-former-top-fbi-officials-frequent-targets-trump-allies-rcna605219",
   "https://www.nbcnews.com/politics/justice-department/justice-department-ig-refuses-investigate-botched-reflecting-pool-case-rcna604787",
