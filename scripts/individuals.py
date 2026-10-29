@@ -437,7 +437,7 @@ def _courtlistener(watch, since, token, log):
 
 
 def weekly_search(watch, matters, days=8, log=print, max_items=250, decode=True,
-                  max_per_person=4):
+                  max_per_person=4, max_general=60):
     """Candidate rows for the weekly Individuals tab, strongest first."""
     matcher = NameMatcher(watch)
     names = [w["name"] for w in watch if w.get("name")]
@@ -496,11 +496,15 @@ def weekly_search(watch, matters, days=8, log=print, max_items=250, decode=True,
     rows.sort(key=lambda r: -r["_score"])                         # …within each score
     # One big story can produce a dozen near-identical headlines; keep the
     # strongest few per person so the tab stays reviewable.
-    per, capped = {}, []
+    per, capped, general = {}, [], 0
     for r in rows:
-        k = r["name"] or r["url"]
-        per[k] = per.get(k, 0) + 1
-        if per[k] <= max_per_person:
+        if not r["name"]:                 # catch-all results: cap so they don't crowd out names
+            general += 1
+            if general <= max_general:
+                capped.append(r)
+            continue
+        per[r["name"]] = per.get(r["name"], 0) + 1
+        if per[r["name"]] <= max_per_person:
             capped.append(r)
     rows = capped[:max_items]
 
