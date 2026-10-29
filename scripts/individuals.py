@@ -71,7 +71,7 @@ STATUSES = ["Under investigation", "Charged", "Pleaded guilty", "Convicted", "Se
             "Acquitted", "Dismissed", "Overturned", "Pardoned", "Commuted",
             "Lawsuit filed", "Judgment against", "Settled", "Articles filed",
             "Impeached", "Impeached & acquitted", "Held in contempt", "Violation found",
-            "Disbarred", "License suspended", "Closed — no action", "Pending"]
+            "Disbarred", "License suspended", "Resolved", "Closed — no action", "Pending"]
 
 # Matters sheet columns: (key, header, width)
 MATTER_COLS = [
@@ -667,7 +667,7 @@ def site_payload(tracker=TRACKER):
     for m in matters:
         status_counts[m.get("status") or "—"] = status_counts.get(m.get("status") or "—", 0) + 1
     watch_names = sorted({w["name"] for w in watch if w.get("name")} - set(people))
-    updated = max((m.get("updated") or m.get("latest_date") or "" for m in matters), default="")
+    updated = dt.date.today().isoformat()      # "as of" = when the page was last built
     return {
         "matters": [{k: m.get(k, "") for k in
                      ("id", "name", "group", "role", "state", "matter", "matter_type", "offense",

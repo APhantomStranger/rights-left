@@ -771,7 +771,7 @@ const IC_TYPE_GLYPH={"Criminal":"gavel","Civil":"scales","Impeachment":"building
   "Contempt":"alert","Ethics & Professional":"shield","Investigation":"people"};
 const IC_GUILTY=new Set(["Pleaded guilty","Convicted","Sentenced","Judgment against","Held in contempt",
   "Violation found","Disbarred","License suspended","Impeached"]);
-const IC_RESOLVED=new Set(["Acquitted","Dismissed","Overturned","Closed — no action","Impeached & acquitted","Settled"]);
+const IC_RESOLVED=new Set(["Acquitted","Dismissed","Overturned","Resolved","Closed — no action","Impeached & acquitted","Settled"]);
 const IC_PARDON=new Set(["Pardoned","Commuted"]);
 function icStatusClass(st){
   if(IC_GUILTY.has(st)) return "st-guilty";
@@ -887,7 +887,8 @@ function IndividualCrimes({onBack}){
   const watchHits=React.useMemo(()=>{
     const t=q.trim().toLowerCase();
     if(t.length<3) return [];
-    return (INDIV.watch||[]).filter(n=>n.toLowerCase().includes(t)).slice(0,8);
+    const words=t.split(/\s+/).filter(Boolean);
+    return (INDIV.watch||[]).filter(n=>{const l=n.toLowerCase(); return words.every(w=>l.includes(w));}).slice(0,8);
   },[q]);
   const filtered=q||group!=="All"||status!=="All"||type!=="All"||offense;
   function clearAll(){ setQ(""); setGroup("All"); setStatus("All"); setType("All"); setOffense(""); }
