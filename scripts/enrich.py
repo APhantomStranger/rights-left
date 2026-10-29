@@ -33,6 +33,7 @@ Usage:
 
 import argparse, csv, json, os, re, sys, glob, time
 from openpyxl import load_workbook
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 try:
     import requests
@@ -150,6 +151,73 @@ def classify(client, outlet, headline, article_text):
     return extract_json(raw)
 
 
+def enrich_individuals(cand_path, client):
+    """Fill blank Type / Offense / Status / Summary (and Matter title for new
+    matters) on approved rows of the Individuals tab, from the article."""
+    import individuals as ind
+    if not cand_path.lower().endswith(".xlsx"):
+        return
+    wb = load_workbook(cand_path)
+    if ind.TAB not in wb.sheetnames:
+        return
+    ws = wb[ind.TAB]
+    cols = {}
+    for c in range(1, ws.max_column + 1):
+        h = (ws.cell(row=1, column=c).value or "").strip().lower()
+        for key, label, _ in ind.REVIEW_COLS:
+            if h == label.lower():
+                cols[key] = c
+    need = ("matter_type", "offense", "status", "summary")
+    done = 0
+    for r in range(2, ws.max_row + 1):
+        get = lambda k: _cell_str(ws, r, cols[k]) if k in cols else ""
+        if get("include").lower() not in TRUTHY:
+            continue
+        updating = bool(get("matter_id"))
+        missing = ["status"] if updating else [k for k in need + ("matter",) if not get(k)]
+        if updating and get("status"):
+            missing = []
+        if not missing:
+            continue
+        text = fetch_article_text(get("url"))
+        if not text:
+            continue
+        prompt = (
+            "You help maintain a factual database of legal matters against named public figures. "
+            "Read the article and respond ONLY with JSON, no preamble: "
+            '{"matter": "...", "matter_type": "...", "offense": "...", "status": "...", "summary": "..."}. '
+            f"Person: {get('name') or '(identify from the article)'}. "
+            f"matter_type must be one of: {', '.join(ind.TYPES)}. "
+            f"offense must be one of: {', '.join(ind.OFFENSES)}. "
+            f"status must be one of: {', '.join(ind.STATUSES)} — the CURRENT legal status as the "
+            "article reports it. Never say Convicted unless there was a conviction; an accusation "
+            "or report is 'Under investigation' only if an official body opened one, otherwise use "
+            "'Pending'. matter = short title (<=8 words), e.g. 'Federal wire fraud case'. "
+            "summary = <=40 words, plain and factual; use 'charged with'/'accused of' for unproven "
+            "allegations. If the article is not about a legal or formal proceeding against this "
+            "person personally, return all fields as empty strings.\n\n"
+            f"Headline: {get('headline')}\n\nArticle text:\n{text}")
+        try:
+            msg = client.messages.create(model="claude-sonnet-4-6", max_tokens=400,
+                                         temperature=0.1,
+                                         messages=[{"role": "user", "content": prompt}])
+            data = extract_json("".join(b.text for b in msg.content if b.type == "text"))
+        except Exception as ex:
+            print(f"     ! Individuals row {r}: classification failed ({ex.__class__.__name__})")
+            continue
+        for k in missing:
+            v = (data.get(k) or "").strip()
+            allowed = {"matter_type": ind.TYPES, "offense": ind.OFFENSES,
+                       "status": ind.STATUSES}.get(k)
+            if v and (allowed is None or v in allowed) and k in cols:
+                ws.cell(row=r, column=cols[k], value=v)
+        done += 1
+        time.sleep(0.4)
+    if done:
+        wb.save(cand_path)
+        print(f"Individuals: filled in details on {done} approved row(s).")
+
+
 def _cell_str(ws, row, col):
     v = ws.cell(row=row, column=col).value
     return "" if v in (None, "") else str(v).strip()
@@ -183,6 +251,10 @@ def main():
             return
         cand_path = pool[-1]
     print(f"Enriching: {cand_path}")
+    try:
+        enrich_individuals(cand_path, anthropic.Anthropic(api_key=key))
+    except Exception as ex:
+        print(f"  ! Individuals enrichment skipped ({ex.__class__.__name__}: {ex})")
 
     is_xlsx = cand_path.lower().endswith(".xlsx")
     wb = ws = headers = fieldnames = None

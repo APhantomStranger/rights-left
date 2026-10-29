@@ -9,7 +9,7 @@ Usage:
     python scripts/build_site.py --xlsx data/Trump_Second_Term_Weekly_Tracker.xlsx
 """
 
-import argparse, json, os, re, datetime as dt
+import argparse, json, os, re, sys, datetime as dt
 from openpyxl import load_workbook
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -205,6 +205,8 @@ def compute_stats(entries, today=None):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--xlsx", required=True, help="Path to the master workbook")
+    ap.add_argument("--indiv", default=os.path.join("data", "Individual_Crimes_Tracker.xlsx"),
+                    help="The Individual Crimes workbook (optional)")
     ap.add_argument("--out", default="index.html",
                     help="Output HTML path (default: index.html in repo root)")
     args = ap.parse_args()
@@ -229,15 +231,27 @@ def main():
     site_json = json.dumps(site, ensure_ascii=False)
     stats_json = json.dumps(stats, ensure_ascii=False)
 
+    # The Individual Crimes page (second page of the site)
+    indiv = {"matters": [], "offenses": [], "people": 0, "statuses": {}, "watch": [],
+             "watch_total": 0, "updated": "", "groups": []}
+    if os.path.exists(args.indiv):
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        from individuals import site_payload
+        indiv = site_payload(args.indiv)
+        print(f"  Individual Crimes: {len(indiv['matters'])} matters, {indiv['people']} people, "
+              f"{indiv['watch_total']} on the watchlist")
+    indiv_json = json.dumps(indiv, ensure_ascii=False).replace("</", "<\\/")
+
     template = open(TEMPLATE_PATH, encoding="utf-8").read()
     html = (template
             .replace("__DATA__", data_json)
             .replace("__CATS__", cats_json)
             .replace("__SITE__", site_json)
-            .replace("__STATS__", stats_json))
+            .replace("__STATS__", stats_json)
+            .replace("__INDIV__", indiv_json))
 
     # Sanity check
-    for token in ("__DATA__", "__CATS__", "__SITE__", "__STATS__"):
+    for token in ("__DATA__", "__CATS__", "__SITE__", "__STATS__", "__INDIV__"):
         if token in html:
             raise RuntimeError(f"Token {token} was not replaced — template issue")
 

@@ -38,6 +38,7 @@ from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.worksheet.datavalidation import DataValidation
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from note import write_note_tab, read_note
+import individuals
 from openpyxl.formatting.rule import FormulaRule
 from openpyxl.utils import get_column_letter
 
@@ -303,7 +304,7 @@ def _fill_review_tab(ws, rows):
         FormulaRule(formula=['LOWER($A2)="y"'], fill=green))
 
 
-def write_candidates_xlsx(rows, path, more=(), note=None):
+def write_candidates_xlsx(rows, path, more=(), note=None, indiv=None):
     """Write the week's candidates as a formatted, easy-to-review workbook:
     a dropdown on Include?, rows that highlight green once marked y, wrapped
     text so headlines are readable, a clickable Link column, and a frozen,
@@ -335,6 +336,10 @@ def write_candidates_xlsx(rows, path, more=(), note=None):
     # Your optional personal note for this week's newsletter
     write_note_tab(wb, note)
 
+    # Legal developments for the people on The Individual Crimes watchlist
+    if indiv is not None:
+        individuals.write_review_tab(wb, indiv)
+
     # A short how-to on the last tab. The Candidates tab stays first and
     # active, so it's what opens.
     how = wb.create_sheet("How to add your own")
@@ -364,6 +369,18 @@ def write_candidates_xlsx(rows, path, more=(), note=None):
         ("", False),
         ("Anything you type on My Note goes at the top of this week's newsletter, signed by you.", False),
         ("Leave it blank and the newsletter goes out with just the week's stories.", False),
+        ("", False),
+        ("The Individuals tab (The Individual Crimes page)", True),
+        ("", False),
+        ("Headlines this week that name someone on the watchlist next to a legal word (charged, sued,", False),
+        ("impeachment, contempt, ethics…). Only mark y on a real legal development against that person.", False),
+        ("  · Updating a case already on the site: copy its ID from 'This person's matters' into", False),
+        ("    Matter ID, and pick the new Status (e.g. Convicted, Dismissed, Pardoned).", False),
+        ("  · A new case: leave Matter ID blank. Type, Offense, Status and Summary are optional —", False),
+        ("    enrich fills blanks from the article. Give the Matter a short title if you like.", False),
+        ("  · Name blank (general search)? Type the person's name before marking y.", False),
+        ("  · Paste a court record / indictment / docket link into Court Record when you have one.", False),
+        ("Use 'Charged' for charges and 'Convicted' only for convictions — the site words it the same way.", False),
     ]
     for i, (text, bold) in enumerate(lines, start=1):
         c = how.cell(row=i, column=1, value=text)
@@ -792,6 +809,10 @@ def main():
                     help="only add today's finds to the rolling pool; no sheet")
     ap.add_argument("--tracker", default="data/Trump_Second_Term_Weekly_Tracker.xlsx",
                     help="tracker workbook, used to skip stories already logged")
+    ap.add_argument("--indiv-tracker", default=individuals.TRACKER,
+                    help="The Individual Crimes workbook (watchlist + matters)")
+    ap.add_argument("--no-individuals", action="store_true",
+                    help="skip the Individuals tab search")
     args = ap.parse_args()
 
     voyage_key = os.environ.get("VOYAGE_API_KEY")
@@ -826,7 +847,23 @@ def main():
     in_sheet = {r.get("url") for r in rows}
     more = [r for r in held if r.get("url") not in in_sheet] + cut_rows
     note = read_note(path) if os.path.exists(path) else None
-    write_candidates_xlsx(rows, path, more, note)
+
+    # The Individual Crimes: search the news (and court records, if a
+    # CourtListener token is set) for watchlist people + legal words.
+    # Rows already on an existing sheet's Individuals tab are kept as is.
+    indiv = None
+    if not args.no_individuals:
+        kept = individuals.read_review_rows(path) if os.path.exists(path) else []
+        try:
+            matters, watch = individuals.load_tracker(args.indiv_tracker)
+            found = individuals.weekly_search(watch, matters) if watch else []
+        except Exception as ex:
+            print(f"  ! Individuals search failed ({ex.__class__.__name__}: {ex}) — tab left as is")
+            found = []
+        have = {r.get("url") for r in kept}
+        indiv = kept + [r for r in found if r.get("url") not in have]
+        print(f"  Individuals tab: {len(indiv)} row(s) ({len(indiv) - len(kept)} new)")
+    write_candidates_xlsx(rows, path, more, note, indiv)
     print(f"Collected {len(new_rows)} new candidate item(s); wrote {path} "
           f"({len(rows)} rows)")
 

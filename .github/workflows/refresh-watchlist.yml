@@ -1,0 +1,34 @@
+name: Refresh watchlist (Individual Crimes)
+
+# Updates the Watchlist sheet in data/Individual_Crimes_Tracker.xlsx with the
+# current Republican members of Congress and Trump-appointed / Republican-
+# appointed federal judges. Hand-added people (media, cabinet, allies) and
+# every matter are kept as they are. Run it after an election, a swearing-in,
+# or a wave of judicial confirmations. Also runs on the 1st of each month.
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: '17 12 1 * *'
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Refresh the watchlist
+        run: python scripts/roster.py
+      - name: Commit
+        run: |
+          git config user.name  "rights-left-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/Individual_Crimes_Tracker.xlsx
+          git commit -m "Refresh Individual Crimes watchlist ($(date -u +%Y-%m-%d))" || echo "nothing to commit"
+          git push

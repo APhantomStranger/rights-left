@@ -30,6 +30,7 @@ from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from note import read_note, save_note, NOTES_DIR
+import individuals
 
 # --- styling constants copied verbatim from the original build ----------------
 NAVY, LIGHT = "1F3864", "D9E2F3"
@@ -294,6 +295,8 @@ def main():
     ap.add_argument("--xlsx", required=True)
     ap.add_argument("--file", help="approved candidates file, .xlsx or .csv (default: newest in candidates/)")
     ap.add_argument("--candir", default="candidates")
+    ap.add_argument("--indiv-tracker", default=individuals.TRACKER,
+                    help="The Individual Crimes workbook")
     ap.add_argument("--notes-dir", default=NOTES_DIR,
                     help="where your weekly newsletter notes are kept")
     ap.add_argument("--recalc", action="store_true",
@@ -315,6 +318,16 @@ def main():
     monday = file_monday(cand_path)
     if note and monday:
         print(f"  Saved your newsletter note to {save_note(note, monday, args.notes_dir)}")
+
+    # The Individual Crimes: approved rows on the Individuals tab add new
+    # matters or update existing ones in the Individual Crimes workbook.
+    try:
+        a, u = individuals.apply_review(cand_path, args.indiv_tracker)
+        if a or u:
+            print(f"  Individual Crimes: {a} matter(s) added, {u} updated in {args.indiv_tracker}")
+    except Exception as ex:
+        print(f"  ! Individual Crimes update failed ({ex.__class__.__name__}: {ex}) — "
+              f"the weekly record is unaffected")
 
     approved = read_approved(cand_path)
     if not approved:
