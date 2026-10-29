@@ -58,6 +58,11 @@ jobs:
           # Optional: semantic (meaning-based) matching. Without the secret,
           # keyword matching only.
           VOYAGE_API_KEY: ${{ secrets.VOYAGE_API_KEY }}
+          # Optional: free CourtListener API token (courtlistener.com → Profile →
+          # Developer Tools). Adds new federal court dockets naming anyone on The
+          # Individual Crimes watchlist to the sheet's Individuals tab. Without
+          # it, the Individuals tab is built from news searches only.
+          COURTLISTENER_TOKEN: ${{ secrets.COURTLISTENER_TOKEN }}
         run: python scripts/gather.py --pool-dir pool   # add  --draft  to enable AI pre-fill
 
       - name: Commit candidates for review
@@ -81,7 +86,7 @@ jobs:
 
           **To approve:**
           1. Open `${{ steps.collect.outputs.file }}` in this repo and click the ⬇ (download) icon near the top of the file to save it to your computer.
-          2. Open it in Excel. In the **Include?** column, pick `y` from the dropdown on every row you want to keep — the row highlights green so it's easy to see what you've approved. Category / Event / Impact are optional: leave them blank for the automatic enrichment step, or fill them in yourself if you'd rather. The **More matches** tab works exactly the same way — anything marked `y` there is ingested too. Want to add a personal note to this week's newsletter? Type it on the **My Note** tab (leave it blank to skip). Save the file.
+          2. Open it in Excel. In the **Include?** column, pick `y` from the dropdown on every row you want to keep — the row highlights green so it's easy to see what you've approved. Category / Event / Impact are optional: leave them blank for the automatic enrichment step, or fill them in yourself if you'd rather. The **More matches** tab works exactly the same way — anything marked `y` there is ingested too. The **Individuals** tab lists this week's legal news about people on The Individual Crimes watchlist — mark `y` on real developments (put a Matter ID to update an existing case, leave it blank to add a new one). Want to add a personal note to this week's newsletter? Type it on the **My Note** tab (leave it blank to skip). Save the file.
           3. Back on GitHub, open the `candidates` folder → **Add file** → **Upload files** → select your saved file (keep the same filename) → this replaces the original. Commit directly to `main`.
           4. Go to the **Actions** tab → **Ingest approved entries** → **Run workflow**. Leave the file box blank to use this week's file.
 

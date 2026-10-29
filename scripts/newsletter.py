@@ -48,6 +48,7 @@ except ImportError:
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from build_site import read_workbook, group_by_week, _parse_week  # reuse the site's own logic
 from note import load_note, paragraph_html, NOTES_DIR
+import individuals
 
 BUTTONDOWN_API = "https://api.buttondown.com/v1/emails"
 SITE_URL = "https://rightsleft.org"
@@ -128,7 +129,35 @@ def _note_block(note):
   </td></tr>'''
 
 
-def format_digest(week_label, entries, site_url, paypal_url, note=None):
+def _crimes_block(changes, site_url):
+    """'This week on The Individual Crimes': matters added or updated in
+    the last week. Empty string when nothing changed."""
+    if not changes:
+        return ""
+    items = []
+    for m in changes[:12]:
+        link = m.get("court_url") or m.get("source_url") or ""
+        more = (f' &middot; <a href="{_esc(link)}" style="color:{BLUE_BRIGHT};text-decoration:none;">Record &rarr;</a>'
+                if link else "")
+        items.append(f'''
+      <div style="padding:12px 0;border-top:1px solid {LINE};">
+        <div style="font-family:{MONO};font-size:10px;letter-spacing:1.5px;color:{RED};text-transform:uppercase;margin:0 0 5px 0;">{_esc(m.get("status") or "Update")}</div>
+        <div style="font-family:{SANS};font-size:15px;font-weight:bold;color:{PAPER};line-height:1.4;">{_esc(m.get("name"))} &mdash; {_esc(m.get("matter"))}</div>
+        <div style="font-family:{SANS};font-size:12.5px;color:{PAPER_FAINT};margin-top:3px;">{_esc(m.get("role"))}{more}</div>
+      </div>''')
+    extra = len(changes) - 12
+    tail = (f'<div style="font-family:{SANS};font-size:12.5px;color:{PAPER_FAINT};padding-top:8px;">+ {extra} more</div>'
+            if extra > 0 else "")
+    return f'''
+  <tr><td style="padding:26px 28px 10px 28px;border-top:2px solid {LINE};">
+    <div style="font-family:{MONO};font-size:11px;letter-spacing:3px;color:{PAPER_FAINT};text-transform:uppercase;margin:0 0 6px 0;">This week on</div>
+    <div style="font-family:{SANS};font-size:19px;font-weight:bold;color:{PAPER};margin:0 0 8px 0;">The Individual Crimes</div>
+    {"".join(items)}{tail}
+    <div style="padding-top:12px;"><a href="{site_url}/#crimes" style="font-family:{SANS};font-size:14px;font-weight:bold;color:{BLUE_BRIGHT};text-decoration:none;">See every case &rarr;</a></div>
+  </td></tr>'''
+
+
+def format_digest(week_label, entries, site_url, paypal_url, note=None, crimes=None):
     """Full HTML email body, styled to evoke the site's identity within
     what email clients actually support (see module docstring). The
     leading HTML comment forces Buttondown to treat this as rich HTML
@@ -158,6 +187,8 @@ def format_digest(week_label, entries, site_url, paypal_url, note=None):
   </td></tr>
 
   {rows}
+
+  {_crimes_block(crimes, site_url)}
 
   <tr><td style="padding:26px 28px 6px 28px;">
     <a href="{site_url}" style="font-family:{SANS};font-size:14px;font-weight:bold;color:{BLUE_BRIGHT};text-decoration:none;">View the full tracker &rarr;</a>
@@ -215,6 +246,7 @@ def main():
     ap.add_argument("--xlsx", required=True)
     ap.add_argument("--site-url", default=SITE_URL)
     ap.add_argument("--notes-dir", default=NOTES_DIR)
+    ap.add_argument("--indiv-tracker", default=individuals.TRACKER)
     ap.add_argument("--preview", metavar="FILE",
                     help="write the email's HTML to FILE instead of sending it")
     args = ap.parse_args()
@@ -236,7 +268,14 @@ def main():
     subject = f"Rights Left — week of {latest['week']}"
     if note and note.get("title"):
         subject += f": {note['title']}"
-    body = format_digest(latest["week"], latest["entries"], args.site_url, PAYPAL_URL, note)
+    crimes = []
+    if os.path.exists(args.indiv_tracker):
+        try:
+            crimes = individuals.recent_changes(args.indiv_tracker, days=7)
+        except Exception as ex:
+            print(f"  (Individual Crimes section skipped: {ex.__class__.__name__})")
+    print(f"  Individual Crimes updates this week: {len(crimes)}")
+    body = format_digest(latest["week"], latest["entries"], args.site_url, PAYPAL_URL, note, crimes)
 
     if args.preview:
         with open(args.preview, "w", encoding="utf-8") as f:

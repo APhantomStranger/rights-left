@@ -373,13 +373,67 @@
     /* controls were overflowing the viewport on phones — let them wrap and
        let the select/search shrink instead of forcing a horizontal scroll */
     .controls{flex-wrap:wrap;margin-left:auto}
-    .nav-links{order:3}
+    .nav-links{order:3;flex-wrap:wrap;max-width:100%}
   }
   @media(prefers-reduced-motion:reduce){
     .htitle .rl::after{animation:none;transform:scaleX(0)}
     .mark .cursor{animation:none}
     *{scroll-behavior:auto!important}
   }
+
+  /* ===== The Individual Crimes page ===== */
+  .ic-hero .htitle .crimes{color:#E53935}
+  .ic-legend{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:18px;font-family:"IBM Plex Mono",monospace;
+    font-size:11px;color:var(--paper-faint);text-transform:uppercase;letter-spacing:.08em}
+  .ic-legend span{display:inline-flex;align-items:center;gap:6px}
+  .ic-dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+  .ic-filters{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:2px}
+  .ic-filters select{max-width:200px}
+  .ic-filters input[type=search]{width:220px}
+  @media(max-width:900px){
+    .ic-filters{margin-left:0;width:100%}
+    .ic-filters select{flex:1 1 140px;min-width:0;max-width:none}
+    .ic-filters input[type=search]{flex:1 1 100%;width:auto}
+  }
+  .ic-card{border-left-color:#E53935}
+  .ic-card.st-resolved{border-left-color:var(--paper-faint)}
+  .ic-card.st-pardon{border-left-color:#B07CFF}
+  .ic-card.st-open{border-left-color:#F2A93B}
+  .ic-name{font-family:"Archivo",sans-serif;font-weight:800;color:var(--paper);font-size:1.45rem;
+    line-height:1.15;margin:0}
+  .ic-role{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--paper-faint);
+    text-transform:uppercase;letter-spacing:.08em;margin-top:6px}
+  .ic-top{display:flex;gap:14px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+  .ic-badge{font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:600;text-transform:uppercase;
+    letter-spacing:.08em;padding:4px 9px;border-radius:3px;white-space:nowrap;border:1px solid}
+  .ic-badge.st-guilty{color:#FF8A80;border-color:rgba(229,57,53,.6);background:rgba(229,57,53,.12)}
+  .ic-badge.st-open{color:#FFC46B;border-color:rgba(242,169,59,.55);background:rgba(242,169,59,.1)}
+  .ic-badge.st-resolved{color:var(--paper-dim);border-color:var(--line-strong);background:transparent}
+  .ic-badge.st-pardon{color:#CDB0FF;border-color:rgba(176,124,255,.55);background:rgba(176,124,255,.1)}
+  .ic-matter{font-family:"Archivo",sans-serif;font-weight:700;color:var(--paper);font-size:1.08rem;margin:16px 0 6px}
+  .ic-summary{margin:0;color:var(--paper-dim)}
+  .ic-juris{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--paper-faint);margin-top:10px}
+  .ic-links{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line);
+    font-family:"IBM Plex Mono",monospace;font-size:12px}
+  .ic-links .lbl{color:var(--paper-faint);text-transform:uppercase;letter-spacing:.08em;margin-right:6px}
+  .ic-toggle{all:unset;cursor:pointer;color:var(--blue-bright);font-family:"IBM Plex Mono",monospace;font-size:12px}
+  .ic-toggle:hover{color:var(--paper)}
+  .ic-history{list-style:none;margin:12px 0 0;padding:0 0 0 14px;border-left:2px solid var(--line-strong)}
+  .ic-history li{position:relative;margin:0 0 9px;font-size:14px;color:var(--paper-dim)}
+  .ic-history li::before{content:"";position:absolute;left:-19px;top:7px;width:8px;height:8px;border-radius:50%;
+    background:var(--blue-bright)}
+  .ic-history .d{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--paper-faint);margin-right:8px}
+  .ic-group-row{all:unset;cursor:pointer;display:flex;justify-content:space-between;gap:10px;width:100%;
+    box-sizing:border-box;padding:6px 8px;border-radius:3px;font-size:13.5px;color:var(--paper-dim)}
+  .ic-group-row:hover{background:var(--panel2);color:var(--paper)}
+  .ic-group-row.active{background:var(--panel2);color:var(--paper)}
+  .ic-group-row .c{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--paper-faint)}
+  .ic-watch{border:1px dashed var(--line-strong);border-radius:4px;padding:14px 16px;margin-top:20px;
+    font-size:14px;color:var(--paper-dim)}
+  .ic-watch b{color:var(--paper)}
+  .ic-note{margin-top:34px;border:1px solid var(--line);border-radius:4px;padding:18px 20px;font-size:13.5px;
+    color:var(--paper-dim);line-height:1.6}
+  .ic-note b{color:var(--paper)}
 </style>
 <div id="root"></div>
 <script type="text/babel">
@@ -387,6 +441,7 @@ const DATA = __DATA__;
 const CATS = __CATS__;
 const SITE = __SITE__;
 const STATS = __STATS__;
+const INDIV = __INDIV__;
 
 /* =========================================================================
    EDIT THESE THREE LINES to add your own image and donation links.
@@ -429,8 +484,8 @@ const PATHS = {
   badge:"M12 3l2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8L3.6 9.1l5.8-.8z",
   alert:"M12 3.5L2.5 20h19L12 3.5z M12 10v4.5 M12 17.2v.3"
 };
-function Glyph({cat}){
-  const d = PATHS[GLYPH_MAP[cat]||"shield"];
+function Glyph({cat,kind}){
+  const d = PATHS[kind||GLYPH_MAP[cat]||"shield"];
   return (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
     strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
     {d.split(" M").map((seg,i)=><path key={i} d={(i?"M":"")+seg}/>)}
@@ -711,11 +766,237 @@ function ShareMenu({weekLabel}){
   </span>);
 }
 
+/* ===================== The Individual Crimes page ===================== */
+const IC_TYPE_GLYPH={"Criminal":"gavel","Civil":"scales","Impeachment":"building",
+  "Contempt":"alert","Ethics & Professional":"shield","Investigation":"people"};
+const IC_GUILTY=new Set(["Pleaded guilty","Convicted","Sentenced","Judgment against","Held in contempt",
+  "Violation found","Disbarred","License suspended","Impeached"]);
+const IC_RESOLVED=new Set(["Acquitted","Dismissed","Overturned","Resolved","Closed — no action","Impeached & acquitted","Settled"]);
+const IC_PARDON=new Set(["Pardoned","Commuted"]);
+function icStatusClass(st){
+  if(IC_GUILTY.has(st)) return "st-guilty";
+  if(IC_PARDON.has(st)) return "st-pardon";
+  if(IC_RESOLVED.has(st)) return "st-resolved";
+  return "st-open";
+}
+function icDate(d){
+  if(!d) return "";
+  const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(d);
+  if(!m) return d;
+  const dt=new Date(Date.UTC(+m[1],+m[2]-1,+m[3]));
+  return dt.toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric",timeZone:"UTC"});
+}
+function icMatch(m,f){
+  if(f.group!=="All" && m.group!==f.group) return false;
+  if(f.status!=="All" && icStatusClass(m.status)!==f.status) return false;
+  if(f.type!=="All" && m.matter_type!==f.type) return false;
+  if(f.offense && m.offense!==f.offense) return false;
+  if(f.q){
+    const s=[m.name,m.role,m.group,m.matter,m.offense,m.status,m.summary,m.jurisdiction,m.case_number]
+      .join(" ").toLowerCase();
+    if(!f.q.toLowerCase().split(/\s+/).filter(Boolean).every(w=>s.includes(w))) return false;
+  }
+  return true;
+}
+function downloadCrimes(rows){
+  const header=["ID","Name","Role","Group","Matter","Type","Offense","Status","Filed","Latest",
+    "Jurisdiction","Case No.","Summary","Court record","Source"];
+  const body=rows.map(m=>[m.id,m.name,m.role,m.group,m.matter,m.matter_type,m.offense,m.status,
+    m.filed_date,m.latest_date,m.jurisdiction,m.case_number,m.summary,m.court_url,m.source_url]);
+  const saveCsv=()=>{
+    const esc=v=>'"'+String(v==null?"":v).replace(/"/g,'""')+'"';
+    const csv=[header,...body].map(r=>r.map(esc).join(",")).join("\r\n");
+    const blob=new Blob(["﻿"+csv],{type:"text/csv;charset=utf-8;"});
+    const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+    a.download="rights-left-individual-crimes.csv";
+    document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(a.href);
+  };
+  const build=()=>{
+    const ws=window.XLSX.utils.aoa_to_sheet([header,...body]);
+    ws["!cols"]=[{wch:7},{wch:22},{wch:30},{wch:20},{wch:34},{wch:13},{wch:20},{wch:16},{wch:11},
+      {wch:11},{wch:28},{wch:16},{wch:70},{wch:44},{wch:44}];
+    const wb=window.XLSX.utils.book_new();
+    window.XLSX.utils.book_append_sheet(wb,ws,"Individual Crimes");
+    window.XLSX.writeFile(wb,"rights-left-individual-crimes.xlsx");
+  };
+  if(window.XLSX){ try{ build(); }catch(err){ saveCsv(); } return; }
+  loadScriptOnce("https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js")
+    .then(()=>{ try{ build(); }catch(err){ saveCsv(); } }).catch(saveCsv);
+}
+
+function MatterCard({m}){
+  const [open,setOpen]=React.useState(false);
+  const sc=icStatusClass(m.status);
+  const hist=(m.history||[]).slice().sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+  return (<article className={"card ic-card "+sc} id={"matter-"+m.id}>
+    <div className="plate">
+      <span className="glyph"><Glyph cat={null} kind={IC_TYPE_GLYPH[m.matter_type]||"gavel"}/></span>
+      <span className="pcat">{[m.matter_type,m.offense].filter(Boolean).join(" · ")}</span>
+      <span className="pmeta">{m.id}<br/>{icDate(m.latest_date)}</span>
+    </div>
+    <div className="cbody">
+      <div className="ic-top">
+        <div>
+          <h3 className="ic-name">{m.name}</h3>
+          <div className="ic-role">{[m.role,m.group].filter(Boolean).join(" · ")}</div>
+        </div>
+        {m.status && <span className={"ic-badge "+sc}>{m.status}</span>}
+      </div>
+      {m.matter && <div className="ic-matter">{m.matter}</div>}
+      {m.summary && <p className="ic-summary">{m.summary}</p>}
+      {(m.jurisdiction||m.case_number||m.filed_date) && <div className="ic-juris">
+        {[m.jurisdiction,m.case_number,m.filed_date?("Began "+icDate(m.filed_date)):""].filter(Boolean).join(" · ")}
+      </div>}
+      {hist.length>0 && <div style={{marginTop:12}}>
+        <button className="ic-toggle" onClick={()=>setOpen(!open)} aria-expanded={open}>
+          {open?"▾ Hide timeline":"▸ Timeline ("+hist.length+")"}</button>
+        {open && <ul className="ic-history">
+          {hist.map((h,i)=><li key={i}><span className="d">{icDate(h.date)}</span>{h.event}</li>)}
+        </ul>}
+      </div>}
+      {(m.court_url||m.source_url) && <div className="ic-links">
+        {m.court_url && <span><span className="lbl">Record</span>
+          <a href={m.court_url} target="_blank" rel="noopener noreferrer">Court / official record →</a></span>}
+        {m.source_url && <span><span className="lbl">Source</span>
+          <a href={m.source_url} target="_blank" rel="noopener noreferrer">{m.source_outlet||"News report"} →</a></span>}
+      </div>}
+    </div>
+  </article>);
+}
+
+function IndividualCrimes({onBack}){
+  const all=INDIV.matters||[];
+  const [q,setQ]=React.useState("");
+  const [group,setGroup]=React.useState("All");
+  const [status,setStatus]=React.useState("All");
+  const [type,setType]=React.useState("All");
+  const [offense,setOffense]=React.useState("");
+  const [limit,setLimit]=React.useState(40);
+  const f={q,group,status,type,offense};
+  const shown=React.useMemo(()=>all.filter(m=>icMatch(m,f)),[q,group,status,type,offense]);
+  React.useEffect(()=>setLimit(40),[q,group,status,type,offense]);
+
+  const people=new Set(all.map(m=>m.name)).size;
+  const guilty=all.filter(m=>IC_GUILTY.has(m.status)).length;
+  const open=all.filter(m=>icStatusClass(m.status)==="st-open").length;
+  const pardoned=all.filter(m=>IC_PARDON.has(m.status)).length;
+  const types=[...new Set(all.map(m=>m.matter_type).filter(Boolean))].sort();
+  const groupCounts=(INDIV.groups||[]).map(g=>({g,n:all.filter(m=>m.group===g).length}));
+
+  // Someone on the watchlist with nothing on record: say so plainly.
+  const watchHits=React.useMemo(()=>{
+    const t=q.trim().toLowerCase();
+    if(t.length<3) return [];
+    const words=t.split(/\s+/).filter(Boolean);
+    return (INDIV.watch||[]).filter(n=>{const l=n.toLowerCase(); return words.every(w=>l.includes(w));}).slice(0,8);
+  },[q]);
+  const filtered=q||group!=="All"||status!=="All"||type!=="All"||offense;
+  function clearAll(){ setQ(""); setGroup("All"); setStatus("All"); setType("All"); setOffense(""); }
+
+  return (<React.Fragment>
+    <section className="hero ic-hero"><div className="wrap">
+      <div className="eyebrow">The Individual Crimes{INDIV.updated?" · Updated "+icDate(INDIV.updated):""}</div>
+      <h1 className="htitle">THE INDIVIDUAL<br/><span className="crimes">CRIMES</span></h1>
+      <p className="hsub">Charges, convictions, lawsuits, impeachments and investigations against Republican officials, the Trump administration, and the right-wing media that promotes it.</p>
+      <p className="hstand">Every entry is tied to a court record or reporting from an established outlet, and is updated as cases move — including when charges are dropped, defendants are acquitted, or Trump issues a pardon.</p>
+      <div className="hmeta">
+        <div className="stat"><b>{all.length}</b><span>Legal matters</span></div>
+        <div className="stat"><b>{people}</b><span>People</span></div>
+        <div className="stat"><b>{guilty}</b><span>Convicted, pleaded or found liable</span></div>
+        <div className="stat"><b>{open}</b><span>Pending or charged</span></div>
+        <div className="stat"><b>{pardoned}</b><span>Pardoned or commuted</span></div>
+      </div>
+      <div className="hmeta">
+        <div className="ic-filters">
+          <input type="search" placeholder="Search a name, charge or case…" value={q}
+            onChange={e=>setQ(e.target.value)} aria-label="Search the Individual Crimes database"/>
+          <select value={group} onChange={e=>setGroup(e.target.value)} aria-label="Filter by group">
+            <option value="All">All groups</option>
+            {(INDIV.groups||[]).map(g=><option key={g} value={g}>{g}</option>)}
+          </select>
+          <select value={status} onChange={e=>setStatus(e.target.value)} aria-label="Filter by status">
+            <option value="All">Any status</option>
+            <option value="st-guilty">Convicted / pleaded / found liable</option>
+            <option value="st-open">Pending / charged / filed</option>
+            <option value="st-pardon">Pardoned / commuted</option>
+            <option value="st-resolved">Dismissed / acquitted / settled</option>
+          </select>
+          <select value={type} onChange={e=>setType(e.target.value)} aria-label="Filter by type">
+            <option value="All">All types</option>
+            {types.map(t=><option key={t} value={t}>{t}</option>)}
+          </select>
+        </div>
+      </div>
+      <div className="ic-legend" aria-hidden="true">
+        <span><i className="ic-dot" style={{background:"#E53935"}}/>Convicted / liable</span>
+        <span><i className="ic-dot" style={{background:"#F2A93B"}}/>Pending / alleged</span>
+        <span><i className="ic-dot" style={{background:"#B07CFF"}}/>Pardoned / commuted</span>
+        <span><i className="ic-dot" style={{background:"#77787F"}}/>Dismissed / acquitted / settled</span>
+      </div>
+    </div></section>
+
+    <section className="record"><div className="wrap">
+      <div className="rhead">
+        <span>The Individual Crimes — newest developments first</span>
+        <span>{filtered ? shown.length+" matching" : all.length+" matters"}</span>
+      </div>
+      <div className="grid">
+        <nav className="archive" aria-label="Offenses and groups">
+          {(INDIV.offenses||[]).length>0 && <div>
+            <div className="archive-h">Top 10 offenses</div>
+            <PieChart data={INDIV.offenses} onSelect={o=>setOffense(o===offense?"":o)}/>
+          </div>}
+          {groupCounts.length>0 && <div className="side-block">
+            <div className="archive-h">By group</div>
+            <button className={"ic-group-row"+(group==="All"?" active":"")} onClick={()=>setGroup("All")}>
+              <span>Everyone</span><span className="c">{all.length}</span></button>
+            {groupCounts.map(({g,n})=>(
+              <button key={g} className={"ic-group-row"+(group===g?" active":"")} onClick={()=>setGroup(g)}>
+                <span>{g}</span><span className="c">{n}</span></button>))}
+          </div>}
+          <div className="side-block">
+            <div className="archive-h">Download</div>
+            <button className="aw-dl" style={{marginLeft:0}} onClick={()=>downloadCrimes(shown)}>⤓ Download Excel</button>
+          </div>
+        </nav>
+        <div>
+          <h2 className="wtitle">{offense||(group!=="All"?group:"Latest developments")}
+            <small>{shown.length} {shown.length===1?"matter":"matters"}{q?' · "'+q+'"':""}
+              {filtered && <button className="clear-link" onClick={clearAll}>✕ Clear filters</button>}
+            </small>
+          </h2>
+          {watchHits.length>0 && <div className="ic-watch">
+            <b>No legal matters on record</b> for {watchHits.join(", ")} as of {icDate(INDIV.updated)||"the latest update"}.
+            {" "}These names are on the watchlist the weekly search checks, which says nothing about them on its own.
+          </div>}
+          {shown.length
+            ? <div className="cards">{shown.slice(0,limit).map(m=><MatterCard key={m.id} m={m}/>)}</div>
+            : (watchHits.length===0 && <div className="empty">No matters match this search.<br/>Try a different name or clear the filters.</div>)}
+          {shown.length>limit && <div style={{textAlign:"center",marginTop:24}}>
+            <button className="aw-back" onClick={()=>setLimit(limit+40)}>Show more ({shown.length-limit} left)</button>
+          </div>}
+          <div className="ic-note">
+            <b>How to read this page.</b> The status on each entry is the legal record as of the date shown.
+            "Charged," "Lawsuit filed," "Articles filed," "Pending" and "Under investigation" are allegations, not findings —
+            everyone here is presumed innocent unless convicted. Acquittals, dismissals and pardons stay on the record and are
+            labeled as such. Only matters against the person personally are included; lawsuits challenging an official's
+            policies are not. Every entry links to its court record or source — <b>verify before relying on it</b>, and if
+            something is out of date, reply to any Rights Left email and it will be corrected.
+          </div>
+          <div className="aw-foot" style={{marginTop:24}}>
+            <button className="aw-back" onClick={onBack}>← Back to The Record</button>
+          </div>
+        </div>
+      </div>
+    </div></section>
+  </React.Fragment>);
+}
+
 function App(){
   const [idx,setIdx]=React.useState(0);
   const [cat,setCat]=React.useState("All");
   const [q,setQ]=React.useState("");
-  const [view,setView]=React.useState("record");   // "record" | "about" | "weeks"
+  const [view,setView]=React.useState(()=>location.hash==="#crimes"?"crimes":"record");   // "record" | "crimes" | "about" | "weeks"
   // The archive page keeps its OWN search/category state, deliberately separate
   // from the record view's — so filtering the archive never quietly changes
   // what you see when you go back to the weekly view, and vice versa.
@@ -754,9 +1035,20 @@ function App(){
   },[]);
 
   const hasPay = PAYPAL_URL || VENMO_URL;
-  function goRecord(){ setView("record"); }
-  function goAbout(){ setView("about"); window.scrollTo({top:0,behavior:"smooth"}); }
-  function goWeeks(){ setView("weeks"); window.scrollTo({top:0,behavior:"smooth"}); }
+  function goRecord(){
+    setView("record");
+    if(location.hash==="#crimes") history.replaceState(null,"",location.pathname+location.search);
+  }
+  // The Individual Crimes page gets its own address (rightsleft.org/#crimes) so it can be shared
+  function goCrimes(){
+    setView("crimes"); window.scrollTo({top:0,behavior:"smooth"});
+    if(location.hash!=="#crimes") history.replaceState(null,"",location.pathname+location.search+"#crimes");
+  }
+  function clearCrimesHash(){
+    if(location.hash==="#crimes") history.replaceState(null,"",location.pathname+location.search);
+  }
+  function goAbout(){ setView("about"); clearCrimesHash(); window.scrollTo({top:0,behavior:"smooth"}); }
+  function goWeeks(){ setView("weeks"); clearCrimesHash(); window.scrollTo({top:0,behavior:"smooth"}); }
 
   // Archive page: months (newest first) -> weeks (newest first) -> entries.
   // DATA is already sorted newest-first by build_site.py, so month order and
@@ -798,6 +1090,7 @@ function App(){
     const i=weekIndexFromHash();
     if(i>=0){ setIdx(i); setView("record"); userPickedWeek.current=true; }
     function onHash(){
+      if(location.hash==="#crimes"){ setView("crimes"); return; }
       const j=weekIndexFromHash();
       if(j>=0){ setIdx(j); setView("record"); setCatView(false); userPickedWeek.current=true; }
     }
@@ -861,6 +1154,7 @@ function App(){
         RIGHTS<span className="stamp">LEFT</span><span className="cursor"></span></div>
       <nav className="nav-links">
         <button className={view==="record"?"active":""} onClick={goRecord}>The Record</button>
+        <button className={view==="crimes"?"active":""} onClick={goCrimes}>The Individual Crimes</button>
         <button className={view==="weeks"?"active":""} onClick={goWeeks}>All Weeks</button>
         <button className={view==="about"?"active":""} onClick={goAbout}>About</button>
       </nav>
@@ -961,6 +1255,8 @@ function App(){
       </div>
     </div></section>
     </React.Fragment>}
+
+    {view==="crimes" && <IndividualCrimes onBack={goRecord}/>}
 
     {view==="weeks" && <section className="allweeks"><div className="wrap">
       <div className="eyebrow">Complete archive</div>
