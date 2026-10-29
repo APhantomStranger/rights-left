@@ -153,7 +153,7 @@ def classify(client, outlet, headline, article_text):
 
 def enrich_individuals(cand_path, client):
     """Fill blank Type / Offense / Status / Summary (and Matter title for new
-    matters) on approved rows of the Individuals tab, from the article."""
+    matters) on approved rows of the MAGA Crime Tracker tab, from the article."""
     import individuals as ind
     if not cand_path.lower().endswith(".xlsx"):
         return
@@ -203,7 +203,7 @@ def enrich_individuals(cand_path, client):
                                          messages=[{"role": "user", "content": prompt}])
             data = extract_json("".join(b.text for b in msg.content if b.type == "text"))
         except Exception as ex:
-            print(f"     ! Individuals row {r}: classification failed ({ex.__class__.__name__})")
+            print(f"     ! MAGA Crime Tracker row {r}: classification failed ({ex.__class__.__name__})")
             continue
         for k in missing:
             v = (data.get(k) or "").strip()
@@ -215,7 +215,7 @@ def enrich_individuals(cand_path, client):
         time.sleep(0.4)
     if done:
         wb.save(cand_path)
-        print(f"Individuals: filled in details on {done} approved row(s).")
+        print(f"MAGA Crime Tracker: filled in details on {done} approved row(s).")
 
 
 def _cell_str(ws, row, col):
@@ -254,7 +254,7 @@ def main():
     try:
         enrich_individuals(cand_path, anthropic.Anthropic(api_key=key))
     except Exception as ex:
-        print(f"  ! Individuals enrichment skipped ({ex.__class__.__name__}: {ex})")
+        print(f"  ! MAGA Crime Tracker enrichment skipped ({ex.__class__.__name__}: {ex})")
 
     is_xlsx = cand_path.lower().endswith(".xlsx")
     wb = ws = headers = fieldnames = None

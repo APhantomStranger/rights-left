@@ -205,8 +205,8 @@ def compute_stats(entries, today=None):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--xlsx", required=True, help="Path to the master workbook")
-    ap.add_argument("--indiv", default=os.path.join("data", "Individual_Crimes_Tracker.xlsx"),
-                    help="The Individual Crimes workbook (optional)")
+    ap.add_argument("--indiv", default=os.path.join("data", "MAGA_Crime_Tracker.xlsx"),
+                    help="MAGA Crime Tracker workbook (optional)")
     ap.add_argument("--out", default="index.html",
                     help="Output HTML path (default: index.html in repo root)")
     args = ap.parse_args()
@@ -231,14 +231,14 @@ def main():
     site_json = json.dumps(site, ensure_ascii=False)
     stats_json = json.dumps(stats, ensure_ascii=False)
 
-    # The Individual Crimes page (second page of the site)
+    # MAGA Crime Tracker page (second page of the site)
     indiv = {"matters": [], "offenses": [], "people": 0, "statuses": {}, "watch": [],
              "watch_total": 0, "updated": "", "groups": []}
     if os.path.exists(args.indiv):
         sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
         from individuals import site_payload
         indiv = site_payload(args.indiv)
-        print(f"  Individual Crimes: {len(indiv['matters'])} matters, {indiv['people']} people, "
+        print(f"  MAGA Crime Tracker: {len(indiv['matters'])} matters, {indiv['people']} people, "
               f"{indiv['watch_total']} on the watchlist")
     indiv_json = json.dumps(indiv, ensure_ascii=False).replace("</", "<\\/")
 

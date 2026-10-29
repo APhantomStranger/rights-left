@@ -1,6 +1,6 @@
-name: Refresh watchlist (Individual Crimes)
+name: Refresh watchlist (MAGA Crime Tracker)
 
-# Updates the Watchlist sheet in data/Individual_Crimes_Tracker.xlsx with the
+# Updates the Watchlist sheet in data/MAGA_Crime_Tracker.xlsx with the
 # current Republican members of Congress and Trump-appointed / Republican-
 # appointed federal judges. Hand-added people (media, cabinet, allies) and
 # every matter are kept as they are. Run it after an election, a swearing-in,
@@ -29,6 +29,6 @@ jobs:
         run: |
           git config user.name  "rights-left-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add data/Individual_Crimes_Tracker.xlsx
-          git commit -m "Refresh Individual Crimes watchlist ($(date -u +%Y-%m-%d))" || echo "nothing to commit"
+          git add data/MAGA_Crime_Tracker.xlsx
+          git commit -m "Refresh MAGA Crime Tracker watchlist ($(date -u +%Y-%m-%d))" || echo "nothing to commit"
           git push

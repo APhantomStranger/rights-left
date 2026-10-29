@@ -1,15 +1,15 @@
 """
-individuals.py — "The Individual Crimes" database.
+individuals.py — "MAGA Crime Tracker" database.
 
 A second, separate record alongside the weekly timeline: legal matters
 (criminal cases, civil suits, impeachments, contempt, ethics findings,
 disbarments, formal investigations) brought against individual Republican
 officials, Trump administration figures, and right-wing media figures.
 
-Everything lives in data/Individual_Crimes_Tracker.xlsx:
+Everything lives in data/MAGA_Crime_Tracker.xlsx:
 
   Matters    one row per legal matter, with its current status and a dated
-             history. This is what the site's "The Individual Crimes" page
+             history. This is what the site's "MAGA Crime Tracker" page
              shows. Edit it directly in Excel whenever you like.
   Watchlist  the people the weekly search looks for: Republican members of
              Congress, Trump-appointed and Republican-appointed judges, the
@@ -21,7 +21,7 @@ Everything lives in data/Individual_Crimes_Tracker.xlsx:
 Weekly cycle (all automatic except your review):
   gather.py   searches the news (and CourtListener, if a token is set) for
               watchlist names next to legal words, and writes what it finds
-              to an "Individuals" tab in the weekly candidates sheet.
+              to an "MAGA Crime Tracker" tab in the weekly candidates sheet.
   you         mark y on the stories that are real legal developments. Put
               an existing Matter ID to UPDATE that matter (new status, new
               date), or leave it blank to ADD a new matter.
@@ -51,8 +51,8 @@ from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
 
-TRACKER = os.path.join("data", "Individual_Crimes_Tracker.xlsx")
-TAB = "Individuals"          # tab name in the weekly candidates sheet
+TRACKER = os.path.join("data", "MAGA_Crime_Tracker.xlsx")
+TAB = "MAGA Crime Tracker"   # tab name in the weekly candidates sheet
 
 GROUPS = ["Trump", "Cabinet & Administration", "Senate", "House",
           "Governor & State Official", "Party Official", "Judiciary",
@@ -247,7 +247,7 @@ def save_tracker(matters, watch, path=TRACKER):
     about = wb.create_sheet("About")
     about.column_dimensions["A"].width = 120
     lines = [
-        "The Individual Crimes — how this workbook works",
+        "MAGA Crime Tracker — how this workbook works",
         "",
         "Matters: one row per legal matter. Status is the CURRENT status; History is one dated line per development",
         "  (format: 2026-10-12 — Indicted on two counts). The site shows this sheet, newest Latest date first.",
@@ -438,7 +438,7 @@ def _courtlistener(watch, since, token, log):
 
 def weekly_search(watch, matters, days=8, log=print, max_items=250, decode=True,
                   max_per_person=4, max_general=60):
-    """Candidate rows for the weekly Individuals tab, strongest first."""
+    """Candidate rows for the weekly MAGA Crime Tracker tab, strongest first."""
     matcher = NameMatcher(watch)
     names = [w["name"] for w in watch if w.get("name")]
     seen, rows = set(), []
@@ -525,7 +525,7 @@ def weekly_search(watch, matters, days=8, log=print, max_items=250, decode=True,
 # ---------------------------------------------------------------- weekly review tab
 
 def write_review_tab(wb, rows):
-    """Add the Individuals tab to a weekly candidates workbook. Dropdowns
+    """Add the MAGA Crime Tracker tab to a weekly candidates workbook. Dropdowns
     for Include?, Type, Offense and Status point at the hidden Lists sheet
     (columns C, D, E) which this adds to."""
     from openpyxl.formatting.rule import FormulaRule
