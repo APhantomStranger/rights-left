@@ -304,12 +304,15 @@
 
   /* nav links + support button */
   .mark{cursor:pointer}
-  .nav-links{display:flex;gap:2px}
+  .nav-links{display:flex;gap:6px;align-items:center}
+  /* Each link is underlined and words inside a link sit close together, so
+     multi-word links ("MAGA Crime Tracker", "All Weeks") read as ONE link. */
   .nav-links button{background:none;border:none;cursor:pointer;font-family:"IBM Plex Mono",monospace;
-    font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--paper-faint);
-    padding:6px 11px;border-radius:3px;white-space:nowrap}
-  .nav-links button:hover{color:var(--paper)}
-  .nav-links button.active{color:var(--paper);background:var(--panel2)}
+    font-size:12px;text-transform:uppercase;letter-spacing:.04em;word-spacing:-.25em;color:var(--paper-dim);
+    padding:6px 9px;border-radius:3px;white-space:nowrap;
+    text-decoration:underline;text-decoration-color:var(--line-strong);text-underline-offset:5px;text-decoration-thickness:1px}
+  .nav-links button:hover{color:var(--paper);text-decoration-color:var(--blue-bright)}
+  .nav-links button.active{color:var(--paper);background:var(--panel2);text-decoration-color:var(--blue)}
   .support-btn{background:var(--blue);color:#fff;border:none;border-radius:4px;padding:8px 15px;
     font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:12px;text-transform:uppercase;
     letter-spacing:.08em;cursor:pointer;white-space:nowrap}
