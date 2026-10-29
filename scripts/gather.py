@@ -336,7 +336,7 @@ def write_candidates_xlsx(rows, path, more=(), note=None, indiv=None):
     # Your optional personal note for this week's newsletter
     write_note_tab(wb, note)
 
-    # Legal developments for the people on The Individual Crimes watchlist
+    # Legal developments for the people on MAGA Crime Tracker watchlist
     if indiv is not None:
         individuals.write_review_tab(wb, indiv)
 
@@ -370,7 +370,7 @@ def write_candidates_xlsx(rows, path, more=(), note=None, indiv=None):
         ("Anything you type on My Note goes at the top of this week's newsletter, signed by you.", False),
         ("Leave it blank and the newsletter goes out with just the week's stories.", False),
         ("", False),
-        ("The Individuals tab (The Individual Crimes page)", True),
+        ("The MAGA Crime Tracker tab", True),
         ("", False),
         ("Headlines this week that name someone on the watchlist next to a legal word (charged, sued,", False),
         ("impeachment, contempt, ethics…). Only mark y on a real legal development against that person.", False),
@@ -810,9 +810,9 @@ def main():
     ap.add_argument("--tracker", default="data/Trump_Second_Term_Weekly_Tracker.xlsx",
                     help="tracker workbook, used to skip stories already logged")
     ap.add_argument("--indiv-tracker", default=individuals.TRACKER,
-                    help="The Individual Crimes workbook (watchlist + matters)")
+                    help="MAGA Crime Tracker workbook (watchlist + matters)")
     ap.add_argument("--no-individuals", action="store_true",
-                    help="skip the Individuals tab search")
+                    help="skip the MAGA Crime Tracker tab search")
     args = ap.parse_args()
 
     voyage_key = os.environ.get("VOYAGE_API_KEY")
@@ -848,9 +848,9 @@ def main():
     more = [r for r in held if r.get("url") not in in_sheet] + cut_rows
     note = read_note(path) if os.path.exists(path) else None
 
-    # The Individual Crimes: search the news (and court records, if a
+    # MAGA Crime Tracker: search the news (and court records, if a
     # CourtListener token is set) for watchlist people + legal words.
-    # Rows already on an existing sheet's Individuals tab are kept as is.
+    # Rows already on an existing sheet's MAGA Crime Tracker tab are kept as is.
     indiv = None
     if not args.no_individuals:
         kept = individuals.read_review_rows(path) if os.path.exists(path) else []
@@ -862,7 +862,7 @@ def main():
             found = []
         have = {r.get("url") for r in kept}
         indiv = kept + [r for r in found if r.get("url") not in have]
-        print(f"  Individuals tab: {len(indiv)} row(s) ({len(indiv) - len(kept)} new)")
+        print(f"  MAGA Crime Tracker tab: {len(indiv)} row(s) ({len(indiv) - len(kept)} new)")
     write_candidates_xlsx(rows, path, more, note, indiv)
     print(f"Collected {len(new_rows)} new candidate item(s); wrote {path} "
           f"({len(rows)} rows)")

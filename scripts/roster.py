@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-roster.py — refresh the Watchlist in data/Individual_Crimes_Tracker.xlsx.
+roster.py — refresh the Watchlist in data/MAGA_Crime_Tracker.xlsx.
 
 Pulls two public datasets and merges them into the Watchlist sheet, keeping
 every row you or earlier runs added by hand:

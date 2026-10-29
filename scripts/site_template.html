@@ -381,7 +381,7 @@
     *{scroll-behavior:auto!important}
   }
 
-  /* ===== The Individual Crimes page ===== */
+  /* ===== MAGA Crime Tracker page ===== */
   .ic-hero .htitle .crimes{color:#E53935}
   .ic-legend{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:18px;font-family:"IBM Plex Mono",monospace;
     font-size:11px;color:var(--paper-faint);text-transform:uppercase;letter-spacing:.08em}
@@ -766,7 +766,7 @@ function ShareMenu({weekLabel}){
   </span>);
 }
 
-/* ===================== The Individual Crimes page ===================== */
+/* ===================== MAGA Crime Tracker page ===================== */
 const IC_TYPE_GLYPH={"Criminal":"gavel","Civil":"scales","Impeachment":"building",
   "Contempt":"alert","Ethics & Professional":"shield","Investigation":"people"};
 const IC_GUILTY=new Set(["Pleaded guilty","Convicted","Sentenced","Judgment against","Held in contempt",
@@ -808,7 +808,7 @@ function downloadCrimes(rows){
     const csv=[header,...body].map(r=>r.map(esc).join(",")).join("\r\n");
     const blob=new Blob(["﻿"+csv],{type:"text/csv;charset=utf-8;"});
     const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
-    a.download="rights-left-individual-crimes.csv";
+    a.download="rights-left-maga-crime-tracker.csv";
     document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(a.href);
   };
   const build=()=>{
@@ -816,8 +816,8 @@ function downloadCrimes(rows){
     ws["!cols"]=[{wch:7},{wch:22},{wch:30},{wch:20},{wch:34},{wch:13},{wch:20},{wch:16},{wch:11},
       {wch:11},{wch:28},{wch:16},{wch:70},{wch:44},{wch:44}];
     const wb=window.XLSX.utils.book_new();
-    window.XLSX.utils.book_append_sheet(wb,ws,"Individual Crimes");
-    window.XLSX.writeFile(wb,"rights-left-individual-crimes.xlsx");
+    window.XLSX.utils.book_append_sheet(wb,ws,"MAGA Crime Tracker");
+    window.XLSX.writeFile(wb,"rights-left-maga-crime-tracker.xlsx");
   };
   if(window.XLSX){ try{ build(); }catch(err){ saveCsv(); } return; }
   loadScriptOnce("https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js")
@@ -864,7 +864,7 @@ function MatterCard({m}){
   </article>);
 }
 
-function IndividualCrimes({onBack}){
+function CrimeTracker({onBack}){
   const all=INDIV.matters||[];
   const [q,setQ]=React.useState("");
   const [group,setGroup]=React.useState("All");
@@ -895,8 +895,8 @@ function IndividualCrimes({onBack}){
 
   return (<React.Fragment>
     <section className="hero ic-hero"><div className="wrap">
-      <div className="eyebrow">The Individual Crimes{INDIV.updated?" · Updated "+icDate(INDIV.updated):""}</div>
-      <h1 className="htitle">THE INDIVIDUAL<br/><span className="crimes">CRIMES</span></h1>
+      <div className="eyebrow">MAGA Crime Tracker{INDIV.updated?" · Updated "+icDate(INDIV.updated):""}</div>
+      <h1 className="htitle">MAGA<br/><span className="crimes">CRIME</span> TRACKER</h1>
       <p className="hsub">Charges, convictions, lawsuits, impeachments and investigations against Republican officials, the Trump administration, and the right-wing media that promotes it.</p>
       <p className="hstand">Every entry is tied to a court record or reporting from an established outlet, and is updated as cases move — including when charges are dropped, defendants are acquitted, or Trump issues a pardon.</p>
       <div className="hmeta">
@@ -909,7 +909,7 @@ function IndividualCrimes({onBack}){
       <div className="hmeta">
         <div className="ic-filters">
           <input type="search" placeholder="Search a name, charge or case…" value={q}
-            onChange={e=>setQ(e.target.value)} aria-label="Search the Individual Crimes database"/>
+            onChange={e=>setQ(e.target.value)} aria-label="Search the MAGA Crime Tracker"/>
           <select value={group} onChange={e=>setGroup(e.target.value)} aria-label="Filter by group">
             <option value="All">All groups</option>
             {(INDIV.groups||[]).map(g=><option key={g} value={g}>{g}</option>)}
@@ -937,7 +937,7 @@ function IndividualCrimes({onBack}){
 
     <section className="record"><div className="wrap">
       <div className="rhead">
-        <span>The Individual Crimes — newest developments first</span>
+        <span>MAGA Crime Tracker — newest developments first</span>
         <span>{filtered ? shown.length+" matching" : all.length+" matters"}</span>
       </div>
       <div className="grid">
@@ -1039,7 +1039,7 @@ function App(){
     setView("record");
     if(location.hash==="#crimes") history.replaceState(null,"",location.pathname+location.search);
   }
-  // The Individual Crimes page gets its own address (rightsleft.org/#crimes) so it can be shared
+  // MAGA Crime Tracker page gets its own address (rightsleft.org/#crimes) so it can be shared
   function goCrimes(){
     setView("crimes"); window.scrollTo({top:0,behavior:"smooth"});
     if(location.hash!=="#crimes") history.replaceState(null,"",location.pathname+location.search+"#crimes");
@@ -1154,7 +1154,7 @@ function App(){
         RIGHTS<span className="stamp">LEFT</span><span className="cursor"></span></div>
       <nav className="nav-links">
         <button className={view==="record"?"active":""} onClick={goRecord}>The Record</button>
-        <button className={view==="crimes"?"active":""} onClick={goCrimes}>The Individual Crimes</button>
+        <button className={view==="crimes"?"active":""} onClick={goCrimes}>MAGA Crime Tracker</button>
         <button className={view==="weeks"?"active":""} onClick={goWeeks}>All Weeks</button>
         <button className={view==="about"?"active":""} onClick={goAbout}>About</button>
       </nav>
@@ -1256,7 +1256,7 @@ function App(){
     </div></section>
     </React.Fragment>}
 
-    {view==="crimes" && <IndividualCrimes onBack={goRecord}/>}
+    {view==="crimes" && <CrimeTracker onBack={goRecord}/>}
 
     {view==="weeks" && <section className="allweeks"><div className="wrap">
       <div className="eyebrow">Complete archive</div>

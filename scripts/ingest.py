@@ -296,7 +296,7 @@ def main():
     ap.add_argument("--file", help="approved candidates file, .xlsx or .csv (default: newest in candidates/)")
     ap.add_argument("--candir", default="candidates")
     ap.add_argument("--indiv-tracker", default=individuals.TRACKER,
-                    help="The Individual Crimes workbook")
+                    help="MAGA Crime Tracker workbook")
     ap.add_argument("--notes-dir", default=NOTES_DIR,
                     help="where your weekly newsletter notes are kept")
     ap.add_argument("--recalc", action="store_true",
@@ -319,14 +319,14 @@ def main():
     if note and monday:
         print(f"  Saved your newsletter note to {save_note(note, monday, args.notes_dir)}")
 
-    # The Individual Crimes: approved rows on the Individuals tab add new
-    # matters or update existing ones in the Individual Crimes workbook.
+    # MAGA Crime Tracker: approved rows on the MAGA Crime Tracker tab add new
+    # matters or update existing ones in the MAGA Crime Tracker workbook.
     try:
         a, u = individuals.apply_review(cand_path, args.indiv_tracker)
         if a or u:
-            print(f"  Individual Crimes: {a} matter(s) added, {u} updated in {args.indiv_tracker}")
+            print(f"  MAGA Crime Tracker: {a} matter(s) added, {u} updated in {args.indiv_tracker}")
     except Exception as ex:
-        print(f"  ! Individual Crimes update failed ({ex.__class__.__name__}: {ex}) — "
+        print(f"  ! MAGA Crime Tracker update failed ({ex.__class__.__name__}: {ex}) — "
               f"the weekly record is unaffected")
 
     approved = read_approved(cand_path)

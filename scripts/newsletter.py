@@ -130,7 +130,7 @@ def _note_block(note):
 
 
 def _crimes_block(changes, site_url):
-    """'This week on The Individual Crimes': matters added or updated in
+    """'This week on the MAGA Crime Tracker': matters added or updated in
     the last week. Empty string when nothing changed."""
     if not changes:
         return ""
@@ -150,8 +150,8 @@ def _crimes_block(changes, site_url):
             if extra > 0 else "")
     return f'''
   <tr><td style="padding:26px 28px 10px 28px;border-top:2px solid {LINE};">
-    <div style="font-family:{MONO};font-size:11px;letter-spacing:3px;color:{PAPER_FAINT};text-transform:uppercase;margin:0 0 6px 0;">This week on</div>
-    <div style="font-family:{SANS};font-size:19px;font-weight:bold;color:{PAPER};margin:0 0 8px 0;">The Individual Crimes</div>
+    <div style="font-family:{MONO};font-size:11px;letter-spacing:3px;color:{PAPER_FAINT};text-transform:uppercase;margin:0 0 6px 0;">This week on the</div>
+    <div style="font-family:{SANS};font-size:19px;font-weight:bold;color:{PAPER};margin:0 0 8px 0;">MAGA Crime Tracker</div>
     {"".join(items)}{tail}
     <div style="padding-top:12px;"><a href="{site_url}/#crimes" style="font-family:{SANS};font-size:14px;font-weight:bold;color:{BLUE_BRIGHT};text-decoration:none;">See every case &rarr;</a></div>
   </td></tr>'''
@@ -273,8 +273,8 @@ def main():
         try:
             crimes = individuals.recent_changes(args.indiv_tracker, days=7)
         except Exception as ex:
-            print(f"  (Individual Crimes section skipped: {ex.__class__.__name__})")
-    print(f"  Individual Crimes updates this week: {len(crimes)}")
+            print(f"  (MAGA Crime Tracker section skipped: {ex.__class__.__name__})")
+    print(f"  MAGA Crime Tracker updates this week: {len(crimes)}")
     body = format_digest(latest["week"], latest["entries"], args.site_url, PAYPAL_URL, note, crimes)
 
     if args.preview:
