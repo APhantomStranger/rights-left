@@ -966,6 +966,20 @@
    "url": "https://abcnews.com/US/wireStory/thousands-observers-expected-descend-polling-places-monitor-vote-137566138",
    "week_of": "Oct 26, 2026"
   },
+  "https://abcnews.com/US/wireStory/trump-rallies-iowa-kansas-republicans-fight-senate-house-137746860": {
+   "_date": "2026-11-01",
+   "category": "",
+   "dates": "Nov 1",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "ABC News",
+   "score": 4,
+   "srcdate": "Nov 1, 2026",
+   "srcdesc": "Trump rallies in Iowa and Kansas as Republicans fight to keep Senate and House control",
+   "url": "https://abcnews.com/US/wireStory/trump-rallies-iowa-kansas-republicans-fight-senate-house-137746860",
+   "week_of": "Oct 26, 2026"
+  },
   "https://abcnews.com/US/wireStory/trumps-immigration-crackdown-sparked-backlash-boomerang-midterms-137663207": {
    "_date": "2026-10-29",
    "category": "",
@@ -8790,6 +8804,20 @@
    "srcdate": "Oct 31, 2026",
    "srcdesc": "CCTV, zip ties and election watchers: How US mail-in votes are secured and counted",
    "url": "https://www.bbc.co.uk/news/videos/cw4g1vlj4v2jo?at_medium=RSS&at_campaign=rss",
+   "week_of": "Oct 26, 2026"
+  },
+  "https://www.bbc.co.uk/news/videos/cwly0eev3m44o?at_medium=RSS&at_campaign=rss": {
+   "_date": "2026-11-01",
+   "category": "",
+   "dates": "Nov 1",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "BBC News",
+   "score": 4,
+   "srcdate": "Nov 1, 2026",
+   "srcdesc": "North Carolina voters weigh up Trump's track record on cost of living",
+   "url": "https://www.bbc.co.uk/news/videos/cwly0eev3m44o?at_medium=RSS&at_campaign=rss",
    "week_of": "Oct 26, 2026"
   },
   "https://www.bloomberg.com/news/articles/2026-10-26/bolsonaro-calls-for-annulment-of-election-after-loss-to-lula": {
@@ -18396,6 +18424,20 @@
    "url": "https://www.pbs.org/newshour/politics/judge-orders-3-taxpayer-funded-trump-administration-ads-to-be-pulled-from-tv-social-media",
    "week_of": "Oct 26, 2026"
   },
+  "https://www.pbs.org/newshour/politics/justice-department-urges-sanctions-for-database-analysis-critical-of-its-noncitizen-voting-claims": {
+   "_date": "2026-11-01",
+   "category": "",
+   "dates": "Nov 1",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "PBS NewsHour",
+   "score": 6,
+   "srcdate": "Nov 1, 2026",
+   "srcdesc": "Justice Department urges sanctions for database analysis critical of its noncitizen voting claims",
+   "url": "https://www.pbs.org/newshour/politics/justice-department-urges-sanctions-for-database-analysis-critical-of-its-noncitizen-voting-claims",
+   "week_of": "Oct 26, 2026"
+  },
   "https://www.pbs.org/newshour/politics/leo-xiv-has-become-the-first-pope-in-history-to-vote-in-a-u-s-general-election": {
    "_date": "2026-10-30",
    "category": "",
@@ -22452,6 +22494,7 @@
   "https://abcnews.com/US/wireStory/south-korea-north-korea-launched-unidentified-projectile-off-137662900",
   "https://abcnews.com/US/wireStory/special-master-evaluate-justice-departments-claims-noncitizens-california-137616221",
   "https://abcnews.com/US/wireStory/thousands-observers-expected-descend-polling-places-monitor-vote-137566138",
+  "https://abcnews.com/US/wireStory/trump-rallies-iowa-kansas-republicans-fight-senate-house-137746860",
   "https://abcnews.com/US/wireStory/trumps-immigration-crackdown-sparked-backlash-boomerang-midterms-137663207",
   "https://abcnews.com/US/wireStory/united-flight-turned-after-report-passenger-making-terroristic-137582236",
   "https://abcnews.com/US/wireStory/us-approves-proposed-21-billion-sale-patriot-interceptors-137720328",
@@ -23429,6 +23472,7 @@
   "https://www.bbc.co.uk/news/videos/cr86z576njj2o?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/videos/cv0ldjez8z32o?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/videos/cw4g1vlj4v2jo?at_medium=RSS&at_campaign=rss",
+  "https://www.bbc.co.uk/news/videos/cwly0eev3m44o?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/sport/american-football/articles/cm0qk37933nno?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/sport/american-football/articles/cm3el5dnpxp2o?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/sport/baseball/articles/c5x2v991l0lvo?at_medium=RSS&at_campaign=rss",
@@ -24621,6 +24665,7 @@
   "https://www.pbs.org/newshour/politics/judge-denies-federal-request-to-segregate-california-ballots-says-it-would-wreak-havoc-on-voting",
   "https://www.pbs.org/newshour/politics/judge-dismisses-trump-suit-against-wall-street-journal-over-epstein-birthday-letter",
   "https://www.pbs.org/newshour/politics/judge-orders-3-taxpayer-funded-trump-administration-ads-to-be-pulled-from-tv-social-media",
+  "https://www.pbs.org/newshour/politics/justice-department-urges-sanctions-for-database-analysis-critical-of-its-noncitizen-voting-claims",
   "https://www.pbs.org/newshour/politics/leo-xiv-has-become-the-first-pope-in-history-to-vote-in-a-u-s-general-election",
   "https://www.pbs.org/newshour/politics/libertarians-could-siphon-republican-support-in-the-fight-for-control-of-the-u-s-senate",
   "https://www.pbs.org/newshour/politics/millions-more-americans-vote-ahead-of-election-day-as-early-voting-jumps-across-senate-battlegrounds",
