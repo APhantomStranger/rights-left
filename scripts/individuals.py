@@ -96,6 +96,8 @@ REVIEW_COLS = [
     ("matter", "Matter (new)", 30), ("matter_type", "Type", 14), ("offense", "Offense", 20),
     ("status", "Status", 16), ("summary", "Summary", 50), ("court_url", "Court Record", 30),
     ("found_by", "Found by", 14),
+    # Only needed for someone not on the watchlist yet (general-search rows):
+    ("group", "Group (new person)", 22), ("role", "Role (new person)", 30),
 ]
 
 NAVY, LIGHT_GREEN = "1F3864", "C6E8C6"
@@ -533,7 +535,7 @@ def write_review_tab(wb, rows):
 
     lists = wb["Lists"] if "Lists" in wb.sheetnames else wb.create_sheet("Lists")
     lists.sheet_state = "hidden"
-    for col, values in ((3, TYPES), (4, OFFENSES), (5, STATUSES)):
+    for col, values in ((3, TYPES), (4, OFFENSES), (5, STATUSES), (6, GROUPS)):
         for i, v in enumerate(values, start=1):
             lists.cell(row=i, column=col, value=v)
 
@@ -548,7 +550,7 @@ def write_review_tab(wb, rows):
     ws.add_data_validation(dv)
     dv.add(f"A2:A{last}")
     for key, lcol, n in (("matter_type", "C", len(TYPES)), ("offense", "D", len(OFFENSES)),
-                         ("status", "E", len(STATUSES))):
+                         ("status", "E", len(STATUSES)), ("group", "F", len(GROUPS))):
         d = DataValidation(type="list", formula1=f"Lists!${lcol}$1:${lcol}${n}", allow_blank=True)
         ws.add_data_validation(d)
         d.add(f"{col(key)}2:{col(key)}{last}")
@@ -626,8 +628,10 @@ def apply_review(cand_path, tracker=TRACKER, today=None, log=print):
             log(f"  ! skipped (no name): {(r.get('headline') or '')[:70]}")
             continue
         w = watch_by_name.get(name, {})
-        m = {"id": next_id(matters), "name": name, "group": w.get("group", ""),
-             "role": w.get("role", ""), "state": w.get("state", ""),
+        group = _pick(r.get("group"), GROUPS) or w.get("group", "")
+        role = (r.get("role") or "").strip() or w.get("role", "")
+        m = {"id": next_id(matters), "name": name, "group": group,
+             "role": role, "state": w.get("state", ""),
              "matter": r.get("matter") or (r.get("headline") or "")[:80],
              "matter_type": _pick(r.get("matter_type"), TYPES),
              "offense": _pick(r.get("offense"), OFFENSES),
@@ -639,7 +643,7 @@ def apply_review(cand_path, tracker=TRACKER, today=None, log=print):
         matters.append(m)
         by_id[m["id"]] = m
         if name not in watch_by_name:
-            nw = {"name": name, "group": "", "role": "", "state": "", "aliases": "",
+            nw = {"name": name, "group": group, "role": role, "state": "", "aliases": "",
                   "origin": "weekly review"}
             watch.append(nw)
             watch_by_name[name] = nw
