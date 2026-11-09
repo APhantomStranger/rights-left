@@ -8442,6 +8442,20 @@
    "url": "https://www.bbc.co.uk/news/videos/crje5515kv0xo?at_medium=RSS&at_campaign=rss",
    "week_of": "Nov 2, 2026"
   },
+  "https://www.bbc.co.uk/news/videos/cvze442wdl75o?at_medium=RSS&at_campaign=rss": {
+   "_date": "2026-11-06",
+   "category": "",
+   "dates": "Nov 6",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "BBC News",
+   "score": 5,
+   "srcdate": "Nov 6, 2026",
+   "srcdesc": "What we know about Trump replacing Susie Wiles with Stephen Miller",
+   "url": "https://www.bbc.co.uk/news/videos/cvze442wdl75o?at_medium=RSS&at_campaign=rss",
+   "week_of": "Nov 2, 2026"
+  },
   "https://www.bbc.co.uk/news/videos/cwkg5xmlpj4jo?at_medium=RSS&at_campaign=rss": {
    "_date": "2026-11-04",
    "category": "",
@@ -24878,6 +24892,20 @@
    "url": "https://www.today.com/video/contenders-emerge-for-2028-vance-newsom-ossoff-haley-more-272912453978",
    "week_of": "Nov 2, 2026"
   },
+  "https://www.today.com/video/flu-season-kicks-off-early-is-it-too-late-to-get-the-vaccine-272689221790": {
+   "_date": "2026-11-02",
+   "category": "",
+   "dates": "Nov 2",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "NBC News",
+   "score": 3,
+   "srcdate": "Nov 2, 2026",
+   "srcdesc": "Flu Season Kicks off Early: Is it Too Late to Get the Vaccine?",
+   "url": "https://www.today.com/video/flu-season-kicks-off-early-is-it-too-late-to-get-the-vaccine-272689221790",
+   "week_of": "Nov 2, 2026"
+  },
   "https://www.today.com/video/gov-gavin-newsom-commutes-all-548-california-death-sentences-272994373864": {
    "_date": "2026-11-06",
    "category": "",
@@ -27180,6 +27208,7 @@
   "https://www.bbc.co.uk/news/videos/cr5ynex46j75o?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/videos/crje5515kv0xo?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/videos/cv8ezz9ll7nyo?at_medium=RSS&at_campaign=rss",
+  "https://www.bbc.co.uk/news/videos/cvze442wdl75o?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/videos/cwj0l61e2927o?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/videos/cwkg5xmlpj4jo?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/videos/cwly37l351neo?at_medium=RSS&at_campaign=rss",
@@ -28999,6 +29028,7 @@
   "https://www.today.com/video/contenders-emerge-for-2028-vance-newsom-ossoff-haley-more-272912453978",
   "https://www.today.com/video/defeated-democratic-senate-candidate-backs-gop-s-mike-rogers-272690757513",
   "https://www.today.com/video/democrats-maintain-narrow-lead-in-mississippi-and-alaska-272991301706",
+  "https://www.today.com/video/flu-season-kicks-off-early-is-it-too-late-to-get-the-vaccine-272689221790",
   "https://www.today.com/video/gov-gavin-newsom-commutes-all-548-california-death-sentences-272994373864",
   "https://www.today.com/video/inside-efforts-to-revitalize-san-francisco-273095749958",
   "https://www.today.com/video/learjet-crashes-near-west-palm-beach-killing-all-9-onboard-272681029972",
