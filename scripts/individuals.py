@@ -693,6 +693,7 @@ def recent_changes(tracker=TRACKER, days=7, today=None):
     today = today or dt.date.today()
     cutoff = (today - dt.timedelta(days=days)).isoformat()
     matters, _ = load_tracker(tracker)
-    out = [m for m in matters if (m.get("updated") or "") >= cutoff]
+    # strictly newer than a week ago, so last Sunday's updates aren't repeated
+    out = [m for m in matters if (m.get("updated") or "") > cutoff]
     out.sort(key=lambda m: m.get("latest_date") or "", reverse=True)
     return out

@@ -1,6 +1,6 @@
 # Steps for Site Update
 
-Weekly workflow for Rights Left (rightsleft.org). Updated Oct 29, 2026.
+Weekly workflow for Rights Left (rightsleft.org). Updated Nov 15, 2026.
 
 ## All week, automatically
 
@@ -34,6 +34,12 @@ Save.
 ## 3. Re-upload
 
 Repo's `candidates` folder → **Add file → Upload files** → same filename → commit to `main`.
+
+**If Claude does the upload for you** (you send it the reviewed sheet and ask it to make it live), it does it in this order:
+1. Deletes the unreviewed sheet Gather put in `candidates/` (same filename) and commits that.
+2. Uploads your reviewed sheet as `candidates/<date>.xlsx` and commits to `main`.
+3. Runs **Ingest approved entries** with that exact file path, waits for it to finish, and checks the log (rows appended, MAGA Crime Tracker changes, your note saved, newsletter sent or throttled).
+4. Confirms the update is live on rightsleft.org.
 
 *Alternative for the note:* upload a Markdown file to `data/notes/` named for the week's Monday (e.g. `2026-10-12.md`). An optional first line `# Title`, paragraphs separated by blank lines, and a last line starting with `—` as the sign-off. A note typed in the sheet replaces this file for the same week.
 
