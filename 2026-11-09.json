@@ -238,6 +238,20 @@
    "url": "https://abcnews.com/US/wireStory/2-planes-collide-ground-miami-minor-injuries-reported-138161128",
    "week_of": "Nov 9, 2026"
   },
+  "https://abcnews.com/US/wireStory/32-americans-named-rhodes-scholars-variety-interests-space-138162643": {
+   "_date": "2026-11-15",
+   "category": "",
+   "dates": "Nov 15",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "ABC News",
+   "score": 1,
+   "srcdate": "Nov 15, 2026",
+   "srcdesc": "32 Americans named as Rhodes scholars have variety of interests, from space junk to art history",
+   "url": "https://abcnews.com/US/wireStory/32-americans-named-rhodes-scholars-variety-interests-space-138162643",
+   "week_of": "Nov 9, 2026"
+  },
   "https://abcnews.com/US/wireStory/black-university-mississippi-students-wrestle-forgiveness-wake-racist-138062524": {
    "_date": "2026-11-11",
    "category": "",
@@ -1694,6 +1708,20 @@
    "url": "https://thehill.com/homenews/house/6221508-stanton-congress-power-purse/",
    "week_of": "Nov 9, 2026"
   },
+  "https://thehill.com/homenews/house/6221559-koh-blames-trump-faa-funding/": {
+   "_date": "2026-11-15",
+   "category": "",
+   "dates": "Nov 15",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "The Hill",
+   "score": 7,
+   "srcdate": "Nov 15, 2026",
+   "srcdesc": "Koh blames Trump for blocking Biden-era infrastructure, FAA funding",
+   "url": "https://thehill.com/homenews/house/6221559-koh-blames-trump-faa-funding/",
+   "week_of": "Nov 9, 2026"
+  },
   "https://thehill.com/homenews/media/6212455-rsf-urges-impeachment-brendan-carr/": {
    "_date": "2026-11-11",
    "category": "",
@@ -1860,6 +1888,34 @@
    "srcdate": "Nov 15, 2026",
    "srcdesc": "Confirming judges, defense funding top of GOP's lame-duck agenda: Cramer",
    "url": "https://thehill.com/homenews/senate/6221099-gop-lame-duck-agenda-cramer/",
+   "week_of": "Nov 9, 2026"
+  },
+  "https://thehill.com/homenews/senate/6221606-texas-prosecutor-warns-warren/": {
+   "_date": "2026-11-15",
+   "category": "",
+   "dates": "Nov 15",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "The Hill",
+   "score": 5,
+   "srcdate": "Nov 15, 2026",
+   "srcdesc": "Texas prosecutor accuses Warren of targeting Trump associates with investigations",
+   "url": "https://thehill.com/homenews/senate/6221606-texas-prosecutor-warns-warren/",
+   "week_of": "Nov 9, 2026"
+  },
+  "https://thehill.com/homenews/senate/6221636-cassidy-questions-trumps-fda-pick/": {
+   "_date": "2026-11-15",
+   "category": "",
+   "dates": "Nov 15",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "The Hill",
+   "score": 8,
+   "srcdate": "Nov 15, 2026",
+   "srcdesc": "Cassidy says questions remain about Trump’s FDA pick ahead of committee vote",
+   "url": "https://thehill.com/homenews/senate/6221636-cassidy-questions-trumps-fda-pick/",
    "week_of": "Nov 9, 2026"
   },
   "https://thehill.com/homenews/state-watch/6211869-democrats-win-state-legislatures/": {
@@ -2476,6 +2532,20 @@
    "srcdate": "Nov 13, 2026",
    "srcdesc": "US Army officer involved in alleged Russian spying scheme identified: Reports",
    "url": "https://thehill.com/policy/defense/6217738-brandon-tyner-army-russia-espionage-arrest/",
+   "week_of": "Nov 9, 2026"
+  },
+  "https://thehill.com/policy/defense/6220052-lame-duck-ndaa-defense-fighting/": {
+   "_date": "2026-11-15",
+   "category": "",
+   "dates": "Nov 15",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "The Hill",
+   "score": 4,
+   "srcdate": "Nov 15, 2026",
+   "srcdesc": "5 takeaways as lame-duck defense fights heat up",
+   "url": "https://thehill.com/policy/defense/6220052-lame-duck-ndaa-defense-fighting/",
    "week_of": "Nov 9, 2026"
   },
   "https://thehill.com/policy/energy-environment/6211611-trump-wind-turbines-bipartisan-permitting-reform-bill/": {
@@ -5432,6 +5502,20 @@
    "url": "https://www.aljazeera.com/video/newsfeed/2026/11/15/police-confront-protesters-in-clashes-across-france-and-germany?traffic_source=rss",
    "week_of": "Nov 9, 2026"
   },
+  "https://www.aljazeera.com/video/newsfeed/2026/11/15/yemens-houthis-unilaterally-release-600-war-detainees?traffic_source=rss": {
+   "_date": "2026-11-15",
+   "category": "",
+   "dates": "Nov 15",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "Al Jazeera",
+   "score": 2,
+   "srcdate": "Nov 15, 2026",
+   "srcdesc": "Yemen’s Houthis unilaterally release 600 war detainees",
+   "url": "https://www.aljazeera.com/video/newsfeed/2026/11/15/yemens-houthis-unilaterally-release-600-war-detainees?traffic_source=rss",
+   "week_of": "Nov 9, 2026"
+  },
   "https://www.aljazeera.com/video/newsfeed/2026/11/9/cop31-opens-amid-energy-crisis-as-activists-demand-climate-action?traffic_source=rss": {
    "_date": "2026-11-09",
    "category": "",
@@ -6720,6 +6804,34 @@
    "url": "https://www.axios.com/2026/11/15/blue-border-wall-democrats-governors-immigration",
    "week_of": "Nov 9, 2026"
   },
+  "https://www.axios.com/2026/11/15/democrats-denver-celebration-divide": {
+   "_date": "2026-11-15",
+   "category": "",
+   "dates": "Nov 15",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "Axios",
+   "score": 7,
+   "srcdate": "Nov 15, 2026",
+   "srcdesc": "Dems' Denver victory party previews 2028 battles",
+   "url": "https://www.axios.com/2026/11/15/democrats-denver-celebration-divide",
+   "week_of": "Nov 9, 2026"
+  },
+  "https://www.axios.com/2026/11/15/democrats-make-america-nice-again-2028": {
+   "_date": "2026-11-15",
+   "category": "",
+   "dates": "Nov 15",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "Axios",
+   "score": 4,
+   "srcdate": "Nov 15, 2026",
+   "srcdesc": "Some Dems' 2028 strategy: Make America Nice Again",
+   "url": "https://www.axios.com/2026/11/15/democrats-make-america-nice-again-2028",
+   "week_of": "Nov 9, 2026"
+  },
   "https://www.axios.com/2026/11/15/gen-z-socialism-israel-faith-politics-old-rules": {
    "_date": "2026-11-15",
    "category": "",
@@ -6760,6 +6872,20 @@
    "srcdate": "Nov 15, 2026",
    "srcdesc": "Space data centers could end stargazing as we know it",
    "url": "https://www.axios.com/2026/11/15/space-data-centers-risks-stargazing-report",
+   "week_of": "Nov 9, 2026"
+  },
+  "https://www.axios.com/2026/11/15/vance-2028-campaign-president-announce": {
+   "_date": "2026-11-15",
+   "category": "",
+   "dates": "Nov 15",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "Axios",
+   "score": 8,
+   "srcdate": "Nov 15, 2026",
+   "srcdesc": "Vance may wait until late spring to reveal 2028 plans",
+   "url": "https://www.axios.com/2026/11/15/vance-2028-campaign-president-announce",
    "week_of": "Nov 9, 2026"
   },
   "https://www.axios.com/local/denver/2026/11/09/democrats-whats-next-conference-denver-2028": {
@@ -8540,6 +8666,20 @@
    "url": "https://www.bloomberg.com/news/articles/2026-11-15/anwar-s-coalition-suffers-third-straight-regional-poll-defeat",
    "week_of": "Nov 9, 2026"
   },
+  "https://www.bloomberg.com/news/articles/2026-11-15/burnham-to-tell-city-of-london-audience-brexit-has-not-worked": {
+   "_date": "2026-11-15",
+   "category": "",
+   "dates": "Nov 15",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "Bloomberg",
+   "score": 1,
+   "srcdate": "Nov 15, 2026",
+   "srcdesc": "Burnham to Tell City of London Audience Brexit Has Not Worked",
+   "url": "https://www.bloomberg.com/news/articles/2026-11-15/burnham-to-tell-city-of-london-audience-brexit-has-not-worked",
+   "week_of": "Nov 9, 2026"
+  },
   "https://www.bloomberg.com/news/articles/2026-11-15/iran-strikes-bahrain-base-repeats-path-to-us-deal-remains-open": {
    "_date": "2026-11-15",
    "category": "",
@@ -8580,6 +8720,20 @@
    "srcdate": "Nov 15, 2026",
    "srcdesc": "Sweden Center Party Picks Social Democrats for Government Talks",
    "url": "https://www.bloomberg.com/news/articles/2026-11-15/sweden-center-party-picks-social-democrats-for-government-talks",
+   "week_of": "Nov 9, 2026"
+  },
+  "https://www.bloomberg.com/news/articles/2026-11-15/world-leaders-at-manila-summit-seek-trade-to-offset-us-risks": {
+   "_date": "2026-11-15",
+   "category": "",
+   "dates": "Nov 15",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "Bloomberg",
+   "score": 2,
+   "srcdate": "Nov 15, 2026",
+   "srcdesc": "World Leaders at Manila Summit Seek Trade to Offset US Risks",
+   "url": "https://www.bloomberg.com/news/articles/2026-11-15/world-leaders-at-manila-summit-seek-trade-to-offset-us-risks",
    "week_of": "Nov 9, 2026"
   },
   "https://www.bloomberg.com/news/newsletters/2026-11-10/europe-frets-as-russian-president-putin-pushes-trump-on-security": {
@@ -10274,6 +10428,20 @@
    "srcdate": "Nov 13, 2026",
    "srcdesc": "11/13: The Takeout with Major Garrett",
    "url": "https://www.cbsnews.com/video/111326-the-takeout-with-major-garrett/",
+   "week_of": "Nov 9, 2026"
+  },
+  "https://www.cbsnews.com/video/111526-cbs-weekend-news/": {
+   "_date": "2026-11-15",
+   "category": "",
+   "dates": "Nov 15",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "CBS News",
+   "score": 2,
+   "srcdate": "Nov 15, 2026",
+   "srcdesc": "11/15: CBS Weekend News",
+   "url": "https://www.cbsnews.com/video/111526-cbs-weekend-news/",
    "week_of": "Nov 9, 2026"
   },
   "https://www.cbsnews.com/video/6-killed-15-wounded-poland-terror-attack/": {
@@ -12068,6 +12236,20 @@
    "url": "https://www.nbcnews.com/politics/trump-administration/thomas-massie-pete-hegseth-impeachment-house-defense-rcna597989",
    "week_of": "Nov 9, 2026"
   },
+  "https://www.nbcnews.com/politics/trump-administration/trump-plans-take-qatari-jet-asia-s-unclear-whether-s-maxed-rcna609487": {
+   "_date": "2026-11-15",
+   "category": "",
+   "dates": "Nov 15",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "NBC News",
+   "score": 6,
+   "srcdate": "Nov 15, 2026",
+   "srcdesc": "Trump plans to take Qatari jet to Asia, but it’s unclear whether it’s been ‘maxed out’",
+   "url": "https://www.nbcnews.com/politics/trump-administration/trump-plans-take-qatari-jet-asia-s-unclear-whether-s-maxed-rcna609487",
+   "week_of": "Nov 9, 2026"
+  },
   "https://www.nbcnews.com/politics/trump-administration/trump-says-deportations-tough-hurt-midterms-rcna608208": {
    "_date": "2026-11-09",
    "category": "",
@@ -12234,6 +12416,20 @@
    "srcdate": "Nov 10, 2026",
    "srcdesc": "The Vikings may have acquired the only missing piece for their Super Bowl run",
    "url": "https://www.nbcnews.com/sports/nfl/minnesota-vikings-las-vegas-raiders-nfl-kirk-cousins-playoffs-rcna608598",
+   "week_of": "Nov 9, 2026"
+  },
+  "https://www.nbcnews.com/sports/nfl/vikings-vs-packers-kirk-cousins-trade-paid-immediate-dividends-rcna609470": {
+   "_date": "2026-11-15",
+   "category": "",
+   "dates": "Nov 15",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "NBC News",
+   "score": 2,
+   "srcdate": "Nov 15, 2026",
+   "srcdesc": "The biggest move of the NFL trade deadline paid immediate dividends",
+   "url": "https://www.nbcnews.com/sports/nfl/vikings-vs-packers-kirk-cousins-trade-paid-immediate-dividends-rcna609470",
    "week_of": "Nov 9, 2026"
   },
   "https://www.nbcnews.com/video/alex-murdaugh-seeks-dismissal-of-murder-case-says-agent-lied-to-grand-jury-273454149936": {
@@ -15288,6 +15484,20 @@
    "url": "https://www.nytimes.com/2026/11/15/us/politics/federal-employees-democratic-congress-lifeline.html",
    "week_of": "Nov 9, 2026"
   },
+  "https://www.nytimes.com/2026/11/15/us/politics/nvidia-trump-huang-china-xi.html": {
+   "_date": "2026-11-15",
+   "category": "",
+   "dates": "Nov 15",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "The New York Times",
+   "score": 4,
+   "srcdate": "Nov 15, 2026",
+   "srcdesc": "Nvidia Fallout Looms Over Trump-Xi Meeting",
+   "url": "https://www.nytimes.com/2026/11/15/us/politics/nvidia-trump-huang-china-xi.html",
+   "week_of": "Nov 9, 2026"
+  },
   "https://www.nytimes.com/2026/11/15/us/sexual-assault-lawsuit-texas-christian-university-consumer-protection.html": {
    "_date": "2026-11-15",
    "category": "",
@@ -15412,6 +15622,20 @@
    "srcdate": "Nov 14, 2026",
    "srcdesc": "New Orleans port sues to get control of tanker that crashed into cruise ship on Mississippi River",
    "url": "https://www.pbs.org/newshour/nation/new-orleans-port-sues-to-get-control-of-tanker-that-crashed-into-cruise-ship-on-mississippi-river",
+   "week_of": "Nov 9, 2026"
+  },
+  "https://www.pbs.org/newshour/nation/officials-say-a-tankers-steering-failed-before-it-crashed-into-a-cruise-ship-in-new-orleans": {
+   "_date": "2026-11-15",
+   "category": "",
+   "dates": "Nov 15",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "PBS NewsHour",
+   "score": 2,
+   "srcdate": "Nov 15, 2026",
+   "srcdesc": "Officials say a tanker's steering failed before it crashed into a cruise ship in New Orleans",
+   "url": "https://www.pbs.org/newshour/nation/officials-say-a-tankers-steering-failed-before-it-crashed-into-a-cruise-ship-in-new-orleans",
    "week_of": "Nov 9, 2026"
   },
   "https://www.pbs.org/newshour/nation/suspected-gunman-shoots-5-people-in-d-c-killing-1-before-dying-by-suicide": {
@@ -15972,6 +16196,20 @@
    "srcdate": "Nov 13, 2026",
    "srcdesc": "'TrumpCare' and commemorative plaques &mdash; how Democrats are pitching deal-making with the president",
    "url": "https://www.pbs.org/newshour/politics/trumpcare-and-commemorative-plaques-how-democrats-are-pitching-deal-making-with-the-president",
+   "week_of": "Nov 9, 2026"
+  },
+  "https://www.pbs.org/newshour/politics/trumps-handpicked-party-chair-faces-a-rebellion-as-midterm-losses-challenge-presidents-grip-on-gop": {
+   "_date": "2026-11-15",
+   "category": "",
+   "dates": "Nov 15",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "PBS NewsHour",
+   "score": 4,
+   "srcdate": "Nov 15, 2026",
+   "srcdesc": "Trump's handpicked party chair faces a rebellion as midterm losses challenge president's grip on GOP",
+   "url": "https://www.pbs.org/newshour/politics/trumps-handpicked-party-chair-faces-a-rebellion-as-midterm-losses-challenge-presidents-grip-on-gop",
    "week_of": "Nov 9, 2026"
   },
   "https://www.pbs.org/newshour/politics/trumps-justice-department-faces-a-new-era-of-scrutiny-under-a-democratic-led-congress": {
@@ -17486,6 +17724,20 @@
    "url": "https://www.theguardian.com/sport/2026/nov/15/lsu-star-milaysia-fulwiley-arrested-after-allegedly-striking-police-officer-with-car",
    "week_of": "Nov 9, 2026"
   },
+  "https://www.theguardian.com/sport/2026/nov/15/nfl-sunday-football-scores": {
+   "_date": "2026-11-15",
+   "category": "",
+   "dates": "Nov 15",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "The Guardian",
+   "score": 2,
+   "srcdate": "Nov 15, 2026",
+   "srcdesc": "NFL roundup: Vikings win on Cousins’ return; Hutchinson reportedly ends season celebrating sack",
+   "url": "https://www.theguardian.com/sport/2026/nov/15/nfl-sunday-football-scores",
+   "week_of": "Nov 9, 2026"
+  },
   "https://www.theguardian.com/sport/live/2026/nov/10/nfl-trade-deadline-2026-live-updates-deals-rumors-news": {
    "_date": "2026-11-10",
    "category": "",
@@ -18886,6 +19138,20 @@
    "url": "https://www.theguardian.com/us-news/2026/nov/15/arizona-republicans-maga-trump-wipeout",
    "week_of": "Nov 9, 2026"
   },
+  "https://www.theguardian.com/us-news/2026/nov/15/audio-new-orleans-mississippi-river-cruise-tanker-crash": {
+   "_date": "2026-11-15",
+   "category": "",
+   "dates": "Nov 15",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "The Guardian",
+   "score": 1,
+   "srcdate": "Nov 15, 2026",
+   "srcdesc": "US officials recover audio from ‘Mississippi miracle’ cruise ship and tanker crash",
+   "url": "https://www.theguardian.com/us-news/2026/nov/15/audio-new-orleans-mississippi-river-cruise-tanker-crash",
+   "week_of": "Nov 9, 2026"
+  },
   "https://www.theguardian.com/us-news/2026/nov/15/coalition-scott-colom-mississippi-senate-win": {
    "_date": "2026-11-15",
    "category": "",
@@ -18954,6 +19220,20 @@
    "srcdate": "Nov 15, 2026",
    "srcdesc": "Senator-elect Scott Colom vows to ensure Trump follows through on his promises",
    "url": "https://www.theguardian.com/us-news/2026/nov/15/scott-colom-mississippi-senate-trump",
+   "week_of": "Nov 9, 2026"
+  },
+  "https://www.theguardian.com/us-news/2026/nov/15/somali-american-uber-driver-attack-minnesota": {
+   "_date": "2026-11-15",
+   "category": "",
+   "dates": "Nov 15",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "The Guardian",
+   "score": 1,
+   "srcdate": "Nov 15, 2026",
+   "srcdesc": "Somali-American Uber driver brutally assaulted in alleged hate crime in Minnesota",
+   "url": "https://www.theguardian.com/us-news/2026/nov/15/somali-american-uber-driver-attack-minnesota",
    "week_of": "Nov 9, 2026"
   },
   "https://www.theguardian.com/us-news/2026/nov/15/texas-execution-john-allen-rubio-oklahoma-james-pavatt": {
@@ -20993,6 +21273,7 @@
   "https://abcnews.com/Politics/wireStory/utah-judge-expected-set-trial-date-charlie-kirks-137966109",
   "https://abcnews.com/Politics/wireStory/white-house-confronts-democrats-planned-probes-claiming-criminality-138050098",
   "https://abcnews.com/US/wireStory/2-planes-collide-ground-miami-minor-injuries-reported-138161128",
+  "https://abcnews.com/US/wireStory/32-americans-named-rhodes-scholars-variety-interests-space-138162643",
   "https://abcnews.com/US/wireStory/50-years-after-iconic-film-gathering-rocky-fans-138126032",
   "https://abcnews.com/US/wireStory/alex-murdaugh-murder-indictments-dismissed-agent-lied-grand-138101527",
   "https://abcnews.com/US/wireStory/biden-run-term-2024-knew-cancer-138047956",
@@ -21160,6 +21441,7 @@
   "https://thehill.com/homenews/house/6219982-jeffries-endorses-medicare-age-lowering/",
   "https://thehill.com/homenews/house/6220943-burchett-urges-gop-aviation-funding/",
   "https://thehill.com/homenews/house/6221508-stanton-congress-power-purse/",
+  "https://thehill.com/homenews/house/6221559-koh-blames-trump-faa-funding/",
   "https://thehill.com/homenews/media/6212455-rsf-urges-impeachment-brendan-carr/",
   "https://thehill.com/homenews/senate/6209315-senate-leaders-election-postponement-debate/",
   "https://thehill.com/homenews/senate/6209581-texas-senate-election-talarico-victory/",
@@ -21178,6 +21460,8 @@
   "https://thehill.com/homenews/senate/6220891-blumenthal-calls-lutnick-resign-nvidia-scandal/",
   "https://thehill.com/homenews/senate/6221099-gop-lame-duck-agenda-cramer/",
   "https://thehill.com/homenews/senate/6221394-van-hollen-challenges-schumer/",
+  "https://thehill.com/homenews/senate/6221606-texas-prosecutor-warns-warren/",
+  "https://thehill.com/homenews/senate/6221636-cassidy-questions-trumps-fda-pick/",
   "https://thehill.com/homenews/state-watch/6209350-shapiro-promises-minimum-wage-hike/",
   "https://thehill.com/homenews/state-watch/6211869-democrats-win-state-legislatures/",
   "https://thehill.com/homenews/state-watch/6211901-whitmer-demands-food-tariff-reimbursement/",
@@ -21244,6 +21528,7 @@
   "https://thehill.com/policy/defense/6214248-pete-hegseth-decorum-army-sentinel-veterans-day-tomb-unknown-soldier/",
   "https://thehill.com/policy/defense/6214685-us-military-costs-iran-conflict/",
   "https://thehill.com/policy/defense/6217738-brandon-tyner-army-russia-espionage-arrest/",
+  "https://thehill.com/policy/defense/6220052-lame-duck-ndaa-defense-fighting/",
   "https://thehill.com/policy/energy-environment/6208406-jimmy-carter-farm-sold/",
   "https://thehill.com/policy/energy-environment/6208626-bipartisan-permitting-reform-bill-energy-infrastructure/",
   "https://thehill.com/policy/energy-environment/6211611-trump-wind-turbines-bipartisan-permitting-reform-bill/",
@@ -21780,6 +22065,7 @@
   "https://www.aljazeera.com/video/newsfeed/2026/11/15/thailands-elderly-kept-in-cages?traffic_source=rss",
   "https://www.aljazeera.com/video/newsfeed/2026/11/15/the-hidden-costs-of-the-us-ai-boom?traffic_source=rss",
   "https://www.aljazeera.com/video/newsfeed/2026/11/15/video-shows-moment-of-brooklyn-building-collapse-from-inside?traffic_source=rss",
+  "https://www.aljazeera.com/video/newsfeed/2026/11/15/yemens-houthis-unilaterally-release-600-war-detainees?traffic_source=rss",
   "https://www.aljazeera.com/video/newsfeed/2026/11/8/nvidia-ceos-affair-sparks-chinese-espionage-probe?traffic_source=rss",
   "https://www.aljazeera.com/video/newsfeed/2026/11/9/al-jazeera-tries-skateboarding-at-youth-olympics?traffic_source=rss",
   "https://www.aljazeera.com/video/newsfeed/2026/11/9/cop31-opens-amid-energy-crisis-as-activists-demand-climate-action?traffic_source=rss",
@@ -21892,9 +22178,12 @@
   "https://www.axios.com/2026/11/14/us-loses-measles-elimination-status",
   "https://www.axios.com/2026/11/15/bessent-nvidia-earnings-china-chip-sales-ceo",
   "https://www.axios.com/2026/11/15/blue-border-wall-democrats-governors-immigration",
+  "https://www.axios.com/2026/11/15/democrats-denver-celebration-divide",
+  "https://www.axios.com/2026/11/15/democrats-make-america-nice-again-2028",
   "https://www.axios.com/2026/11/15/gen-z-socialism-israel-faith-politics-old-rules",
   "https://www.axios.com/2026/11/15/nvidia-stocks-401k-retirement-accounts",
   "https://www.axios.com/2026/11/15/space-data-centers-risks-stargazing-report",
+  "https://www.axios.com/2026/11/15/vance-2028-campaign-president-announce",
   "https://www.axios.com/local/denver/2026/11/09/democrats-whats-next-conference-denver-2028",
   "https://www.axios.com/local/washington-dc/2026/11/12/logan-circle-shooting-dc-barricade",
   "https://www.axios.com/local/washington-dc/2026/11/13/logan-circle-shooting-dc-barricade",
@@ -22140,6 +22429,7 @@
   "https://www.bloomberg.com/news/articles/2026-11-15/anwar-s-coalition-suffers-third-straight-regional-poll-defeat",
   "https://www.bloomberg.com/news/articles/2026-11-15/australia-philippines-upgrade-defense-ties-with-focus-on-china",
   "https://www.bloomberg.com/news/articles/2026-11-15/burnham-faces-labour-rebellion-over-rosebank-sunday-times-says",
+  "https://www.bloomberg.com/news/articles/2026-11-15/burnham-to-tell-city-of-london-audience-brexit-has-not-worked",
   "https://www.bloomberg.com/news/articles/2026-11-15/czechs-protest-against-new-funding-plan-for-public-broadcasters",
   "https://www.bloomberg.com/news/articles/2026-11-15/estonia-says-russia-behind-failed-arson-attempt-on-drone-maker",
   "https://www.bloomberg.com/news/articles/2026-11-15/hungary-opens-pandora-s-box-with-publication-of-communist-files",
@@ -22147,6 +22437,7 @@
   "https://www.bloomberg.com/news/articles/2026-11-15/latvian-premier-says-agreement-reached-for-new-government",
   "https://www.bloomberg.com/news/articles/2026-11-15/senate-republicans-seek-lutnick-testimony-on-nvidia-enforcement",
   "https://www.bloomberg.com/news/articles/2026-11-15/sweden-center-party-picks-social-democrats-for-government-talks",
+  "https://www.bloomberg.com/news/articles/2026-11-15/world-leaders-at-manila-summit-seek-trade-to-offset-us-risks",
   "https://www.bloomberg.com/news/features/2026-11-09/rare-earths-eu-taps-china-playbook-to-cut-dependence-on-imports",
   "https://www.bloomberg.com/news/features/2026-11-10/a-3-500-three-night-rental-shows-pope-leo-craze-in-argentina",
   "https://www.bloomberg.com/news/features/2026-11-10/visita-del-papa-leon-xiv-dispara-alquileres-de-us-3-500-en-argentina-mwakd1u2",
@@ -22396,6 +22687,7 @@
   "https://www.cbsnews.com/video/111326-cbs-evening-news/",
   "https://www.cbsnews.com/video/111326-the-takeout-with-major-garrett/",
   "https://www.cbsnews.com/video/111426-cbs-saturday-morning/",
+  "https://www.cbsnews.com/video/111526-cbs-weekend-news/",
   "https://www.cbsnews.com/video/111526-face-the-nation/",
   "https://www.cbsnews.com/video/111526-sunday-morning/",
   "https://www.cbsnews.com/video/2-planes-taking-off-la-nearly-collide-officials-say/",
@@ -22644,6 +22936,7 @@
   "https://www.nbcnews.com/politics/trump-administration/thomas-massie-pete-hegseth-impeachment-house-defense-rcna597989",
   "https://www.nbcnews.com/politics/trump-administration/transportation-secretary-apologize-nationwide-ground-stop-airports-rcna609397",
   "https://www.nbcnews.com/politics/trump-administration/treasury-secretary-scott-bessent-moves-military-base-iranian-threats-rcna608951",
+  "https://www.nbcnews.com/politics/trump-administration/trump-plans-take-qatari-jet-asia-s-unclear-whether-s-maxed-rcna609487",
   "https://www.nbcnews.com/politics/trump-administration/trump-says-deportations-tough-hurt-midterms-rcna608208",
   "https://www.nbcnews.com/politics/trump-administration/us-attorney-demands-sen-richard-blumenthal-preserve-documents-inquiry-rcna608899",
   "https://www.nbcnews.com/politics/white-house/trump-cuba-military-force-rubio-rcna609138",
@@ -22688,6 +22981,7 @@
   "https://www.nbcnews.com/sports/nfl/fernando-mendoza-las-vegas-raiders-seattle-seahawks-kirk-cousins-rcna608889",
   "https://www.nbcnews.com/sports/nfl/green-bay-packers-nfl-jordan-love-nfc-north-results-rcna608209",
   "https://www.nbcnews.com/sports/nfl/minnesota-vikings-las-vegas-raiders-nfl-kirk-cousins-playoffs-rcna608598",
+  "https://www.nbcnews.com/sports/nfl/vikings-vs-packers-kirk-cousins-trade-paid-immediate-dividends-rcna609470",
   "https://www.nbcnews.com/sports/soccer/manchester-united-disastrous-start-goes-just-manager-rcna608462",
   "https://www.nbcnews.com/tech/tech-news/amazons-ring-debuts-security-robots-drone-rcna608538",
   "https://www.nbcnews.com/tech/tech-news/colette-kress-nvidia-new-interim-ceo-jensen-huang-replace-who-is-rcna609039",
@@ -23067,6 +23361,7 @@
   "https://www.nytimes.com/2026/11/15/us/politics/democrats-2028-presidential-candidates.html",
   "https://www.nytimes.com/2026/11/15/us/politics/democrats-denver-gathering-takeaways.html",
   "https://www.nytimes.com/2026/11/15/us/politics/federal-employees-democratic-congress-lifeline.html",
+  "https://www.nytimes.com/2026/11/15/us/politics/nvidia-trump-huang-china-xi.html",
   "https://www.nytimes.com/2026/11/15/us/politics/trump-lutnick-ai-chips-cantor-fitzgerald.html",
   "https://www.nytimes.com/2026/11/15/us/politics/trump-lutnick-ai-chips-nvidia-cantor-fitzgerald.html",
   "https://www.nytimes.com/2026/11/15/us/politics/van-hollen-schumer-democrats-majority-leader.html",
@@ -23095,6 +23390,7 @@
   "https://www.pbs.org/newshour/nation/meet-the-new-bachelor-a-quarterback-for-the-washington-commanders",
   "https://www.pbs.org/newshour/nation/missing-south-carolina-infant-rescued-after-being-buried-alive-in-a-dog-crate-for-24-hours",
   "https://www.pbs.org/newshour/nation/new-orleans-port-sues-to-get-control-of-tanker-that-crashed-into-cruise-ship-on-mississippi-river",
+  "https://www.pbs.org/newshour/nation/officials-say-a-tankers-steering-failed-before-it-crashed-into-a-cruise-ship-in-new-orleans",
   "https://www.pbs.org/newshour/nation/rescues-operations-underway-in-new-orleans-after-tanker-hits-river-cruise-boat",
   "https://www.pbs.org/newshour/nation/suspected-gunman-shoots-5-people-in-d-c-killing-1-before-dying-by-suicide",
   "https://www.pbs.org/newshour/nation/thomas-markle-father-of-meghan-cut-off-his-ankle-monitor-while-awaiting-hearing-doj-says",
@@ -23149,6 +23445,7 @@
   "https://www.pbs.org/newshour/politics/trump-says-idea-to-make-ufcs-dana-white-his-press-secretary-just-a-little-fun",
   "https://www.pbs.org/newshour/politics/trump-says-the-towering-arch-he-wants-to-be-build-might-be-dedicated-to-military-veterans",
   "https://www.pbs.org/newshour/politics/trumpcare-and-commemorative-plaques-how-democrats-are-pitching-deal-making-with-the-president",
+  "https://www.pbs.org/newshour/politics/trumps-handpicked-party-chair-faces-a-rebellion-as-midterm-losses-challenge-presidents-grip-on-gop",
   "https://www.pbs.org/newshour/politics/trumps-justice-department-faces-a-new-era-of-scrutiny-under-a-democratic-led-congress",
   "https://www.pbs.org/newshour/politics/u-s-wrongly-withheld-new-york-highway-funds-over-immigrant-licenses-appeals-court-rules",
   "https://www.pbs.org/newshour/politics/van-hollen-to-challenge-schumer-for-senate-democratic-leader",
@@ -23346,6 +23643,7 @@
   "https://www.theguardian.com/sport/2026/nov/15/kayla-harrison-amanda-nunes-ufc-334-ciryl-gane-josh-hokit",
   "https://www.theguardian.com/sport/2026/nov/15/kayla-harrison-ufc-womens-mma-dana-white-trump",
   "https://www.theguardian.com/sport/2026/nov/15/lsu-star-milaysia-fulwiley-arrested-after-allegedly-striking-police-officer-with-car",
+  "https://www.theguardian.com/sport/2026/nov/15/nfl-sunday-football-scores",
   "https://www.theguardian.com/sport/live/2026/nov/10/nfl-trade-deadline-2026-live-updates-deals-rumors-news",
   "https://www.theguardian.com/sport/live/2026/nov/15/atp-finals-tennis-alexander-zverev-v-rafael-jodar-and-more-live",
   "https://www.theguardian.com/sport/live/2026/nov/15/nfl-week-10-lions-v-patriots-and-more-live",
@@ -23468,12 +23766,14 @@
   "https://www.theguardian.com/us-news/2026/nov/14/peoria-illinois-evacuation-bomb",
   "https://www.theguardian.com/us-news/2026/nov/14/salt-mine-ohio-flooding-safety-winter",
   "https://www.theguardian.com/us-news/2026/nov/15/arizona-republicans-maga-trump-wipeout",
+  "https://www.theguardian.com/us-news/2026/nov/15/audio-new-orleans-mississippi-river-cruise-tanker-crash",
   "https://www.theguardian.com/us-news/2026/nov/15/chris-van-hollen-senate-majority-leader",
   "https://www.theguardian.com/us-news/2026/nov/15/coalition-scott-colom-mississippi-senate-win",
   "https://www.theguardian.com/us-news/2026/nov/15/georgia-midterm-elections-black-voters",
   "https://www.theguardian.com/us-news/2026/nov/15/miami-airport-planes-collide",
   "https://www.theguardian.com/us-news/2026/nov/15/oakland-mayor-bribery-scandal-recycling",
   "https://www.theguardian.com/us-news/2026/nov/15/scott-colom-mississippi-senate-trump",
+  "https://www.theguardian.com/us-news/2026/nov/15/somali-american-uber-driver-attack-minnesota",
   "https://www.theguardian.com/us-news/2026/nov/15/texas-execution-john-allen-rubio-oklahoma-james-pavatt",
   "https://www.theguardian.com/us-news/2026/nov/15/transportation-secretary-sean-duffy-faa-flight-stoppag",
   "https://www.theguardian.com/us-news/2026/nov/15/trump-self-enrichment-lawsuits",
