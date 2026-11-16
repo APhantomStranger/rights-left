@@ -7322,6 +7322,20 @@
    "url": "https://www.bbc.co.uk/news/videos/cke89dqmlp2eo?at_medium=RSS&at_campaign=rss",
    "week_of": "Nov 9, 2026"
   },
+  "https://www.bbc.co.uk/news/videos/crpdwve24398o?at_medium=RSS&at_campaign=rss": {
+   "_date": "2026-11-14",
+   "category": "",
+   "dates": "Nov 14",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "BBC News",
+   "score": 5,
+   "srcdate": "Nov 14, 2026",
+   "srcdesc": "How Mississippi's new senator won in Trump's heartland - and what he will do next",
+   "url": "https://www.bbc.co.uk/news/videos/crpdwve24398o?at_medium=RSS&at_campaign=rss",
+   "week_of": "Nov 9, 2026"
+  },
   "https://www.bbc.co.uk/news/videos/crvg2xex290no?at_medium=RSS&at_campaign=rss": {
    "_date": "2026-11-11",
    "category": "",
@@ -9266,6 +9280,20 @@
    "srcdate": "Nov 11, 2026",
    "srcdesc": "Rep. DelBene: Nvidia, Huang Should Face Investigation",
    "url": "https://www.bloomberg.com/news/videos/2026-11-11/rep-delbene-nvidia-huang-should-face-investigation-video",
+   "week_of": "Nov 9, 2026"
+  },
+  "https://www.bloomberg.com/news/videos/2026-11-11/the-perfect-storm-that-clobbered-hedge-funds-video": {
+   "_date": "2026-11-11",
+   "category": "",
+   "dates": "Nov 11",
+   "event": "",
+   "impact": "",
+   "include": "",
+   "outlet": "Bloomberg",
+   "score": 1,
+   "srcdate": "Nov 11, 2026",
+   "srcdesc": "The Perfect Storm That Clobbered Hedge Funds",
+   "url": "https://www.bloomberg.com/news/videos/2026-11-11/the-perfect-storm-that-clobbered-hedge-funds-video",
    "week_of": "Nov 9, 2026"
   },
   "https://www.bloomberg.com/news/videos/2026-11-12/allen-says-us-needs-stronger-export-control-enforcement-video": {
@@ -22256,6 +22284,7 @@
   "https://www.bbc.co.uk/news/videos/cq3989nkzn3ko?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/videos/cqzjr903n01po?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/videos/cr0qkqqkn3j7o?at_medium=RSS&at_campaign=rss",
+  "https://www.bbc.co.uk/news/videos/crpdwve24398o?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/videos/crvg2xex290no?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/videos/cv5y1309dg3go?at_medium=RSS&at_campaign=rss",
   "https://www.bbc.co.uk/news/videos/cv702w84r5l1o?at_medium=RSS&at_campaign=rss",
@@ -22507,6 +22536,7 @@
   "https://www.bloomberg.com/news/videos/2026-11-11/opinion-how-to-fix-the-labor-market-survey-data-video",
   "https://www.bloomberg.com/news/videos/2026-11-11/rep-delbene-nvidia-huang-should-face-investigation-video",
   "https://www.bloomberg.com/news/videos/2026-11-11/rep-krishnamoorthi-says-huang-should-face-subpoena-video",
+  "https://www.bloomberg.com/news/videos/2026-11-11/the-perfect-storm-that-clobbered-hedge-funds-video",
   "https://www.bloomberg.com/news/videos/2026-11-11/this-is-not-the-end-of-the-ai-trade-says-shah-video",
   "https://www.bloomberg.com/news/videos/2026-11-12/allen-says-us-needs-stronger-export-control-enforcement-video",
   "https://www.bloomberg.com/news/videos/2026-11-12/balance-of-power-late-edition-11-11-2026-video",
