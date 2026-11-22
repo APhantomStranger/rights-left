@@ -36,7 +36,7 @@ Save.
 Repo's `candidates` folder → **Add file → Upload files** → same filename → commit to `main`.
 
 **If Claude does the upload for you** (you send it the reviewed sheet and ask it to make it live), it does it in this order:
-1. Deletes the unreviewed sheet Gather put in `candidates/` (same filename) and commits that.
+1. Deletes the unreviewed sheet Gather put in `candidates/` (same filename) and commits that. If you already deleted it, this step is skipped.
 2. Uploads your reviewed sheet as `candidates/<date>.xlsx` and commits to `main`.
 3. Runs **Ingest approved entries** with that exact file path, waits for it to finish, and checks the log (rows appended, MAGA Crime Tracker changes, your note saved, newsletter sent or throttled).
 4. Confirms the update is live on rightsleft.org.
